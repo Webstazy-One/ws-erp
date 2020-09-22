@@ -5,22 +5,18 @@ module.exports = app => {
   const Stock = db.stock;
 
   var router = require("express").Router();
-
-  // Create a new stock
+ 
   router.post("/", stock.create);
 
-  // Retrieve all stocks
+  router.put("/update/:branchCode/:itemId/:qty", stock.stockUpdate);
+
+  //router.put("/:branchCode/:currentStock", stock.updateCurrentStock);
+
   router.get("/", stock.findAll);
 
+ router.get("/branchCode/:bc", stock.findByBranchCode);
 
-  //Retrieve a single with branch code 
-  router.get("/:branch_CODE", stock.findOne);
-
-  // Update a stock with branch code
-  router.put("/:branch_CODE", stock.update);
-
-  //Find by branch code
-  router.get("/branch_CODE/:bc", stock.findByBranchCode);
+  router.get("/itemId/:itemId", stock.findByItemId);
 
   app.use("/api/stock", router);
 };

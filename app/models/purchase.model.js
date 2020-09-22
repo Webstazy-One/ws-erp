@@ -1,18 +1,20 @@
 module.exports = (mongoose) => {
   var schema = mongoose.Schema({
-    purchase_id_iid: String,
-    inv_id: String,
-    _active:Boolean,
+
+    invId: String,
     qty: Number,
     disc: Number,
-    disc_price: Number,
-    unit_price: Number,
-    branch_CODE: String,
+    discPrice: Number,
+    unitPrice: Number,
+    itemId: String,
+    dateTime : Date,
+    _active: Boolean,
+
   });
 
   schema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
-    object.id = _id;
+    object.purchaseId = _id;
     return object;
   });
 

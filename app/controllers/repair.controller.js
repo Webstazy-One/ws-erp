@@ -2,25 +2,23 @@ const db = require("../models");
 const Repair = db.repair;
 
 
-exports.create = (req, res) =>     // Validate request
+exports.create = (req, res) =>     
 {
-  if (!req.body.jobcardid) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
-  }
-
-  // Create a Repair
+  
   const repair = new Repair
     ({
-      jobcardid: req.body.jobcardid,
-      pid: req.body.pid,
-      custphone: req.body.custphone,
-      date_time: req.body.date_time,
+      jobcardId: req.body.jobcardId,
+      custPhone: req.body.custPhone,
+      iid: req.body.iid,
       description: req.body.description,
-      status: req.body.status
+      remark:req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false],
+      deliveryDate:req.body.deliveryDate,
+      cost:req.body.cost,
+      payment:req.body.payment,
+      status: req.body.status ? req.body.status : "STARTED"
     });
 
-  // Save Repair in the database
+  
   repair
     .save(repair)
     .then(data => {
@@ -34,104 +32,145 @@ exports.create = (req, res) =>     // Validate request
     });
 };
 
-//Retrieve all Repairs/ find by repair from the database:
-exports.findAll = (req, res) => {
-  const repair = req.query.jobcardid;
-  var condition = repair ? { jobcardid: { $regex: new RegExp(jobcardid), $options: "i" } } : {};
+exports.findawaitrepairs = (req, res) => {
+  Repair.find({status:"completed"})
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving repair.",
+      });
+    });
+};
 
-  Repair.find(condition)
+exports.findAll = (req, res) => {
+  Repair.find()
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving repair."
-      });
-    });
-};
-
-//Find a single Reapir with an id:
-exports.findOne = (req, res) => {
-  const id = req.params.id;
-
-  Repair.findById(id)
-    .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found Item with id " + id });
-      else res.send(data);
-    })
-
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving Reapir with id=" + id });
-    });
-};
-
-//update value using ID
-exports.update = (req, res) => {
-  if (!req.body) {
-    return res.status(400).send
-      ({
-        message: "Data to update can not be empty!"
-      });
-  }
-
-  const id = req.params.id;
-  Repair.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot update Repair with id=${id}. Maybe Repair was not found!`
-        });
-      }
-      else res.send({ message: "Repair was updated successfully." });
-    })
-    .catch(err => {
-      res.status(500).send
-        ({
-          message: "Error updating Repair with id=" + id
-        });
-    });
-};
-
-
-//Delete a Repair with the specified id:
-exports.delete = (req, res) => {
-  const id = req.params.id;
-
-  Repair.findByIdAndRemove(id)
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete Repair with id=${id}. Maybe Reapir was not found!`
-        });
-      }
-      else {
-        res.send({
-          message: "Repair was deleted successfully!"
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Reapir with id=" + id
-      });
-    });
-};
-
-//Delete all Repairs from the database:
-exports.deleteAll = (req, res) => {
-  Repair.deleteMany({})
-    .then(data => {
-      res.send({
-        message: `${data.deletedCount} Repair were deleted successfully!`
-      });
-    })
-    .catch(err => {
-      res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all reapirs."
+          err.message || "Some error occurred while retrieving repair."
       });
     });
 };
+
+
+exports.findByJobCardId = (req, res) => {
+  const jobcardId = req.params.jobcardId;
+  console.log(req.query);
+  var condition = jobcardId
+    ? {
+      jobcardId: jobcardId,
+    }
+    : {};
+
+  Repair.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while searching repair with jobcardId.",
+      });
+    });
+};
+
+exports.findByCustNo = (req, res) => {
+  const custPhone = req.params.custno;
+  console.log(req.query);
+  var condition = custPhone
+    ? {
+      custPhone: custPhone,
+    }
+    : {};
+
+  Repair.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while searching repair with phone number.",
+      });
+    });
+};
+
+exports.updateRepairByJcId = (req, res) => {
+  const jobcardId = req.params.jobcardId;
+
+  Repair.findOneAndUpdate({jobcardId: jobcardId},{$set: req.body})
+  .then(data => {
+
+     if (!data) {
+        res.status(404).send({
+          message: `Cannot update Repair with jobcardId=${jobcardId}. Maybe Repair was not found!`,
+        });
+      } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating Repair with jobcardIdCode=" + jobcardId,
+
+
+      });
+    });
+}
+
+exports.findLast = (req, res) => {
+  Repair.findOne().sort({ 'createdAt' : -1 }).limit(1).then(data => {
+    res.send(data.jobcardId);
+  })
+};
+
+
+exports.DeleteFromJobCardId = (req, res) => {
+  const jobcardId= req.params.jobcardId;
+ 
+  Repair.findOneAndRemove({jobcardId: jobcardId},{$set:req.body })
+  .then(data => {
+ 
+         if (!data) {
+        res.status(404).send({
+          message: `Cannot delete repair details=${jobcardId}.`,
+        });
+      } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err,
+      });
+    });
+ }
+
+ exports.findAwaitRepairs = (req, res) => {
+  Repair.find({status : "AWAIT"})
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving repair.",
+      });
+    });
+};
+
+// exports.findAwaitRepairs = (req, res) => {
+//   var condition = AWAIT
+//     ? {
+//       status: AWAIT
+//     }
+//     : {};
+
+//     Repair.find(condition)
+//     .then((data) => {
+//       res.send(data);
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message: err.message || "Some error occurred while retrieving items.",
+//       });
+//     });
+// };

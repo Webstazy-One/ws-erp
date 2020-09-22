@@ -6,9 +6,14 @@ const app = express();
 
 app.use(cors());
 
+// parse requests of content-type - application/json
 app.use(bodyParser.json());
 
+// parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.static('dist'));
+
 
 const db = require("./app/models");
 const Role = db.role;
@@ -45,16 +50,18 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'admin' to roles collection");
       });
     }
   });
 }
 
+
+// simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Wimaladharma and Sons ERP" });
+ res.sendFile(__dirname + '/dist/index.html');
 });
+ 
 
 require("./app/routes/item.routes")(app);
 require("./app/routes/exchange.routes")(app);
@@ -65,13 +72,16 @@ require("./app/routes/customer.routes")(app);
 require("./app/routes/stock.routes")(app);
 require("./app/routes/brand.routes")(app);
 require("./app/routes/promo.routes")(app);
+require("./app/routes/cust_merge.routes")(app);
 require("./app/routes/tag.routes")(app);
 require("./app/routes/repair.routes")(app);
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 
-const PORT = process.env.PORT || 8090;
+const PORT = process.env.PORT || 8089;
+
+// set port, listen for requests
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

@@ -3,23 +3,21 @@ module.exports = app => {
   
     var router = require("express").Router();
   
-    // Create a new Item
     router.post("/", repairs.create);
+
+    router.delete("/:jobcardId", repairs.DeleteFromJobCardId);
+
+    router.put("/:jobcardId", repairs.updateRepairByJcId);
   
-    // Retrieve all Items
+    router.get("/custPhone/:custno", repairs.findByCustNo);
+
+    router.get("/:jobcardId", repairs.findByJobCardId);
+
+    router.get("/await", repairs.findawaitrepairs);
+
     router.get("/", repairs.findAll);
-  
-    // Retrieve a single Item with id
-    router.get("/:id", repairs.findOne);
-  
-    // Update a Item with id
-    router.put("/:id", repairs.update);
-  
-    // Delete a Item with id
-    router.delete("/:id", repairs.delete);
-  
-    // Create a new Item
-    router.delete("/", repairs.deleteAll);
-  
+
+    router.get("/id/last", repairs.findLast);
+
     app.use('/api/repair', router);
   };

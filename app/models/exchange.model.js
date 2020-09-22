@@ -1,15 +1,16 @@
 module.exports = (mongoose) => {
   var schema = mongoose.Schema({
-    applied_inv: String,
-    amount: String,
+
+    invId: String,
     pid: String,
-    iid: String,
-    inv_id: String,
+    condition:["GOOD","AVERAGE","BAD"],
+    amount: Number,
+    appliedInv: String,   
   });
 
   schema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
-    object.id = _id;
+    object.exchangeId = _id;
     return object;
   });
 

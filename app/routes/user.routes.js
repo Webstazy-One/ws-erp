@@ -1,7 +1,7 @@
 const { authJwt } = require("../middleware");
 const controller = require("../controllers/user.controller");
 const { user } = require("../models");
-
+var router = require("express").Router();
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -11,34 +11,25 @@ module.exports = function (app) {
     next();
   });
 
-  app.get("/api/test/all", controller.allAccess);
+  router.delete("/:username", controller.DeleteFromUser);
 
-  app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
+  app.get("/api/all", controller.allAccess);
 
+  app.get("/api/user", [authJwt.verifyToken], controller.userBoard);
+
+  router.put("/:username/:password", controller.updatePasswordByUserName);
+
+  router.delete("/:username", controller.DeleteUser);
 
   app.get(
-    "/api/test/admin",
+    "/api/admin",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
-
+ 
+    app.use("/api/user", router);
 };
-module.exports = app => {
-  const user = require("../controllers/user.controller.js");
 
-  var router = require("express").Router();
-  // Create a new user
-  router.post("/", user.create);
-
-  // Retrieve all users
-  router.get("/", user.findAll);
-
-  // Delete a User with username
-  router.delete("/:username", user.delete);
-
-  // Retrieve a single with item username
-  router.get("/:username", user.findOne);
-
-  app.use("/api/user", router);
-}
+ 
+ 
 

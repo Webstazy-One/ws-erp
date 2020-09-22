@@ -1,26 +1,54 @@
+const axios = require('axios')
 const db = require("../models");
+const { customer, purchase, invoice } = require("../models");
+const customers = require("../controllers/customer.controller.js");
 const Invoice = db.invoice;
-
+const Customer = db.customer;
+const Item = db.item;
+const Purchase = db.purchase;
 exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.inv_id) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
+  if (!req.body.invId) { res.status(400).send({ message: "Content can not be empty!" }); return }
+  purch = []
+  if (req.body.purchases) {
+    req.body.purchases.forEach(purc => {
+      const purcData = new Purchase({
+        invId: req.body.invId,
+        itemId: purc.itemId,
+        unitPrice: purc.unitPrice,
+        qty: purc.qty ,
+        disc: purc.disc,
+        discPrice: purc.discPrice,
+        dateTime : req.body.dateTime,
+        _active: true
+      })
+      // axios.post('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData)
+      axios.post('http://localhost:8089/api/purchase/', purcData).catch(() => {});
+      purch.push(purcData)
+      const stockUpdate = {
+        branchCode: req.body.branchCode,
+        itemId: purc.itemId,
+        qty: purc.qty,
+      }
+      // axios.put('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/stock/dec/', stockUpdate);
+      axios.put('http://localhost:8089/api/purchase//api/stock/dec/', stockUpdate).catch(() => {});;
+    });
   }
-
   const invoice = new Invoice({
-    inv_id: req.body.inv_id,
-    iid: req.body.iid,
-    date: req.body.date,
-    total: req.body.total,
-    cashier: req.body.cashier,
-    value: req.body.value,
-    method: req.body.method,
+    invId: req.body.invId,
+    dateTime: req.body.dateTime,
+    payMethod: req.body.payMethod,
+    username: req.body.username,
+    totDiscount: req.body.totDiscount,
+    totValue: req.body.totValue,
+    customer: req.body.customer,
+    branchCode: req.body.branchCode,
+    totalItems: req.body.totalItems,
+    purchases : purch,
+    _active: true,
   });
-
   invoice
     .save(invoice)
-    .then(data => {
+    .then(data => {  
       res.send(data);
     })
     .catch(err => {
@@ -30,138 +58,111 @@ exports.create = (req, res) => {
       });
     });
 };
-
+exports.findBydateTime = (req, res) => {
+  const dateTime = req.params.dt;
+  console.log(req.query);
+  var condition = dateTime
+    ? {
+      dateTime: dateTime,
+    }
+    : {};
+  Invoice.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving invoices.",
+      });
+    });
+};
+exports.findByDateRange = (req, res) => {
+  Invoice.find({
+    dateTime: {
+      $gte: req.params.dateTimeBefore,
+      $lt: req.params.dateTimeAfter
+    }
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving invoice.",
+      });
+    });
+};
+exports.findByProfitAndDateRange = (req, res) => {
+  res.send({
+    message: `To be improved!`,
+  });
+}
+exports.findByInvoiceId = (req, res) => {
+  const invId = req.params.invId;
+  console.log(req.query);
+  var condition = invId
+    ? {
+      invId: invId,
+    }
+    : {};
+  Invoice.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving invoice with invoice id.",
+      });
+    });
+};
+exports.findByCustPhoneNo = (req, res) => {
+  const phone = req.params.ph;
+  console.log(req.query);
+  var condition = phone
+    ? {
+      phone: { $regex: new RegExp(req.params.ph), $options: "i" },
+    }
+    : {};
+  Customer.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Customer.",
+      });
+    });
+};
 exports.findAll = (req, res) => {
-  const inv_id = req.query.inv_id;
-  var condition = inv_id ? { inv_id: { $regex: new RegExp(inv_id), $options: "i" } } : {};
-
-  Invoice.find(condition)
+  Invoice.find()
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving invoices."
+          err.message || "Some error occurred while retrieving invoice."
       });
     });
 };
-
-exports.findOne = (req, res) => {
-  const inv_id = req.params.inv_id;
-
-  Invoice.findById(inv_id)
-    .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found Invoice with id " + inv_id });
-      else res.send(data);
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving Invoice with id = " + inv_id });
-    });
-};
-
-exports.findByDate = (req, res) => {
-  const date = req.params.dt;
-  var condition = date
-    ? {
-      date: date,
-    }
-    : {};
-
-  Invoice.find(condition)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
-      });
-    });
-};
-
-exports.findByCust = (req, res) => {
-  const cust = req.params.cust;
-  var condition = cust
-    ? {
-      cust: cust,
-    }
-    : {};
-
-  Invoice.find(condition)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
-      });
-    });
-};
-
-exports.update = (req, res) => {
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Data to update can not be empty!"
-    });
-  }
-
-  const id = req.params.id;
-
-  Invoice.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot update Invoice with id=${id}. Maybe Invoice was not found!`
-        });
-      } else res.send({ message: "Invoice was updated successfully." });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating Invoice with id=" + id
-      });
-    });
-};
-
-exports.delete = (req, res) => {
-  const inv_id = req.params.inv_id;
-
-  Invoice.findOneAndRemove(inv_id, { useFindAndModify: false })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete Invoice with inv_id=${inv_id}. Maybe Invoice was not found!`
-        });
-      } else {
-        res.send({
-          message: "Invoice  was deleted successfully!"
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Invoice with inv_id=" + inv_id
-      });
-    });
-};
-
-exports.findAllActive = (req, res) => {
-  Invoice.find({ active: true })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Promo."
-      });
-    });
-};
-
 exports.findLast = (req, res) => {
-  Invoice.findOne().sort({ 'created_at' : -1 }).limit(1).then(data => {
-    res.send(data);
+  Invoice.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
+    res.send(data.invId);
   })
 };
+exports.DeleteFromInvoiceId = (req, res) => {
+  const invId = req.params.invId;
+  Invoice.findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
+        });
+      } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err,
+      });
+    });
+}

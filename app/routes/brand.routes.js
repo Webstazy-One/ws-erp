@@ -1,20 +1,19 @@
 module.exports = (app) => {
-  const brand = require("../controllers/brand.controller.js");
+  const brand = require("../controllers/brand.controller.js")
 
-  var router = require("express").Router();
+  var router = require("express").Router()
 
-  // Create a new brand
-  router.post("/", brand.create);
+  router.post("/", brand.create)
 
-  router.get("/:brand_name", brand.findOne);
-  // Retrieve all brand
-  router.get("/", brand.findAll);
+  router.delete("/:brandName", brand.DeleteFromBrandName)
 
-  // Update a brand with id
-  router.put("/:id", brand.update);
+  router.put("/:brandName", brand.updateBrandByBrandName)
 
-  // Delete a brand with id
-  router.delete("/:id", brand.delete);
+  router.get("/all", brand.findAll)
 
-  app.use("/api/brand", router);
-};
+  router.get("/", brand.findAllActive)
+
+  router.get("/:brandName", brand.findByBrandName)
+
+  app.use("/api/brand", router)
+}

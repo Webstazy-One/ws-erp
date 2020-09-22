@@ -1,6 +1,6 @@
 {
-  "name": "apicrudmongonodejsexpress",
-  "version": "1.0.0",
+  "name": "ws-erp-cloud-distro",
+  "version": "0.4.6",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.20.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",

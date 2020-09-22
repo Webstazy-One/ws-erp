@@ -10,8 +10,9 @@ exports.signup = (req, res) => {
   const user = new User({
     name: req.body.name,
     username: req.body.username,
-    email: req.body.email,
+    phone : req.body.phone,
     password: bcrypt.hashSync(req.body.password, 8),
+    _active : true
   });
 
   user.save((err, user) => {
@@ -103,9 +104,10 @@ exports.signin = (req, res) => {
         id: user._id,
         name: user.name,
         username: user.username,
-        email: user.email,
+        _active : user._active,
         roles: authorities,
         accessToken: token
       });
     });
 };
+

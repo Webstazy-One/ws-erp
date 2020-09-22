@@ -3,23 +3,15 @@ module.exports = app => {
 
   var router = require("express").Router();
 
-  // Create a new Exchange
   router.post("/", exchange.create);
 
-  // Retrieve all Exchange
   router.get("/", exchange.findAll);
+  
+  router.get("/:exchangeId", exchange.findOne);
 
-  // Retrieve a single Exchange with id
-  router.get("/:id", exchange.findOne);
+  router.get("/invId/:invId", exchange.findByInvId);
 
-  // Update a Exchange with id
-  router.put("/:id", exchange.update);
-
-  // Delete a Exchange with id
-  router.delete("/:id", exchange.delete);
-
-  // Create a new Exchange
-  router.delete("/", exchange.deleteAll);
-
+  router.get("/appliedInv/:appliedInv", exchange.findByAppliedInv);
+  
   app.use('/api/exchange', router);
 };

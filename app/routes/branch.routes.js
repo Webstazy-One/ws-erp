@@ -3,27 +3,15 @@ module.exports = app => {
 
   var router = require("express").Router();
 
-  // Create a new Branch
   router.post("/", branch.create);
+  
+  router.put("/:branchCode", branch.updateBranchbybranchCode);
+ 
+  router.get("/all", branch.findAll);
 
-  // Retrieve all Branches
-  router.get("/", branch.findAll);
-
-
-  // Retrieve a single Branch with id
-  router.get("/:branch_CODE", branch.findOne);
-
-  // Update a Branch with id
-  router.put("/:id", branch.update);
-
-  // Retrieve all Active branches
   router.get("/", branch.findAllActive);
 
-  // Delete a Branch with id
-  router.delete("/:branch_CODE", branch.delete);
-
-  // Update a branch with branch code
-  router.put("/:branch_CODE", branch.update);
-
+  router.get("/branchCode/:bc", branch.findByBranchCode);
+ 
   app.use('/api/branch', router);
 };

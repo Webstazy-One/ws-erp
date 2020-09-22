@@ -5,15 +5,11 @@ module.exports = app => {
 
   router.post("/", purchase.create);
 
-  router.put("/:id", purchase.update);
+  router.get("/", purchase.findAllActive);
 
-  router.delete("/:purchase_id_iid", purchase.delete);
-
-  // router.get("/", purchase.findAllActive);
-
-  router.get("/:purchase_id", purchase.findOne);
-
-  router.get("/invoice/:inv", purchase.findByInv);
+  router.get("/:purchaseId", purchase.findOne);
+ 
+  router.get("/invId/:invId", purchase.findByInvoiceId);
 
   app.use('/api/purchase', router);
 };

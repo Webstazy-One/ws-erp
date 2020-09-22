@@ -1,9 +1,10 @@
 module.exports = (mongoose) => {
   var schema = mongoose.Schema({
-    branch_CODE: String,
-    branch_name: String,
-    branch_address: String,
-    branch_phone:String
+    branchCode : String,
+    branchName : String,
+    branchAddress : String,
+    branchPhone : String,
+    _active : Boolean
   });
 
   schema.method("toJSON", function () {
@@ -12,6 +13,6 @@ module.exports = (mongoose) => {
     return object;
   });
 
-  const Branch = mongoose.model("branch", schema);
+  const Branch = mongoose.model("branch", schema,);
   return Branch;
 };

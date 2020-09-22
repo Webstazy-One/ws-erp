@@ -1,28 +1,27 @@
 const db = require("../models");
 const Branch = db.branch;
 
-// Create and Save a new Branch
+
 exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.branch_CODE) {
+
+  if (!req.body.branchCode) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
-  // Create a Branch
   const branch = new Branch({
-    branch_CODE: req.body.branch_CODE,
-    _active: req.body._active,
-    branch_name: req.body.branch_name,
-    branch_address: req.body.branch_address,
-    branch_phone: req.body.branch_phone
+    branchCode: req.body.branchCode,
+    branchName: req.body.branchName,
+    branchAddress: req.body.branchAddress,
+    branchPhone: req.body.branchPhone,
+    _active: true
   });
 
-  // Save Branch in the database
+
   branch
     .save(branch)
     .then(data => {
-      res.send(data);
+      res.status(201).send(data);
     })
     .catch(err => {
       res.status(500).send({
@@ -32,120 +31,84 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve all Branches from the database.
-exports.findAll = (req, res) => {
-  const branch_CODE = req.query.branch_CODE;
-  var condition = branch_CODE ? { branch_CODE: { $regex: new RegExp(branch_CODE), $options: "i" } } : {};
+
+exports.findByBranchCode = (req, res) => {
+  const branchCode = req.params.bc;
+  console.log(req.query);
+  var condition = branchCode
+    ? {
+      branchCode: branchCode,
+    }
+    : {};
 
   Branch.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving branch.",
+      });
+    });
+};
+
+
+exports.findAll = (req, res) => {
+  Branch.find()
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving branches."
-      });
-    });
-};
-
-// Find a branch with branch code
-exports.findOne = (req, res) => {
-  const branch_CODE = req.params.branch_CODE;
-
-  Branch.findById(branch_CODE)
-    .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found stock with branch code" + branch_CODE });
-      else res.send(data);
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving stock with branch code" + branch_CODE });
-    });
-};
-
-// Update a Branch by the branch code in the request
-exports.update = (req, res) => {
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Data to update can not be empty!"
-    });
-  }
-
-  const branch_CODE = req.params.branch_CODE;
-
-  Branch.findOneAndUpdate(branch_CODE, req.body, { useFindAndModify: false })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot update Branch with branch code=${branch_CODE}. Maybe Branch was not found!`
-        });
-      } else res.send({ message: "Branch was updated successfully." });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating Branch with branch_CODE=" + branch_CODE
+          err.message || "Some error occurred while retrieving branch."
       });
     });
 };
 
 
-// Delete a Branch with the specified branch_CODE in the request
-exports.delete = (req, res) => {
-  const branch_CODE = req.params.branch_CODE;
-
-  Branch.findOneAndRemove(branch_CODE, { useFindAndModify: false })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete Branch with branch_CODE=${branch_CODE}. Maybe Branch was not found!`
-        });
-      } else {
-        res.send({
-          message: "Branch was deleted successfully!"
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Branch with branch_CODE=" + branch_CODE
-      });
-    });
-};
-
-
-// List all Branches from the database.
-exports.findAll = (req, res) => {
-  const branch_CODE = req.query.branch_CODE;
-  var condition = branch_CODE ? { branch_CODE: { $regex: new RegExp(branch_CODE), $options: "i" } } : {};
-
-  Branch.find(condition)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving branches."
-      });
-    });
-};
-
-// Find all branch which _active
 exports.findAllActive = (req, res) => {
-  Branch.find({ active: true })
+  Branch.find({ _active: true })
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving Promo."
+          err.message || "Some error occurred while retrieving branch."
       });
     });
 };
+
+
+exports.updateBranchbybranchCode = (req, res) => {
+  const branchCode = req.params.branchCode;
+
+  Branch.findOneAndUpdate({branchCode: branchCode},{$set: req.body})
+  .then(data => {
+
+     if (!data) {
+        res.status(404).send({
+          message: `Cannot update Branch with branchCode=${branchCode}. Maybe Branch was not found!`,
+        });
+      } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating Branch with branchCode=" + branchCode,
+
+
+      });
+    });
+}
+
+
+
+
+
+
+
+
 
 
 

@@ -1,31 +1,28 @@
 const db = require("../models");
+const { invoice } = require("../models");
 const Purchase = db.purchase;
+const Invoice = db.invoice;
 
-// Create and Save a new Purchase
 exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.purchase_id_iid) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
-  }
 
-  // Create a Purchase
   const purchase = new Purchase({
-    purchase_id_iid: req.body.purchase_id_iid,
-    inv_id: req.body.inv_id,
-    qty: req.body.qty,
-    disc: req.body.disc,
-    disc_price: req.body.disc_price,
-    unit_price: req.body.unit_price,
-    branch_CODE: req.body.branch_CODE,
-    _active: req.body._active ? req.body.active : false,
+  
+   invId:req.body.invId,
+   qty: req.body.qty,
+   disc: req.body.disc,
+   discPrice: req.body.discPrice,
+   unitPrice: req.body.unitPrice,
+   itemId: req.body.itemId,
+   dateTime : req.body.dateTime,
+   _active: true,
   });
 
-  // Save Purchase in the database
+  
   purchase
     .save(purchase)
     .then(data => {
-      res.send(data);
+
+       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
@@ -35,12 +32,46 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve all Purchase from the database.
-exports.findAll = (req, res) => {
-  const purchase_id = req.query.purchase_id;
-  var condition = purchase_id ? { purchase_id: { $regex: new RegExp(purchase_id), $options: "i" } } : {};
+
+
+exports.findOne = (req, res) => {
+  const purchaseId = req.params.purchaseId;
+
+  Purchase.findById(purchaseId)
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found purchase with id " + purchaseId });
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving purchase with id=" + purchaseId });
+    });
+};
+
+exports.findByInvoiceId= (req, res) => {
+  const invId = req.params.invId;
+
+  var condition = invId
+    ? {
+      invId: invId,
+    }
+    : {};
 
   Purchase.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving purchase by invoce id.",
+      });
+    });
+};
+
+exports.findAll = (req, res) => {
+  Purchase.find()
     .then(data => {
       res.send(data);
     })
@@ -52,89 +83,6 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
-  const purchase_id_iid = req.params.purchase_id_iid;
-
-  Purchase.findById(purchase_id_iid)
-    .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found Purchase with id " + id });
-      else res.send(data);
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving Purchase with id=" + id });
-    });
-};
-
-exports.findByInv = (req, res) => {
-  const inv = req.params.inv;
-
-  var condition = inv ? { inv_id : req.params.inv } : {};
-
-  Purchase.find(condition)
-    .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found Purchase with id " + id });
-      else res.send(data);
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving Purchase with id=" + id });
-    });
-};
-
-exports.update = (req, res) => {
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Data to update can not be empty!"
-    });
-  }
-
-  const id = req.params.id;
-
-  Purchase.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot update Purchase with id=${id}. Maybe Purchase was not found!`
-        });
-      } else res.send({ message: "Purchase was updated successfully." });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating Purchase with id=" + id
-      });
-    });
-};
-
-exports.delete = (req, res) => {
-  const purchase_id_iid = req.params.purchase_id_iid;
-
-  Purchase.findOneAndRemove(purchase_id_iid, { useFindAndModify: false })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete Purchase with purchase_id_iid=${purchase_id_iid}. Maybe Purchase was not found!`
-        });
-      } else {
-        res.send({
-          message: "Purchase was deleted successfully!"
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Purchase with purchase_id_iid=" + purchase_id_iid
-      });
-    });
-};
-
-
-
-// Find all purchase which active
 exports.findAllActive = (req, res) => {
   Purchase.find({ _active: true })
     .then(data => {
@@ -147,3 +95,35 @@ exports.findAllActive = (req, res) => {
       });
     });
 };
+
+
+exports.findByDateRange = (req, res) => {
+    
+  console.log(123);
+  Purchase.aggregate([
+      { "$match": {
+          dateTime: {
+                  $gte: req.params.dateTimeBefore,
+                  $lt: req.params.dateTimeAfter
+          }
+      }},
+      { "$group": {
+          "_id": { "$dayOfYear": "$createdDate" },
+          "totalSales": { "$sum":"$qty" }
+      }}
+  ],
+  )
+
+  .catch((err) => console.log(err))
+
+    .then(($qty) => {
+      res.send($qty);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Invoice.",
+      });
+    });
+};
+
+

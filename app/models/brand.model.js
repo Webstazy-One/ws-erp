@@ -1,9 +1,8 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        brand_name: String,
+        brandName: String,
         _active: Boolean
-       
       },
      
     );

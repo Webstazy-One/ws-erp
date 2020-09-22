@@ -1,19 +1,22 @@
 module.exports = app => {
   const promos = require("../controllers/promo.controller.js");
   const db = require("../models");
-  const Promo = db.promo;
-
+  
   var router = require("express").Router();
 
   router.post("/", promos.create);
 
-  router.put("/:promoid", promos.update);
+  router.delete("/:promoId", promos.DeleteFromPromoId);
 
-  router.delete("/:promoid", promos.delete);
-
-  router.get("/:promoid", promos.findOne);
+  router.get("/all", promos.findAll);
 
   router.get("/", promos.findAllActive);
 
+  router.get("/brand/:brandName", promos.findByBrandName);
+
+  router.get("/item/:itemId", promos.findByItemId);
+
+  router.get("/:promoId", promos.findOne);
+  
   app.use("/api/promo", router);
 };

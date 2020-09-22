@@ -5,13 +5,11 @@ module.exports = (app) => {
 
   router.post("/", customers.create);
 
-  router.put("/:phone", customers.update);
-
-  router.delete("/:phone", customers.delete);
-
-  router.get("/:ph", customers.findByPhone);
+  router.put("/:phone", customers.updateByCustomerPhone);
 
   router.get("/", customers.findAll);
+
+  router.get("/phone/:ph", customers.findByPhone);
 
   app.use("/api/customer", router);
 };

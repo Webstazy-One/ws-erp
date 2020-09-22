@@ -1,23 +1,27 @@
 module.exports = (mongoose) => {
   var schema = mongoose.Schema({
-    jobcardid: String,
-    pid: String,
-    custphone: String,
-    date_time: Date,
+
+    jobcardId: String,
+    custPhone: String,
+    iid: String,
     description: String,
+    remark: [Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean],
+    deliveryDate: Date,
+    cost: Number,
+    payment: [String],
     status: {
       type: String,
-      enum: [
-        "accepted",
-        "unrepairable",
-        "completed",
-        "handed_over",
-        "await",
-        "select",
-      ],
-      default: "select",
+      enum: ["ACCEPTED",
+      "UNREPAIRABLE",
+      "COMPLETED",
+      "HANDED OVER",
+      "AWAIT",
+      "STARTED",],
+      default: "STARTED",
+    
     },
-  });
+    
+  },{ timestamps: true });
 
   schema.method("toJSON", function () {
     const { _id, ...object } = this.toObject();

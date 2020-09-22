@@ -1,9 +1,9 @@
 module.exports = (mongoose) => {
   var schema = mongoose.Schema(
     {
-      branch_CODE: String,
-      iid: String,
-      current_stock: String,
+      branchCode: String,
+      itemId:String,
+      currentStock: { type: Number, default: 0 }
     },
     { timestamps: true }
   );
@@ -14,6 +14,6 @@ module.exports = (mongoose) => {
     return object;
   });
 
-  const stock = mongoose.model("stock", schema);
-  return stock;
+  const Stock = mongoose.model("stock", schema);
+  return Stock;
 };
