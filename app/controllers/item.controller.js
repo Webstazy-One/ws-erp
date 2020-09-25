@@ -15,21 +15,20 @@ exports.create = (req, res) => {
 
     brandName: req.body.brandName,
     name: req.body.name,
-    barcodePrefix : req.body.barcodePrefix,
     desc: req.body.desc,
     tag: req.body.tag,
     price: req.body.price,
     cost: req.body.cost,
     historicalCount : 0,
-    _active: true,
+    _active: true
    
-  });
+  })
 
   item
     .save(item) 
     .then((data) => {
       console.log(data.id);  
-     itemBarcode = data.barcodePrefix=((data.id.substr(17, 14)+"00000"))
+     itemBarcode = data.barcodePrefix=((data.id.substr(17, 14)))
 
      Item.findOneAndUpdate({ _id: data.id }, { $set: { barcodePrefix: itemBarcode } })
     .then(data => {
