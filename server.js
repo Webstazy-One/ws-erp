@@ -12,9 +12,6 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static('dist'));
-
-
 const db = require("./app/models");
 const Role = db.role;
 db.mongoose
@@ -50,18 +47,34 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
+
         console.log("added 'admin' to roles collection");
+      });
+
+
+      new Role({
+        name: "overrideUser"
+      }).save(err => {
+        if (err) {
+          console.log("error", err);
+        }
+      
+        console.log("added 'overrideUser' to roles collection");
+      });
+      
+      new Role({
+        name: "overrideUser"
+      }).save(err => {
+        if (err) {
+          console.log("error", err);
+        }
+      
+        console.log("added 'overrideUser' to roles collection");
       });
     }
   });
 }
 
-
-// simple route
-app.get("/", (req, res) => {
- res.sendFile(__dirname + '/dist/index.html');
-});
- 
 
 require("./app/routes/item.routes")(app);
 require("./app/routes/exchange.routes")(app);
@@ -78,10 +91,11 @@ require("./app/routes/repair.routes")(app);
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/report.routes")(app);
+//require("./app/routes/log.routes")(app);
+//require("./app/routes/goodreceivednote.routes")(app);
 
 const PORT = process.env.PORT || 8089;
-
-// set port, listen for requests
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

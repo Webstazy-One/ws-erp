@@ -5,6 +5,8 @@ const Item = db.item;
 
 exports.create = (req, res) => {
 
+    
+
   const promo = new Promo({
     desc: req.body.desc,
     type: req.body.type,
@@ -61,11 +63,11 @@ exports.findAllActive = (req, res) => {
 
 
 exports.findByBrandName = (req, res) => {
-  const appliedtoBrandNameIid = req.params.brandName;
+  const appliedto= req.params.brandName;
   console.log(req.query);
-  var condition = appliedtoBrandNameIid
+  var condition = appliedto
     ? {
-      appliedtoBrandNameIid: { $regex: new RegExp(req.params.brandName), $options: "i" },
+      appliedto: { $regex: new RegExp(req.params.brandName), $options: "i" },
     }
     : {};
 
@@ -100,11 +102,11 @@ exports.findOne = (req, res) => {
 
 
 exports.findByItemId = (req, res) => {
-  const appliedtoBrandNameIid = req.params.itemId;
+  const appliedto= req.params.itemId;
   console.log(req.query);
-  var condition = appliedtoBrandNameIid
+  var condition = appliedto
     ? {
-      appliedtoBrandNameIid: { $regex: new RegExp(req.params.itemId), $options: "i" },
+      appliedto: { $regex: new RegExp(req.params.itemId), $options: "i" },
     }
     : {};
 

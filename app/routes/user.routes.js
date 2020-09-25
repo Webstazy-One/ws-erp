@@ -27,6 +27,12 @@ module.exports = function (app) {
     controller.adminBoard
   );
  
+  app.get(
+    "/api/overrideUser",
+    [authJwt.verifyToken, authJwt.isOverrideUser],
+    controller.overrideUserBoard
+  );
+
     app.use("/api/user", router);
 };
 

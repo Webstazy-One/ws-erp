@@ -1,5 +1,6 @@
 const db = require("../models");
 const Brand = db.brand;
+const Item = db.item
 
 
 exports.create = (req, res) => {
@@ -71,6 +72,27 @@ exports.findAllActive = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving Brand."
+      });
+    });
+};
+
+
+exports.findByName = (req, res) => {
+  const name = req.params.name;
+  console.log(req.query);
+  var condition = name
+    ? {
+      name: { $regex: new RegExp(req.params.name), $options: "i" },
+    }
+    : {};
+
+  Item.find(condition)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items.",
       });
     });
 };

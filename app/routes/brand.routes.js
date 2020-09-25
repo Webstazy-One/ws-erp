@@ -13,6 +13,8 @@ module.exports = (app) => {
 
   router.get("/", brand.findAllActive)
 
+  router.get("/item/:name", brand.findByName);
+
   router.get("/:brandName", brand.findByBrandName)
 
   app.use("/api/brand", router)
