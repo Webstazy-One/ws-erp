@@ -5,11 +5,15 @@ module.exports = app => {
 
   router.post("/", stock.create);
 
-  //  router.put("/update/:branchCode/:itemId/:qty", stock.stockUpdated);
+  router.put("/update/:branchCode/:itemId/:qty", stock.stockUpdated);
 
   // router.put("/set/:branchCode/:itemId/:qty", stock.stockUpdate);
 
   router.get("/", stock.findAll);
+
+  // router.get("/barcode/:itemId/:amount", stock.findBarcodeForItem)
+
+  router.get("/barcodetest/:itemId/:amount", stock.findBarcodeItem)
 
   router.get("/branchCode/:bc", stock.findByBranchCode);
 
