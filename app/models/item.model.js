@@ -3,22 +3,22 @@ module.exports = (mongoose) => {
 
     brandName: String,
     name: String,
-    barcode: String,
+    barcodePrefix: String,
     desc: String,
     tag: [String],
     cost: Number,
     price: Number,
     _active: Boolean,
     disValue : Number,
-    actualPrice : Number,
-  });
+    actualPrice : Number
+  })
 
   schema.method("toJSON", function () {
-    const { __v, _id, ...object } = this.toObject();
-    object.id = _id;
-    return object;
-  });
+    const { __v, _id, ...object } = this.toObject()
+    object.id = _id
+    return object
+  })
 
-  const Item = mongoose.model("item", schema);
-  return Item;
-};
+  const Item = mongoose.model("item", schema)
+  return Item
+}
