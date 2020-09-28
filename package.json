@@ -1,6 +1,6 @@
 {
   "name": "ws-erp-cloud-distro",
-  "version": "0.6.0",
+  "version": "0.6.0RC",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

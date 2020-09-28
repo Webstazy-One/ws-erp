@@ -5,7 +5,7 @@ module.exports = (mongoose) => {
       dateTime: Date,
       username: String,
       payMethod:
-        ["CASH", "VISA", "MASTER_CARD", "AMEX"],
+        ["CASH", "VISA", "MASTER_CARD", "AMEX", "ONLINE"],
       totDiscount: Number,
       totValue: Number,
       customer: { type: mongoose.Schema.Types.Mixed, ref: 'customer'},

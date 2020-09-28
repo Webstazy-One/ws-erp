@@ -12,7 +12,7 @@ exports.create = (req, res) => {
    
 
   const item = new Item({
-
+    barcodePrefix : req.body.barcodePrefix,
     brandName: req.body.brandName,
     name: req.body.name,
     desc: req.body.desc,
@@ -147,10 +147,6 @@ exports.findOne = (req, res) => {
 
           if (!promoData[0] == null) {
 
-
-
-            console.log(promoData)
-
             if (promoData[0].type == "ITEM") {
 
               if (promoData[0].calc == "PERCENTAGE") {
@@ -188,7 +184,6 @@ exports.findOne = (req, res) => {
 
             }
           } else {
-            console.log("else")
             itemData.disValue = 0,
               itemData.actualPrice = itemData.price
           }
