@@ -1,91 +1,90 @@
-const db = require("../models");
-const Repair = db.repair;
+const db = require("../models")
+const Repair = db.repair
 
 
-exports.create = (req, res) =>     
-{
-  
+exports.create = (req, res) => {
+
   const repair = new Repair
     ({
       jobcardId: req.body.jobcardId,
       custPhone: req.body.custPhone,
       iid: req.body.iid,
       description: req.body.description,
-      remark:req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false],
-      deliveryDate:req.body.deliveryDate,
-      cost:req.body.cost,
-      payment:req.body.payment,
+      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false],
+      deliveryDate: req.body.deliveryDate,
+      cost: req.body.cost,
+      payment: req.body.payment,
       status: req.body.status ? req.body.status : "STARTED"
-    });
+    })
 
-  
+
   repair
     .save(repair)
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send
         ({
           message: err.message || "Some error occurred while creating the Repair data"
-        });
-    });
-};
+        })
+    })
+}
 
 exports.findawaitrepairs = (req, res) => {
-  Repair.find({status:"completed"})
+  Repair.find({ status: "completed" })
     .then((data) => {
-      res.send(data);
+      res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving repair.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving repair."
+      })
+    })
+}
 
 exports.findAll = (req, res) => {
   Repair.find()
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving repair."
-      });
-    });
-};
+      })
+    })
+}
 
 
 exports.findByJobCardId = (req, res) => {
-  const jobcardId = req.params.jobcardId;
-  console.log(req.query);
+  const jobcardId = req.params.jobcardId
+  console.log(req.query)
   var condition = jobcardId
     ? {
-      jobcardId: jobcardId,
+      jobcardId: jobcardId
     }
-    : {};
+    : {}
 
   Repair.find(condition)
     .then((data) => {
-      res.send(data);
+      res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while searching repair with jobcardId.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while searching repair with jobcardId."
+      })
+    })
+}
 
 exports.findByCustNo = (req, res) => {
-  const custPhone = req.params.custno;
-  console.log(req.query);
+  const custPhone = req.params.custno
+  console.log(req.query)
   var condition = custPhone
     ? {
-      custPhone: custPhone,
+      custPhone: custPhone
     }
-    : {};
+    : {}
 
   Repair.find(condition)
     .then((data) => {
@@ -93,21 +92,21 @@ exports.findByCustNo = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while searching repair with phone number.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while searching repair with phone number."
+      })
+    })
+}
 
 exports.updateRepairByJcId = (req, res) => {
-  const jobcardId = req.params.jobcardId;
+  const jobcardId = req.params.jobcardId
 
-  Repair.findOneAndUpdate({jobcardId: jobcardId},{$set: req.body})
-  .then(data => {
+  Repair.findOneAndUpdate({ jobcardId: jobcardId }, { $set: req.body })
+    .then(data => {
 
-     if (!data) {
+      if (!data) {
         res.status(404).send({
-          message: `Cannot update Repair with jobcardId=${jobcardId}. Maybe Repair was not found!`,
-        });
+          message: `Cannot update Repair with jobcardId=${jobcardId}. Maybe Repair was not found!`
+        })
       } else res.send(true);
     })
     .catch((err) => {
@@ -115,47 +114,47 @@ exports.updateRepairByJcId = (req, res) => {
         message: "Error updating Repair with jobcardIdCode=" + jobcardId,
 
 
-      });
-    });
+      })
+    })
 }
 
 exports.findLast = (req, res) => {
-  Repair.findOne().sort({ 'createdAt' : -1 }).limit(1).then(data => {
-    res.send(data.jobcardId);
+  Repair.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
+    res.send(data.jobcardId)
   })
-};
+}
 
 
 exports.DeleteFromJobCardId = (req, res) => {
-  const jobcardId= req.params.jobcardId;
- 
-  Repair.findOneAndRemove({jobcardId: jobcardId},{$set:req.body })
-  .then(data => {
- 
-         if (!data) {
+  const jobcardId = req.params.jobcardId
+
+  Repair.findOneAndRemove({ jobcardId: jobcardId }, { $set: req.body })
+    .then(data => {
+
+      if (!data) {
         res.status(404).send({
-          message: `Cannot delete repair details=${jobcardId}.`,
-        });
-      } else res.send(true);
+          message: `Cannot delete repair details=${jobcardId}.`
+        })
+      } else res.send(true)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err,
-      });
-    });
- }
+        message: err
+      })
+    })
+}
 
- exports.findAwaitRepairs = (req, res) => {
-  Repair.find({status : "AWAIT"})
+exports.findAwaitRepairs = (req, res) => {
+  Repair.find({ status: "AWAIT" })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving repair.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving repair."
+      })
+    })
+}
 
 // exports.findAwaitRepairs = (req, res) => {
 //   var condition = AWAIT

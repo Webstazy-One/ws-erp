@@ -11,15 +11,15 @@ module.exports = function (app) {
     next();
   });
 
-  router.delete("/:username", controller.DeleteFromUser);
+  router.delete("/:username", controller.DeleteFromUser)
 
-  app.get("/api/all", controller.allAccess);
+  app.get("/api/user/all", controller.allAccess)
 
-  app.get("/api/user", [authJwt.verifyToken], controller.userBoard);
+  app.get("/api/user", [authJwt.verifyToken], controller.userBoard)
 
-  router.put("/:username/:password", controller.updatePasswordByUserName);
+  router.put("/:username/:password", controller.updatePasswordByUserName)
 
-  router.delete("/:username", controller.DeleteUser);
+ // router.delete("/:username", controller.DeleteUser);
 
   app.get(
     "/api/admin",

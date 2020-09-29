@@ -121,9 +121,9 @@ exports.updateBrandByBrandName = (req, res) => {
 
 
 exports.DeleteFromBrandName = (req, res) => {
-  const brandName= req.params.brandName;
+  const brandName = req.params.brandName
  
-  Brand.findOneAndUpdate({brandName: brandName},{$set:{_active: false} })
+  Brand.findOneAndUpdate({brandName: brandName}, {$set:{_active: false} })
   .then(data => {
  
          if (!data) {

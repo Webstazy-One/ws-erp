@@ -50,13 +50,13 @@ exports.findByBranchCode = (req, res) => {
 };
 exports.findByItemId = (req, res) => {
   products = []
-  const itemId = req.params.itemId;
-  console.log(req.query);
+  const itemId = req.params.itemId
+  console.log(req.query)
   let condition = itemId
     ? {
-      itemId: itemId,
+      itemId: itemId
     }
-    : {};
+    : {}
   Stock.find(condition)
     .then((data) => {
       const id = req.params.itemId
@@ -76,19 +76,19 @@ exports.findByItemId = (req, res) => {
         .catch(err => {
           res
             .status(500)
-            .send({ message: err });
+            .send({ message: err })
         }).finally(() => {
           res.send(stockDetails)
         })
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the stock.",
-      });
-    });
+        message: err.message || "Some error occurred while creating the stock."
+      })
+    })
 }
 
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   // products = []
 
   // Stock.find()
@@ -127,38 +127,47 @@ exports.findAll = (req, res) => {
   //       message: err.message || "Some error occurred while creating the stock.",
   //     });
   //   });
-  Stock.find()
+
+
+  let stockData = "Sync Error : Line 132"
+
+  await Stock.find()
     .then(data => {
-
-      dataPlus = []
-
-      data.forEach(stockDetail => {
-        console.log(stockDetail.itemId)
-        Item.findById(stockDetail.itemId).then((itemData) => {
-          console.log(itemData)
-          let stockDetailPlus = {
-            branchCode: stockDetail.branchCode,
-            currentStock: stockDetail.currentStock,
-            itemName: itemData
-          }
-          dataPlus.push(stockDetailPlus)
-          console.log(stockDetailPlus)
-        }).catch((e) => { console.log(e) })
-
-      })
-
+      stockData = data
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving items."
       })
-    }).finally(() => {
-      res.send(dataPlus)
+    })
 
-    }
 
-    )
+  let fullStockDet = []
+
+  stockData.forEach(stockDetail => {
+    //  console.log(stockDetail.itemId)
+
+    Item.findById(stockDetail.itemId).then((itemData) => {
+
+      let stockDetailPlus = {
+        branchCode: stockDetail.branchCode,
+        currentStock: stockDetail.currentStock,
+        itemId: stockDetail.itemId,
+        //    itemName: itemData.name,
+        itemBrand: itemData
+      }
+
+      //console.log(stockDetailPlus)
+      fullStockDet.push(stockDetailPlus)
+
+    }).catch((e) => { console.log(e) })
+
+    //dataPlus.push(stockDetailPlus)
+
+  })
+
+  res.send(fullStockDet)
 
 }
 
@@ -171,101 +180,101 @@ exports.findAll = (req, res) => {
 
 
 
- exports.stockUpdated = (req, res) => {
+exports.stockUpdated = (req, res) => {
 
   res.send("not implemented yet")
-//   const branchCode = req.params.branchCode
-//   const itemId = req.params.itemId
-//   Stock.updateOne({ branchCode: branchCode, itemId: itemId }, { $inc: { "currentStock": req.params.qty } })
-//     .then(data => {
-//       if (!data) {
-//         res.status(404).send({
-//           message: `Cannot update currentStock=${currentStock}`
-//         })
-//       } else res.send('K');
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: "Error updating currentStock=" + currentStock
-//       })
-//     })
-// }
-// exports.updateCurrentStock = (req, res) => {
-//   const branchCode = req.params.branchCode;
-//   const itemId = req.body.itemId;
-//   const currentStock = req.params.currentStock;
-//   Stock.updateOne({itemId:itemId },{$set: {currentStock:currentStock}})
-//   .then(data => {
-//         if (!data) {
-//         res.status(404).send({
-//           message: `Cannot update stock with current stock =${currentStock}`,
-//         });
-//       } else res.send(true);
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: "Error updating stock with current stock =" + currentStock,
-//       });
-//     });
-// }
-// exports.stockUpdate = (req, res) => {
-//   const branchCode = req.params.branchCode;
-//   const itemId = req.params.itemId;
-//   const currentStock = req.params.currentStock;
-//   Stock.findOneAndUpdate({branchCode: branchCode,itemId:itemId},{$inc: {currentStock:req.params.qty }})
-//   .then(data => {
-//          if (!data) {
-//         res.status(404).send({
-//           message: `Cannot update currentStock=${currentStock}`,
-//         });
-//       } else res.send(true);
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: "Error updating currentStock=" + currentStock,
-//       });
-//     });
-// // }
-// exports.findBarcodesForItemList = (req, res) => {
-//   barcodeList = []
-//   const branchCode = req.params.branchCode;
-//   console.log(req.query);
-//   let condition = branchCode
-//     ? {
-//       branchCode: branchCode,
-//     }
-//     : {};
-//   Stock.find(condition)
-//     .then((data) => {
-//       const branchCode = req.params.branchCode
-//       console.log(data)
-//       let stockDetails = {
-//         branchCode: data[0].branchCode,
-//         itemId: data[0].itemId,
-//         currentStock: data[0].currentStock
-//       }
-//       Item.findById(id)
-//         .then(itemData => {
-//           stockDetails.brandName = itemData.brandName,
-//           stockDetails.itemName = itemData.name
-//           stockDetails.barcode = itemData.barcode
-//           console.log(products)
-//           if (!itemData) res.status(404).send({ message: "Not found stock with id "  })
-//         })
-//         .catch(err => {
-//           res
-//             .status(500)
-//             .send({ message: err });
-//         }).finally(() => {
-//           res.send(stockDetails)
-//         })
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: err.message || "Some error occurred while creating the stock.",
-//       });
-//     });
- }
+  //   const branchCode = req.params.branchCode
+  //   const itemId = req.params.itemId
+  //   Stock.updateOne({ branchCode: branchCode, itemId: itemId }, { $inc: { "currentStock": req.params.qty } })
+  //     .then(data => {
+  //       if (!data) {
+  //         res.status(404).send({
+  //           message: `Cannot update currentStock=${currentStock}`
+  //         })
+  //       } else res.send('K');
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send({
+  //         message: "Error updating currentStock=" + currentStock
+  //       })
+  //     })
+  // }
+  // exports.updateCurrentStock = (req, res) => {
+  //   const branchCode = req.params.branchCode;
+  //   const itemId = req.body.itemId;
+  //   const currentStock = req.params.currentStock;
+  //   Stock.updateOne({itemId:itemId },{$set: {currentStock:currentStock}})
+  //   .then(data => {
+  //         if (!data) {
+  //         res.status(404).send({
+  //           message: `Cannot update stock with current stock =${currentStock}`,
+  //         });
+  //       } else res.send(true);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send({
+  //         message: "Error updating stock with current stock =" + currentStock,
+  //       });
+  //     });
+  // }
+  // exports.stockUpdate = (req, res) => {
+  //   const branchCode = req.params.branchCode;
+  //   const itemId = req.params.itemId;
+  //   const currentStock = req.params.currentStock;
+  //   Stock.findOneAndUpdate({branchCode: branchCode,itemId:itemId},{$inc: {currentStock:req.params.qty }})
+  //   .then(data => {
+  //          if (!data) {
+  //         res.status(404).send({
+  //           message: `Cannot update currentStock=${currentStock}`,
+  //         });
+  //       } else res.send(true);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send({
+  //         message: "Error updating currentStock=" + currentStock,
+  //       });
+  //     });
+  // // }
+  // exports.findBarcodesForItemList = (req, res) => {
+  //   barcodeList = []
+  //   const branchCode = req.params.branchCode;
+  //   console.log(req.query);
+  //   let condition = branchCode
+  //     ? {
+  //       branchCode: branchCode,
+  //     }
+  //     : {};
+  //   Stock.find(condition)
+  //     .then((data) => {
+  //       const branchCode = req.params.branchCode
+  //       console.log(data)
+  //       let stockDetails = {
+  //         branchCode: data[0].branchCode,
+  //         itemId: data[0].itemId,
+  //         currentStock: data[0].currentStock
+  //       }
+  //       Item.findById(id)
+  //         .then(itemData => {
+  //           stockDetails.brandName = itemData.brandName,
+  //           stockDetails.itemName = itemData.name
+  //           stockDetails.barcode = itemData.barcode
+  //           console.log(products)
+  //           if (!itemData) res.status(404).send({ message: "Not found stock with id "  })
+  //         })
+  //         .catch(err => {
+  //           res
+  //             .status(500)
+  //             .send({ message: err });
+  //         }).finally(() => {
+  //           res.send(stockDetails)
+  //         })
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send({
+  //         message: err.message || "Some error occurred while creating the stock.",
+  //       });
+  //     });
+}
 
 
 
@@ -293,7 +302,7 @@ exports.findBarcodeItem = (req, res) => {
 
             let barcode = 0
             let amount = req.params.amount;
-  
+
             for (let i = 0; i < amount; i++) {
               function padLeadingZeros(i, size) {
                 let barcode = i + "";

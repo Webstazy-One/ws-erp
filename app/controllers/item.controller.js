@@ -278,7 +278,7 @@ exports.updatePriceById = (req, res) => {
 exports.DeleteFromItemId = (req, res) => {
   const id = req.params.iid;
 
-  Item.findByIdAndUpdate({ _id: id }, { $set: { _active: false } })
+  Item.findByIdAndUpdate({ id: id }, { $set: { _active: false } })
     .then(data => {
 
       if (!data) {
