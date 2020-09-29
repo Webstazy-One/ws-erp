@@ -150,6 +150,8 @@ exports.findAll = async (req, res) => {
 
     Item.findById(stockDetail.itemId).then((itemData) => {
 
+      console.log(itemData)
+
       let stockDetailPlus = {
         branchCode: stockDetail.branchCode,
         currentStock: stockDetail.currentStock,

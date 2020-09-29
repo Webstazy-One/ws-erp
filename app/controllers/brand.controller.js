@@ -101,10 +101,10 @@ exports.findByName = (req, res) => {
 exports.updateBrandByBrandName = (req, res) => {
   const brandName = req.params.brandName;
 
-  Brand.findOneAndUpdate({brandName: brandName},{$set: req.body})
-  .then(data => {
+  Brand.findOneAndUpdate({ brandName: brandName }, { $set: req.body })
+    .then(data => {
 
-     if (!data) {
+      if (!data) {
         res.status(404).send({
           message: `Cannot update Brand with brandName=${brandName}. Maybe Brand was not found!`,
         });
@@ -122,11 +122,11 @@ exports.updateBrandByBrandName = (req, res) => {
 
 exports.DeleteFromBrandName = (req, res) => {
   const brandName = req.params.brandName
- 
-  Brand.findOneAndUpdate({brandName: brandName}, {$set:{_active: false} })
-  .then(data => {
- 
-         if (!data) {
+
+  Brand.findOneAndUpdate({ brandName: brandName }, { $set: { _active: false } })
+    .then(data => {
+
+      if (!data) {
         res.status(404).send({
           message: `Cannot delete brand with brandName=${brandName}. Maybe brand was not found!`,
         });
@@ -137,4 +137,4 @@ exports.DeleteFromBrandName = (req, res) => {
         message: err,
       });
     });
- }
+}

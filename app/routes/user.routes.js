@@ -7,34 +7,36 @@ module.exports = function (app) {
     res.header(
       "Access-Control-Allow-Headers",
       "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
+    )
+    next()
+  })
 
   router.delete("/:username", controller.DeleteFromUser)
 
-  app.get("/api/user/all", controller.allAccess)
+  app.get("/api/user/", controller.allAccess)
 
-  app.get("/api/user", [authJwt.verifyToken], controller.userBoard)
+  app.get("/api/userProfile", [authJwt.verifyToken], controller.userBoard)
+
+  router.get("/active", controller.findAllActive);
 
   router.put("/:username/:password", controller.updatePasswordByUserName)
 
- // router.delete("/:username", controller.DeleteUser);
+  router.delete("/:username", controller.DeleteUser)
 
   app.get(
     "/api/admin",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
-  );
+  )
  
   app.get(
     "/api/overrideUser",
     [authJwt.verifyToken, authJwt.isOverrideUser],
     controller.overrideUserBoard
-  );
+  )
 
-    app.use("/api/user", router);
-};
+    app.use("/api/user", router)
+}
 
  
  
