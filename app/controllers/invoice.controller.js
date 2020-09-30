@@ -34,8 +34,9 @@ exports.create = (req, res) => {
       }
       // axios.put('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/stock/dec/', stockUpdate);
       //   axios.put('http://localhost:8089/api/purchase/api/stock/dec/', stockUpdate).catch(() => {});;
+      console.log('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + purc.qty)
 
-      axios.put('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + purc.qty).catch(() => { });
+      axios.put('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
     })
   }

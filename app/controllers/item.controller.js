@@ -1,7 +1,7 @@
 const db = require("../models");
 const Item = db.item
 const Promo = db.promo
-const Counter =  db.counter
+const Counter = db.counter
 const axios = require('axios');
 const { count } = require("../models/user.model");
 const { item } = require("../models");
@@ -9,62 +9,61 @@ const { item } = require("../models");
 
 
 exports.create = (req, res) => {
-   
+
 
   const item = new Item({
-    barcodePrefix : req.body.barcodePrefix,
+    barcodePrefix: req.body.barcodePrefix,
     brandName: req.body.brandName,
     name: req.body.name,
     desc: req.body.desc,
     tag: req.body.tag,
     price: req.body.price,
     cost: req.body.cost,
-    historicalCount : 0,
+    historicalCount: 0,
     _active: true
-   
+
   })
 
   item
-    .save(item) 
+    .save(item)
     .then((data) => {
-      console.log(data.id);  
-     itemBarcode = data.barcodePrefix=((data.id.substr(17, 14)))
+      console.log(data.id)
+      itemBarcode = data.barcodePrefix = ((data.id.substr(17, 14)))
 
-     Item.findOneAndUpdate({ _id: data.id }, { $set: { barcodePrefix: itemBarcode } })
-    .then(data => {
+      Item.findOneAndUpdate({ _id: data.id }, { $set: { barcodePrefix: itemBarcode } })
+        .then(data => {
 
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot update item with barcodePrefix . Maybe item was not found!`,
-        });
-      } else res.send(true);
+          if (!data) {
+            res.status(404).send({
+              message: `Cannot update item with barcodePrefix . Maybe item was not found!`,
+            });
+          } else res.send(true);
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: "Error updating item with barcodePrefix"
+          })
+        })
+
+      console.log(data.barcodePrefix)
+      res.status(201).send(data)
+
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating item with barcodePrefix" ,
-      });
-    });
-    
-       console.log(data.barcodePrefix)
-    res.status(201).send(data);
-    
+        message: err.message || "Some error occurred while creating the Item."
+      })
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the Item.",
-      });
-    });
-  
-};
+}
 
 
 
 exports.findByBrand = (req, res) => {
   var condition = req.params.br
     ? {
-      brandName: { $regex: new RegExp(req.params.br), $options: "i" },
+      brandName: { $regex: new RegExp(req.params.br), $options: "i" }
     }
-    : {};
+    : {}
 
   Item.find(condition)
     .then((data) => {
@@ -72,19 +71,19 @@ exports.findByBrand = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}
 
 exports.findBybarcode = (req, res) => {
   const barcodePrefix = req.params.bc;
   console.log(req.query);
   var condition = barcodePrefix
     ? {
-      barcodePrefix: { $regex: new RegExp(req.params.bc), $options: "i" },
+      barcodePrefix: { $regex: new RegExp(req.params.bc), $options: "i" }
     }
-    : {};
+    : {}
 
   Item.find(condition)
     .then((data) => {
@@ -92,31 +91,31 @@ exports.findBybarcode = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}
 
 
 exports.findByName = (req, res) => {
-  const name = req.params.name;
-  console.log(req.query);
+  const name = req.params.name
+  console.log(req.query)
   var condition = name
     ? {
-      name: { $regex: new RegExp(req.params.name), $options: "i" },
+      name: { $regex: new RegExp(req.params.name), $options: "i" }
     }
-    : {};
+    : {}
 
   Item.find(condition)
     .then((data) => {
-      res.send(data);
+      res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}
 
 
 exports.findOne = (req, res) => {
@@ -184,8 +183,8 @@ exports.findOne = (req, res) => {
 
             }
           } else {
-            itemData.disValue = 0,
-              itemData.actualPrice = itemData.price
+            itemData.disValue = 0
+            itemData.actualPrice = itemData.price
           }
 
 
@@ -208,7 +207,7 @@ exports.findOne = (req, res) => {
 exports.findAll = (req, res) => {
   Item.find()
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
@@ -250,14 +249,14 @@ exports.update = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message: "Error updating Item with id=" + id
-      });
-    });
-};
+      })
+    })
+}
 
 
 exports.updatePriceById = (req, res) => {
-  const id = req.params.id;
-  const price = req.params.price;
+  const id = req.params.id
+  const price = req.params.price
 
   Item.findOneAndUpdate({ _id: id }, { $set: { price: price } })
     .then(data => {
@@ -270,9 +269,9 @@ exports.updatePriceById = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating item with price=" + price,
-      });
-    });
+        message: "Error updating item with price=" + price
+      })
+    })
 }
 
 exports.DeleteFromItemId = (req, res) => {
@@ -283,15 +282,15 @@ exports.DeleteFromItemId = (req, res) => {
 
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete item with id=${id}. Maybe item was not found!`,
-        });
-      } else res.send(true);
+          message: `Cannot delete item with id=${id}. Maybe item was not found!`
+        })
+      } else res.send(true)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err,
-      });
-    });
+        message: err
+      })
+    })
 }
 
 
