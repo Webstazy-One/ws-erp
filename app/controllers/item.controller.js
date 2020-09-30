@@ -30,21 +30,23 @@ exports.create = (req, res) => {
       console.log(data.id)
       itemBarcode = data.barcodePrefix = ((data.id.substr(17, 14)))
 
-      Item.findOneAndUpdate({ _id: data.id }, { $set: { barcodePrefix: itemBarcode } })
-        .then(data => {
+      if (!req.body.barcodePrefix) {
 
-          if (!data) {
-            res.status(404).send({
-              message: `Cannot update item with barcodePrefix . Maybe item was not found!`,
-            });
-          } else res.send(true);
-        })
-        .catch((err) => {
-          res.status(500).send({
-            message: "Error updating item with barcodePrefix"
+        Item.findOneAndUpdate({ _id: data.id }, { $set: { barcodePrefix: itemBarcode } })
+          .then(data => {
+
+            if (!data) {
+              res.status(404).send({
+                message: `Cannot update item with barcodePrefix . Maybe item was not found!`
+              })
+            } else res.send(true)
           })
-        })
-
+          .catch((err) => {
+            res.status(500).send({
+              message: "Error updating item with barcodePrefix"
+            })
+          })
+      }
       console.log(data.barcodePrefix)
       res.status(201).send(data)
 
