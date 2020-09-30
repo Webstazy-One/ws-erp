@@ -31,6 +31,7 @@ exports.create = (req, res) => {
       })
     })
 }
+
 exports.findByBranchCode = (req, res) => {
   const branchCode = req.params.bc;
   console.log(req.query);
@@ -48,7 +49,8 @@ exports.findByBranchCode = (req, res) => {
         message: err.message || "Some error occurred while retrieving items.",
       });
     });
-};
+}
+
 exports.findByItemId = (req, res) => {
   products = []
   const itemId = req.params.itemId
