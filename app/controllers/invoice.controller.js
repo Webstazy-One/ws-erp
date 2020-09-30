@@ -1,39 +1,48 @@
 const axios = require('axios')
-const db = require("../models");
-const { customer, purchase, invoice } = require("../models");
-const customers = require("../controllers/customer.controller.js");
-const Invoice = db.invoice;
-const Customer = db.customer;
-const Item = db.item;
-const Purchase = db.purchase;
+const db = require("../models")
+const { customer, purchase, invoice } = require("../models")
+const customers = require("../controllers/customer.controller.js")
+const Invoice = db.invoice
+const Customer = db.customer
+const Item = db.item
+const Purchase = db.purchase
+
 exports.create = (req, res) => {
   if (!req.body.invId) { res.status(400).send({ message: "Content can not be empty!" }); return }
+
   purch = []
+
   if (req.body.purchases) {
     req.body.purchases.forEach(purc => {
       const purcData = new Purchase({
         invId: req.body.invId,
         itemId: purc.itemId,
         unitPrice: purc.unitPrice,
-        qty: purc.qty ,
+        qty: purc.qty,
         disc: purc.disc,
         discPrice: purc.discPrice,
-        dateTime : req.body.dateTime,
+        dateTime: req.body.dateTime,
         _active: true
       })
       // axios.post('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData)
-      axios.post('http://localhost:8089/api/purchase/', purcData).catch(() => {});
+      axios.post('http://localhost:8089/api/purchase/', purcData).catch(() => { });
       purch.push(purcData)
       const stockUpdate = {
         branchCode: req.body.branchCode,
         itemId: purc.itemId,
-        qty: purc.qty,
+        qty: purc.qty
       }
       // axios.put('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/stock/dec/', stockUpdate);
-      axios.put('http://localhost:8089/api/purchase//api/stock/dec/', stockUpdate).catch(() => {});;
-    });
+      //   axios.put('http://localhost:8089/api/purchase/api/stock/dec/', stockUpdate).catch(() => {});;
+
+      axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + purc.qty).catch(() => { });
+
+
+
+    })
   }
-  const invoice = new Invoice({
+
+  const latestInvoice = new Invoice({
     invId: req.body.invId,
     dateTime: req.body.dateTime,
     payMethod: req.body.payMethod,
@@ -43,21 +52,25 @@ exports.create = (req, res) => {
     customer: req.body.customer,
     branchCode: req.body.branchCode,
     totalItems: req.body.totalItems,
-    purchases : purch,
-    _active: true,
-  });
-  invoice
-    .save(invoice)
-    .then(data => {  
-      res.send(data);
+    purchases: purch,
+    _active: true
+  })
+
+  Invoice
+    .save(latestInvoice)
+    .then(data => {
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the Invoice."
-      });
-    });
-};
+      })
+    })
+
+
+}
+
 exports.findBydateTime = (req, res) => {
   const dateTime = req.params.dt;
   console.log(req.query);

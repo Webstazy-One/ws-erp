@@ -102,7 +102,7 @@ app.get("/*", (req, res) => {
  res.sendFile(__dirname + '/dist/index.html')
 })
 
-const PORT = process.env.PORT || 8089;
+const PORT = process.env.PORT || 8090;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`)
 })

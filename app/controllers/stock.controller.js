@@ -91,44 +91,56 @@ exports.findByItemId = (req, res) => {
 
 exports.findAll = (req, res) => {
   Stock.find()
-  .populate('itemId')
+    .populate('itemId')
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving stock."
-      });
-    });
-};
+      })
+    })
+}
+
+exports.findOne = (req, res) => {
+
+  const branchCode = req.params.branchCode
+  const itemId = req.params.itemId
+
+  Stock.find({ branchCode: branchCode, itemId: itemId })
+    .populate('itemId')
+    .then(data => {
+      res.send(data)
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving stock."
+      })
+    })
+}
 
 
+exports.stockPlus = (req, res) => {
+
+  const branchCode = req.params.branchCode
+  const itemId = req.params.itemId
+  Stock.updateOne({ branchCode: branchCode, itemId: itemId }, { $inc: { "currentStock": req.params.qty } })
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update currentStock=${currentStock}`
+        })
+      } else res.send('K');
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating currentStock=" + currentStock
+      })
+    })
 
 
-
-
-
-
-exports.stockUpdated = (req, res) => {
-
-  res.send("not implemented yet")
-  //   const branchCode = req.params.branchCode
-  //   const itemId = req.params.itemId
-  //   Stock.updateOne({ branchCode: branchCode, itemId: itemId }, { $inc: { "currentStock": req.params.qty } })
-  //     .then(data => {
-  //       if (!data) {
-  //         res.status(404).send({
-  //           message: `Cannot update currentStock=${currentStock}`
-  //         })
-  //       } else res.send('K');
-  //     })
-  //     .catch((err) => {
-  //       res.status(500).send({
-  //         message: "Error updating currentStock=" + currentStock
-  //       })
-  //     })
-  // }
   // exports.updateCurrentStock = (req, res) => {
   //   const branchCode = req.params.branchCode;
   //   const itemId = req.body.itemId;
