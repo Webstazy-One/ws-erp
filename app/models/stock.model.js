@@ -2,8 +2,12 @@ module.exports = (mongoose) => {
   var schema = mongoose.Schema(
     {
       branchCode: String,
-      itemId:String,
-      currentStock: { type: Number, default: 0 }
+      itemId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "item"
+      },
+      currentStock: { type: Number, default: 0 },
+     
     },
     { timestamps: true }
   );

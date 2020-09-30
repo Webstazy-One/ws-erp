@@ -17,7 +17,7 @@ module.exports = app => {
 
   router.get("/branchCode/:bc", stock.findByBranchCode);
 
-  router.get("/itemId/:itemId", stock.findByItemId);
+  //router.get("/itemId/:itemId", stock.findByItemId);
 
   app.use("/api/stock", router);
 };

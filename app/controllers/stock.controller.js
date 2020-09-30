@@ -1,18 +1,19 @@
-const { item } = require("../models");
-const db = require("../models");
-const { findLast } = require("./invoice.controller");
-const Stock = db.stock;
-const Item = db.item;
+const { item, stock } = require("../models")
+const db = require("../models")
+const { findLast } = require("./invoice.controller")
+const Stock = db.stock
+const Item = db.item
+
 exports.create = (req, res) => {
   if (!req.body.branchCode) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
+    res.status(400).send({ message: "Content can not be empty!" })
+    return
   }
   const stock = new Stock({
     branchCode: req.body.branchCode,
     itemId: req.body.itemId,
-    currentStock: req.body.currentStock,
-  });
+    currentStock: req.body.currentStock
+  })
   stock
     .save(stock)
     .then(data => {
@@ -27,15 +28,15 @@ exports.create = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the stock."
-      });
-    });
-};
+      })
+    })
+}
 exports.findByBranchCode = (req, res) => {
   const branchCode = req.params.bc;
   console.log(req.query);
   var condition = branchCode
     ? {
-      branchCode: branchCode,
+      branchCode: branchCode
     }
     : {};
   Stock.find(condition)
@@ -88,92 +89,19 @@ exports.findByItemId = (req, res) => {
     })
 }
 
-exports.findAll = async (req, res) => {
-  // products = []
-
-  // Stock.find()
-  //   .then((data) => {
-  //     const id= data[0].itemId
-  //     // const id = req.params.itemId
-  //     // console.log(data)
-  //     let stockDetails = {
-  //       branchCode: data[0].branchCode,
-  //       itemId: data[0].itemId,
-  //       currentStock: data[0].currentStock,
-  //       item.push(itemData)
-  //     }
-
-  //     const item=[]
-  //     Item.findById(id)
-  //       .then(itemData => {
-  //         stockDetails.brandName = itemData.brandName,
-  //         stockDetails.itemName = itemData.name
-  //         // console.log(products)
-  //         console.log(itemData)
-  //         if (!itemData) res.status(404).send({ message: "Not found stock with id " })
-  //         item.push(itemData)
-  //         console.log(item)
-  //       })
-  //       .catch(err => {
-  //         res
-  //           .status(500)
-  //           .send({ message: err });
-  //       }).finally(() => {
-  //         res.send(stockDetails)
-  //       })
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       message: err.message || "Some error occurred while creating the stock.",
-  //     });
-  //   });
-
-
-  let stockData = "Sync Error : Line 132"
-
-  await Stock.find()
+exports.findAll = (req, res) => {
+  Stock.find()
+  .populate('itemId')
     .then(data => {
-      stockData = data
+      res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving items."
-      })
-    })
-
-
-  let fullStockDet = []
-
-  stockData.forEach(stockDetail => {
-    //  console.log(stockDetail.itemId)
-
-    Item.findById(stockDetail.itemId).then((itemData) => {
-
-      console.log(itemData)
-
-      let stockDetailPlus = {
-        branchCode: stockDetail.branchCode,
-        currentStock: stockDetail.currentStock,
-        itemId: stockDetail.itemId,
-        //    itemName: itemData.name,
-        itemBrand: itemData
-      }
-
-      //console.log(stockDetailPlus)
-      fullStockDet.push(stockDetailPlus)
-
-    }).catch((e) => { console.log(e) })
-
-    //dataPlus.push(stockDetailPlus)
-
-  })
-
-  res.send(fullStockDet)
-
-}
-
-
+          err.message || "Some error occurred while retrieving stock."
+      });
+    });
+};
 
 
 
