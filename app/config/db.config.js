@@ -1,3 +1,3 @@
 module.exports = {
-  url: "mongodb+srv://harsha:WVrb2YigY80G9LX0@cluster0.cpmky.gcp.mongodb.net/wipnew?retryWrites=true&w=majority"
+  url: "mongodb+srv://wserp05:EIXIJ5XdEwboA5Uu@cluster0.5ns0z.mongodb.net/ws-erp-live?retryWrites=true&w=majority"
 }
