@@ -8494,7 +8494,7 @@
           this.route = route;
           this.router = router;
           this.userLog = 0;
-          this.serverUrl = "https://ws-erp-live.eba-zg7hmgrn.ap-southeast-1.elasticbeanstalk.com/api/";
+          this.serverUrl = "http://ws-erp-live.eba-zg7hmgrn.ap-southeast-1.elasticbeanstalk.com/api/";
         }
 
         _createClass(StartPageComponent, [{
