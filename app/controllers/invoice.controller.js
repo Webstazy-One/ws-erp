@@ -25,7 +25,7 @@ exports.create = (req, res) => {
         _active: true
       })
       // axios.post('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData)
-      axios.post('http://localhost:8089/api/purchase/', purcData).catch(() => { });
+      axios.post('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData).catch(() => { });
       purch.push(purcData)
       const stockUpdate = {
         branchCode: req.body.branchCode,
@@ -35,7 +35,7 @@ exports.create = (req, res) => {
       // axios.put('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/stock/dec/', stockUpdate);
       //   axios.put('http://localhost:8089/api/purchase/api/stock/dec/', stockUpdate).catch(() => {});;
 
-      axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + purc.qty).catch(() => { });
+      axios.put('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + purc.qty).catch(() => { });
 
 
 
