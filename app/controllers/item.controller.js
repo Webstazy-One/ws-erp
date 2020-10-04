@@ -1,14 +1,31 @@
-const db = require("../models");
+const db = require("../models")
 const Item = db.item
 const Promo = db.promo
 const Counter = db.counter
-const axios = require('axios');
-const { count } = require("../models/user.model");
-const { item } = require("../models");
+const axios = require('axios')
+const { count } = require("../models/user.model")
+const { item } = require("../models")
+
+
 
 
 
 exports.create = (req, res) => {
+  
+  saveItem = (item) => {
+
+    return item
+      .save(item)
+      .then((data) => {
+        return data
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message || "Some error occurred while creating the Item."
+        })
+      })
+
+  }
 
 
   const item = new Item({
@@ -24,10 +41,10 @@ exports.create = (req, res) => {
 
   })
 
-  item
-    .save(item)
-    .then((data) => {
-      console.log(data.id)
+  saveItem(item).then((data) => {
+
+    if (!req.body.barcodePrefix) {
+
       itemBarcode = data.barcodePrefix = ((data.id.substr(17, 14)))
 
       Item.findOneAndUpdate({ _id: data.id }, { $set: { barcodePrefix: itemBarcode } })
@@ -35,25 +52,26 @@ exports.create = (req, res) => {
 
           if (!data) {
             res.status(404).send({
-              message: `Cannot update item with barcodePrefix . Maybe item was not found!`,
-            });
-          } else res.send(true);
+              message: `Cannot update item with barcodePrefix . Maybe item was not found!`
+            })
+          } else res.send(data.id)
         })
         .catch((err) => {
           res.status(500).send({
             message: "Error updating item with barcodePrefix"
           })
         })
+    }
 
-      console.log(data.barcodePrefix)
-      res.status(201).send(data)
+  }).catch((err) => {
+    res.status(500).send({
+      message: err.message || "Error updating barcode prefix"
+    })
+  })
 
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the Item."
-      })
-    })
+
+
+
 }
 
 
