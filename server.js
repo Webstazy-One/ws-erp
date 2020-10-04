@@ -1,6 +1,7 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
+const db = require("./app/models")
 
 const app = express()
 
@@ -10,8 +11,8 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const db = require("./app/models")
 const Role = db.role
+
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
@@ -37,7 +38,7 @@ function initial() {
         }
 
         console.log("added 'user' to roles collection");
-      });
+      })
 
       new Role({
         name: "admin"
@@ -47,7 +48,7 @@ function initial() {
         }
 
         console.log("added 'admin' to roles collection");
-      });
+      })
 
 
       new Role({
@@ -58,17 +59,8 @@ function initial() {
         }
       
         console.log("added 'override' to roles collection")
-      });
-      
-      new Role({
-        name: "overrideUser"
-      }).save(err => {
-        if (err) {
-          console.log("error", err)
-        }
-      
-        console.log("added 'overrideUser' to roles collection")
       })
+      
     }
   })
 }
@@ -102,7 +94,7 @@ app.get("/*", (req, res) => {
  res.sendFile(__dirname + '/dist/index.html')
 })
 
-const PORT = process.env.PORT || 8090;
+const PORT = process.env.PORT || 8089;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`)
 })
