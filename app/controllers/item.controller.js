@@ -7,11 +7,8 @@ const { count } = require("../models/user.model")
 const { item } = require("../models")
 
 
-
-
-
 exports.create = (req, res) => {
-  
+
   saveItem = (item) => {
 
     return item
@@ -27,11 +24,13 @@ exports.create = (req, res) => {
 
   }
 
+  sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
 
   const item = new Item({
     barcodePrefix: req.body.barcodePrefix,
     brandName: req.body.brandName,
     name: req.body.name,
+    sfName: sfName,
     desc: req.body.desc,
     tag: req.body.tag,
     price: req.body.price,

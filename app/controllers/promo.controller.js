@@ -4,9 +4,6 @@ const Promo = db.promo;
 const Item = db.item;
 
 exports.create = (req, res) => {
-
-    
-
   const promo = new Promo({
     desc: req.body.desc,
     type: req.body.type,
@@ -16,9 +13,8 @@ exports.create = (req, res) => {
     calc: req.body.calc,
     amount: req.body.amount,
     appliedto: req.body.appliedto,
-    _active: true,
-
-  });
+    _active: true
+  })
 
   promo
     .save(promo)
@@ -29,9 +25,9 @@ exports.create = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the promo."
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findAll = (req, res) => {
   Promo.find()
@@ -42,9 +38,9 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving promo."
-      });
-    });
-};
+      })
+    })
+}
 
 
 
