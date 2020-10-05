@@ -115,11 +115,10 @@ exports.findBybarcode = (req, res) => {
 
 
 exports.findByName = (req, res) => {
-  const name = req.params.name
   console.log(req.query)
   var condition = name
     ? {
-      name: { $regex: new RegExp(req.params.name), $options: "i" }
+      sfName : { $regex: new RegExp(req.params.name), $options: "i" }
     }
     : {}
 
