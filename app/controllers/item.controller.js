@@ -24,13 +24,14 @@ exports.create = (req, res) => {
 
   }
 
-  sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
+  const sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
 
   const item = new Item({
     barcodePrefix: req.body.barcodePrefix,
     brandName: req.body.brandName,
     name: req.body.name,
-    sfName: sfName,
+    name: req.body.name,
+    sfName : sfName,
     desc: req.body.desc,
     tag: req.body.tag,
     price: req.body.price,
@@ -115,8 +116,8 @@ exports.findBybarcode = (req, res) => {
 
 
 exports.findByName = (req, res) => {
-  console.log(req.query)
-  var condition = name
+  const sfName = req.params.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
+  var condition = sfName
     ? {
       sfName : { $regex: new RegExp(req.params.name), $options: "i" }
     }
