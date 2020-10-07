@@ -79,7 +79,8 @@ exports.create = (req, res) => {
 exports.findByBrand = (req, res) => {
   var condition = req.params.br
     ? {
-      brandName: { $regex: new RegExp(req.params.br), $options: "i" }
+      brandName:req.params.br,
+      _active : true
     }
     : {}
 
