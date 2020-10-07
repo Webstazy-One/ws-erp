@@ -294,12 +294,12 @@ exports.updatePriceById = (req, res) => {
 exports.DeleteFromItemId = (req, res) => {
   const id = req.params.iid
 
-  Item.findByIdAndUpdate({ id: id }, { $set: { _active: false } })
+  Item.findByIdAndUpdate({ _id: id }, { $set: { _active: false } })
     .then(data => {
 
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete item with id=${id}. Maybe item was not found!`
+          message: `Cannot delete item with id=${_id}. Maybe item was not found!`
         })
       } else res.send(true)
     })
