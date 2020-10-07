@@ -15,6 +15,7 @@ exports.create = (req, res) => {
    itemId: req.body.itemId,
    dateTime : req.body.dateTime,
    _active: true,
+   brandName: req.body.brandName
   });
 
   
@@ -121,9 +122,9 @@ exports.findByDateRange = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving Invoice.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving .",
+      })
+    })
+}
 
 

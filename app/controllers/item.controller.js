@@ -31,7 +31,7 @@ exports.create = (req, res) => {
     brandName: req.body.brandName,
     name: req.body.name,
     name: req.body.name,
-    sfName : sfName,
+    sfName: sfName,
     desc: req.body.desc,
     tag: req.body.tag,
     price: req.body.price,
@@ -119,7 +119,7 @@ exports.findByName = (req, res) => {
   const sfName = req.params.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
   var condition = sfName
     ? {
-      sfName : { $regex: new RegExp(req.params.name), $options: "i" }
+      sfName: { $regex: new RegExp(req.params.name), $options: "i" }
     }
     : {}
 
