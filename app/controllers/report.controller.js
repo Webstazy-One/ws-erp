@@ -14,7 +14,7 @@ exports.salesByBranch = (req, res) => {
   branchSalesCount['BTTML'] = 0
   branchSalesCount['LIBPL'] = 0
   branchSalesCount['EXSHCOL'] = 0
-  branchSalesCount['BTTML'] = 0
+  
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
   })
@@ -38,7 +38,7 @@ exports.revenueByBranch = (req, res) => {
   branchRevenueCount['BTTML'] = 0
   branchRevenueCount['LIBPL'] = 0
   branchRevenueCount['EXSHCOL'] = 0
-  branchRevenueCount['BTTML'] = 0
+  
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
   })
@@ -116,7 +116,7 @@ exports.profitByBranch = (req, res) => {
   branchProfitCount['BTTML'] = 0
   branchProfitCount['LIBPL'] = 0
   branchProfitCount['EXSHCOL'] = 0
-  branchProfitCount['BTTML'] = 0
+
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
   })
@@ -190,6 +190,84 @@ exports.profitByBranch = (req, res) => {
     })
 }
 
+
+exports.revenueByBrand = (req, res) => {
+  brandRevenueCount = {}
+
+  
+  Purchase.find({
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+  })
+    .then((data) => {
+      let nDate = new Date().toISOString('en-US', {
+        timeZone: 'Asia/Calcutta'
+      });
+      Item.findById(data[0].itemId)
+        .then(itemData => {
+          console.log(data[0].itemId)
+          //   console.log(itemData)
+          Promo.find(
+            { appliedto: data[0].itemId, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
+          )
+            .then(promoData => {
+              console.log(data[0].itemId)
+              if (!promoData[0] == null) {
+                console.log(promoData)
+                if (promoData[0].type == "ITEM") {
+                  if (promoData[0].calc == "PERCENTAGE") {
+                    console.log("ITEM Percentage")
+                    itemData.disValue = itemData.price * promoData[0].rate,
+                      itemData.actualPrice = itemData.price - itemData.disValue
+                  } else if (promoData[0].calc == "FLAT") {
+                    console.log("ITEM FLAT")
+                    itemData.disValue = promoData[0].rate,
+                      itemData.actualPrice = itemData.price - promoData[0].rate
+                  }
+                } else if (promoData[0].type == "BRAND") {
+                  console.log("BRAND type")
+                  if (promoData[0].calc == "PERCENTAGE") {
+                    console.log("BRAND Percentage")
+                    itemData.disValue = itemData.price * promoData[0].rate,
+                      itemData.actualPrice = itemData.price - itemData.disValue
+                  } else if (promoData[0].calc == "FLAT") {
+                    console.log("BRAND FLAT")
+                    itemData.disValue = promoData[0].rate,
+                      itemData.actualPrice = itemData.price - promoData[0].rate
+                  }
+                }
+              } else {
+                console.log("else")
+                itemData.disValue = 0,
+                  itemData.actualPrice = itemData.price
+              }
+              //   console.log(itemData)
+              data.forEach(revenue => {
+                console.log(itemData.actualPrice)
+                console.log("A revenue of " + itemData.actualPrice + "has happened in " + revenue.brandName)
+                brandRevenueCount[revenue.brandName] = brandRevenueCount[revenue.brandName] ? brandRevenueCount[revenue.brandName] + itemData.actualPrice : itemData.actualPrice
+
+              //  brandRevenueCount[revenue.brandName] += itemData.actualPrice
+              });
+              res.send(brandRevenueCount)
+            }
+            )
+             // res.send(itemData)
+              //    itemData.disValue = itemData.price * promoData[0].rate
+            
+        })
+        .catch(err => {
+          res
+            .status(500)
+            .send({ message: "Error retrieving item with id=" + data[0].itemId + " " + err });
+        });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Some error with report"
+      })
+    })
+}
+
 // exports.salesByBrand = (req, res) => {
 
 //   const getBrands = () => {
@@ -232,6 +310,9 @@ exports.profitByBranch = (req, res) => {
 
 //   report.then(() => { res.send(report) })
 // }
+
+
+
 
 
 exports.getDetailsOfPurchases = (req, res) => {
@@ -278,7 +359,7 @@ exports.getDetailsOfPurchasesByBrand = (req, res) => {
 
 }
 
-
+//*************************************************************
 
 
 exports.salesByBrands = (req, res) => {
@@ -302,3 +383,45 @@ exports.salesByBrands = (req, res) => {
 }
 
 
+exports.getDetailsOfPurchasesByBranch =(req,res) =>{
+  Purchase.find({
+    branchCode: req.params.branchCode,
+    dateTime: {
+      $gte: req.params.startDate,
+      $lt: req.params.endDate,
+    },
+
+
+  })
+    .then((data) => {
+      console.log(data)
+      res.send(data)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Purchase.",
+      })
+    })
+}
+
+exports.getDetailsOfPurchasesByBrandInBranch =(req,res) =>{
+  Purchase.find({
+    branchCode: req.params.branchCode,
+    brandName: req.params.brandName,
+    dateTime: {
+      $gte: req.params.startDate,
+      $lt: req.params.endDate,
+    },
+
+
+  })
+    .then((data) => {
+      console.log(data)
+      res.send(data)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Purchase.",
+      })
+    })
+}

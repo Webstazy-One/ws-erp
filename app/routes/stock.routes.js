@@ -15,7 +15,7 @@ module.exports = app => {
 
   // router.get("/barcode/:itemId/:amount", stock.findBarcodeForItem)
 
-  router.get("/barcodetest/:itemId/:amount", stock.findBarcodeItem)
+  router.get("/barcode/:itemId/:amount", stock.findBarcodeItem)
 
   router.get("/branchCode/:bc", stock.findByBranchCode)
 
