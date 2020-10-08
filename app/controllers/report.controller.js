@@ -168,13 +168,14 @@ exports.profitByBranch = (req, res) => {
                 // console.log(itemData.cost)
                 console.log("A profit of " + itemData.actualPrice + "has happened in " + profit.branchCode)
                 branchProfitCount[profit.branchCode] += itemData.actualPrice - itemData.cost
-              });
+              })
               res.send(branchProfitCount)
             }
-            ).finally(() => {
-              res.send(itemData)
-              //    itemData.disValue = itemData.price * promoData[0].rate
-            })
+            )
+          // .finally(() => {
+          //   res.send(itemData)
+          //   //    itemData.disValue = itemData.price * promoData[0].rate
+          // })
         })
         .catch(err => {
           res
@@ -189,109 +190,49 @@ exports.profitByBranch = (req, res) => {
     })
 }
 
-//*************************************************************************/
+// exports.salesByBrand = (req, res) => {
 
-exports.salesByBrand = (req, res) => {
+//   const getBrands = () => {
 
-  const getBrands = () => {
+//     return Brand.find()
+//       .then(brandData => {
 
-    return Brand.find()
-      .then(brandData => {
+//         let bNameList = []
 
-        let bNameList = []
+//         brandData.forEach(brand =>
+//           bNameList[brand.brandName] = 0
+//         )
 
-        brandData.forEach(brand =>
-          bNameList[brand.brandName] = 0
-        )
+//         return bNameList
 
-        return bNameList
+//       })
+//   }
 
-      })
-  }
+//   const getPurchaseCounts = (bNameList) => {
+//     console.log(bNameList)
 
-  const getPurchaseCounts = (bNameList) => {
-    console.log(bNameList)
-
-    return Purchase.find({
-      "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
-    }).then((sales) => {
-      sales.forEach(sale => {
-        bNameList[sale.brandName] += sale.qty
-      })
-    }).catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error with report"
-      })
-    }).finally(() => {
-      return bNameList
-    }
-    )
-
-  }
-
-  const report = getBrands().then((bNameList) => { getPurchaseCounts(bNameList) })
-
-  report.then(() => { res.send(report) })
-}
-//****************************test********** */
-
-// exports.salesByBrandtest = (req, res) => {
-//   let bNames
-
-//   brandSalesCount =[]
-
-
-
-
-//   Purchase.find({
-
-//     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
-
-//   })
-//     .then((data) => {
-//       data.forEach(sale => {
-//         console.log("A sale of " + sale.qty + "has happened in " + sale.brandName)
-//         brandSalesCount[sale.brandName] += sale.qty
-//       });
-
-
-//       res.send(branchSalesCounttest)
-
-//     })
-//     .catch((err) => {
+//     return Purchase.find({
+//       "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+//     }).then((sales) => {
+//       sales.forEach(sale => {
+//         bNameList[sale.brandName] += sale.qty
+//       })
+//     }).catch((err) => {
 //       res.status(500).send({
 //         message: err.message || "Some error with report"
 //       })
-//     })
+//     }).finally(() => {
+//       return bNameList
+//     }
+//     )
 
+//   }
+
+//   const report = getBrands().then((bNameList) => { getPurchaseCounts(bNameList) })
+
+//   report.then(() => { res.send(report) })
 // }
 
-// exports.salesByBrandtest = (req, res) => {
-
-
-//   Purchase.find({
-//     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
-
-//   }).then((data) => {
-//       brandSalesCount = []
-//       data.forEach(sale => {
-//         //  console.log(data)
-
-//         console.log("A sale of " + sale.qty + "has happened in " + sale.brandName)
-
-
-//         brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
-//       })
-//       console.log(brandSalesCount)
-
-//       res.send(brandSalesCount)
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: err.message || "Some error with report"
-//       })
-//     })
-// }
 
 exports.getDetailsOfPurchases = (req, res) => {
 
@@ -337,5 +278,27 @@ exports.getDetailsOfPurchasesByBrand = (req, res) => {
 
 }
 
+
+
+
+exports.salesByBrands = (req, res) => {
+  brandSalesCount = {}
+
+  Purchase.find({
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+  })
+    .then((data) => {
+      data.forEach(sale => {
+        console.log("A sale of " + sale.qty + "has happened in " + sale.brandName)
+        brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
+      });
+      res.send(brandSalesCount)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error with report"
+      })
+    })
+}
 
 
