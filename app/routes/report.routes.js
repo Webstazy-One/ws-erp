@@ -11,6 +11,11 @@ module.exports = app => {
     router.get("/revenue/branch/timerange/:startDate/:endDate", reports.revenueByBranch)
 
     router.get("/profit/timerange/:startDate/:endDate", reports.profitByBranch)
+
+ 
+router.get("/details/timerange/:startDate/:endDate",report.getDetailsOfPurchases)
+
+router.get("/details/brand/timerange/:brandName/:startDate/:endDate",report.getDetailsOfPurchasesByBrand)
     
     // router.get("/sales/brand/timerange/:startDate/:endDate", reports.salesByBrand)
     // // router.get("/sales/branch/timerange", reports.findByDateRange);		

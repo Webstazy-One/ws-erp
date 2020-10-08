@@ -22,21 +22,23 @@ exports.create = (req, res) => {
         disc: purc.disc,
         discPrice: purc.discPrice,
         dateTime: req.body.dateTime,
-        _active: true
+        _active: true,
+        brandName: purc.brandName
       })
-      // axios.post('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData)
-      axios.post('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData).catch(() => { });
+      
+
+
+      axios.post('http://localhost:8089/api/purchase/', purcData).catch(() => { });
       purch.push(purcData)
       const stockUpdate = {
         branchCode: req.body.branchCode,
         itemId: purc.itemId,
         qty: purc.qty
       }
-      // axios.put('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/stock/dec/', stockUpdate);
-      //   axios.put('http://localhost:8089/api/purchase/api/stock/dec/', stockUpdate).catch(() => {});;
-      console.log('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + purc.qty)
 
-      axios.put('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+       
+    
+  axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
     })
   }

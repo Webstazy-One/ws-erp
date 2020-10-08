@@ -31,7 +31,7 @@ exports.create = (req, res) => {
     brandName: req.body.brandName,
     name: req.body.name,
     name: req.body.name,
-    sfName : sfName,
+    sfName: sfName,
     desc: req.body.desc,
     tag: req.body.tag,
     price: req.body.price,
@@ -79,7 +79,8 @@ exports.create = (req, res) => {
 exports.findByBrand = (req, res) => {
   var condition = req.params.br
     ? {
-      brandName: { $regex: new RegExp(req.params.br), $options: "i" }
+      brandName:req.params.br,
+      _active : true
     }
     : {}
 
@@ -119,7 +120,7 @@ exports.findByName = (req, res) => {
   const sfName = req.params.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
   var condition = sfName
     ? {
-      sfName : { $regex: new RegExp(req.params.name), $options: "i" }
+      sfName: { $regex: new RegExp(req.params.name), $options: "i" }
     }
     : {}
 
@@ -294,12 +295,12 @@ exports.updatePriceById = (req, res) => {
 exports.DeleteFromItemId = (req, res) => {
   const id = req.params.iid
 
-  Item.findByIdAndUpdate({ id: id }, { $set: { _active: false } })
+  Item.findByIdAndUpdate({ _id: id }, { $set: { _active: false } })
     .then(data => {
 
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete item with id=${id}. Maybe item was not found!`
+          message: `Cannot delete item with id=${_id}. Maybe item was not found!`
         })
       } else res.send(true)
     })
