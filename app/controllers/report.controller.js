@@ -200,12 +200,12 @@ exports.salesByBrand = (req, res) => {
 
         let bNameList = []
 
-        brandData.forEach( brand => 
+        brandData.forEach(brand =>
           bNameList[brand.brandName] = 0
         )
 
         return bNameList
-        
+
       })
   }
 
@@ -233,12 +233,12 @@ exports.salesByBrand = (req, res) => {
 
   report.then(() => { res.send(report) })
 }
-//************************************** */
+//****************************test********** */
 
-// exports.salesByBrand = (req, res) => {
+// exports.salesByBrandtest = (req, res) => {
 //   let bNames
 
-
+//   brandSalesCount =[]
 
 
 
@@ -266,47 +266,76 @@ exports.salesByBrand = (req, res) => {
 
 // }
 
+// exports.salesByBrandtest = (req, res) => {
 
 
-exports.getDetailsOfPurchases = (req,res)=>{
- 
-    Purchase.find({
-     
+//   Purchase.find({
+//     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+
+//   }).then((data) => {
+//       brandSalesCount = []
+//       data.forEach(sale => {
+//         //  console.log(data)
+
+//         console.log("A sale of " + sale.qty + "has happened in " + sale.brandName)
+
+
+//         brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
+//       })
+//       console.log(brandSalesCount)
+
+//       res.send(brandSalesCount)
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message: err.message || "Some error with report"
+//       })
+//     })
+// }
+
+exports.getDetailsOfPurchases = (req, res) => {
+
+  Purchase.find({
+    dateTime: {
+      $gte: req.params.startDate,
+      $lt: req.params.endDate
+    }
+  })
+    .then((data) => {
+      res.send(data)
+      console.log(data)
     })
-      .then((data) => {
-        res.send(data)
-        console.log(data)
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Purchase.",
       })
-      .catch((err) => {
-        res.status(500).send({
-          message: err.message || "Some error occurred while retrieving Purchase.",
-        })
-      })
-  }
-
-
-  exports.getDetailsOfPurchasesByBrand =(req,res)=>{
-
-    Purchase.find({
-      brandName : req.params.brandName,
-      dateTime: {
-        $gte: req.params.dateTimeBefore,
-        $lt: req.params.dateTimeAfter,
-      },
-    
-
     })
-      .then((data) => {
-        res.send(data);
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: err.message || "Some error occurred while retrieving Purchase.",
-        })
-      })
+}
 
 
-  }
+exports.getDetailsOfPurchasesByBrand = (req, res) => {
+
+
+  Purchase.find({
+    brandName: req.params.brandName,
+    dateTime: {
+      $gte: req.params.startDate,
+      $lt: req.params.endDate,
+    },
+
+
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Purchase.",
+      })
+    })
+
+
+}
 
 
 
