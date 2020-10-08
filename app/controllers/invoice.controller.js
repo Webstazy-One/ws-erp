@@ -84,7 +84,7 @@ exports.findBydateTime = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving invoices.",
+        message: err.message || "Some error occurred while retrieving invoices."
       })
     })
 };
@@ -100,7 +100,7 @@ exports.findByDateRange = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving invoice.",
+        message: err.message || "Some error occurred while retrieving invoice."
       })
     })
 }
@@ -124,7 +124,7 @@ exports.findByInvoiceId = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving invoice with invoice id.",
+        message: err.message || "Some error occurred while retrieving invoice with invoice id."
       })
     })
 }
@@ -162,7 +162,7 @@ exports.findAll = (req, res) => {
 
 exports.findLast = (req, res) => {
   Invoice.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
-    res.send(data.invId);
+    res.send(data.invId)
   })
 }
 
@@ -172,7 +172,7 @@ exports.DeleteFromInvoiceId = (req, res) => {
     .then(data => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
+          message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`
         });
       } else res.send(true);
     })

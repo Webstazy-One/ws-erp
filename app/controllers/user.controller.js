@@ -1,23 +1,23 @@
-const { user } = require("../models");
-const User = require("../models/user.model");
-const roles = require("../models/role.model");
-var bcrypt = require("bcryptjs");
+const { user } = require("../models")
+const User = require("../models/user.model")
+const roles = require("../models/role.model")
+var bcrypt = require("bcryptjs")
 
 exports.allAccess = (req, res) => {
   const username = req.query.username;
   var condition = username ? { username: { $regex: new RegExp(username), $options: "i" } } : {};
 
   User.find(condition)
-  .populate('roles')
+    .populate('roles')
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving stock."
-      });
-    });
+      })
+    })
 }
 
 exports.userBoard = (req, res) => {
@@ -33,12 +33,12 @@ exports.overrideUserBoard = (req, res) => {
 };
 
 exports.DeleteFromUser = (req, res) => {
-  const username= req.params.username;
- 
-  User.findOneAndUpdate({username: username},{$set:{_active: false} })
-  .then(data => {
- 
-         if (!data) {
+  const username = req.params.username;
+
+  User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
+    .then(data => {
+
+      if (!data) {
         res.status(404).send({
           message: `Cannot change user as inactive=${username}.`,
         });
@@ -49,15 +49,15 @@ exports.DeleteFromUser = (req, res) => {
         message: err,
       });
     });
- }
+}
 
- exports.DeleteUser = (req, res) => {
-  const username= req.params.username;
- 
-  User.findOneAndUpdate({username: username},{$set:{_active: false} })
-  .then(data => {
- 
-         if (!data) {
+exports.DeleteUser = (req, res) => {
+  const username = req.params.username;
+
+  User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
+    .then(data => {
+
+      if (!data) {
         res.status(404).send({
           message: `Cannot inactive user=${username}.`,
         });
@@ -68,16 +68,16 @@ exports.DeleteFromUser = (req, res) => {
         message: "Error inactivating user =" + username,
       });
     });
- }
+}
 
- exports.updatePasswordByUserName = (req, res) => {
+exports.updatePasswordByUserName = (req, res) => {
   const username = req.params.username;
   const password = req.params.password;
 
-  User.findOneAndUpdate({username: username},{$set: {password:bcrypt.hashSync(password,8)}})
-  .then(data => {
+  User.findOneAndUpdate({ username: username }, { $set: { password: bcrypt.hashSync(password, 8) } })
+    .then(data => {
 
-     if (!data) {
+      if (!data) {
         res.status(404).send({
           message: `Cannot update password=${password}.`,
         });
@@ -100,6 +100,6 @@ exports.findAllActive = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving user."
-      });
-    });
-};
+      })
+    })
+}

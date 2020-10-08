@@ -6,14 +6,14 @@ const Item = db.item
 exports.create = (req, res) => {
 
   if (!req.body.brandName) {
-    res.status(400).send({ message: "Content can not be empty!" });
+    res.status(400).send({ message: "Content can not be empty!" })
     return;
   }
   const brands = new Brand({
 
     brandName: req.body.brandName.toUpperCase(),
-    _active: true,
-  });
+    _active: true
+  })
 
 
   brands
@@ -23,10 +23,10 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the brand.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while creating the brand."
+      })
+    })
+}
 
 
 exports.findByBrandName = (req, res) => {
@@ -59,22 +59,22 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving brand."
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findAllActive = (req, res) => {
   Brand.find({ _active: true })
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving Brand."
-      });
-    });
-};
+      })
+    })
+}
 
 
 exports.findByName = (req, res) => {
@@ -84,7 +84,7 @@ exports.findByName = (req, res) => {
     ? {
       name: { $regex: new RegExp(req.params.name), $options: "i" },
     }
-    : {};
+    : {}
 
   Item.find(condition)
     .then((data) => {
@@ -92,10 +92,10 @@ exports.findByName = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}
 
 
 exports.updateBrandByBrandName = (req, res) => {
@@ -114,9 +114,8 @@ exports.updateBrandByBrandName = (req, res) => {
       res.status(500).send({
         message: "Error updating Brand with brandName=" + brandName,
 
-
-      });
-    });
+      })
+    })
 }
 
 
@@ -128,13 +127,13 @@ exports.DeleteFromBrandName = (req, res) => {
 
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete brand with brandName=${brandName}. Maybe brand was not found!`,
-        });
+          message: `Cannot delete brand with brandName=${brandName}. Maybe brand was not found!`
+        })
       } else res.send(true);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err,
-      });
-    });
+        message: err
+      })
+    })
 }

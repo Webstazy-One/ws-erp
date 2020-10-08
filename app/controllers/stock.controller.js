@@ -46,7 +46,7 @@ exports.findByBranchCode = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
+        message: err.message || "Some error occurred while retrieving items."
       })
     })
 }

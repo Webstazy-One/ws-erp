@@ -1,36 +1,36 @@
-const db = require("../models");
-const { invoice } = require("../models");
-const Purchase = db.purchase;
-const Invoice = db.invoice;
+const db = require("../models")
+const { invoice } = require("../models")
+const Purchase = db.purchase
+const Invoice = db.invoice
 
 exports.create = (req, res) => {
 
   const purchase = new Purchase({
-  
-   invId:req.body.invId,
-   qty: req.body.qty,
-   disc: req.body.disc,
-   discPrice: req.body.discPrice,
-   unitPrice: req.body.unitPrice,
-   itemId: req.body.itemId,
-   dateTime : req.body.dateTime,
-   _active: true,
-  });
 
-  
+    invId: req.body.invId,
+    qty: req.body.qty,
+    disc: req.body.disc,
+    discPrice: req.body.discPrice,
+    unitPrice: req.body.unitPrice,
+    itemId: req.body.itemId,
+    dateTime: req.body.dateTime,
+    _active: true
+  })
+
+
   purchase
     .save(purchase)
     .then(data => {
 
-       res.send(data);
+      res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the Purchase."
-      });
-    });
-};
+      })
+    })
+}
 
 
 
@@ -50,7 +50,7 @@ exports.findOne = (req, res) => {
     });
 };
 
-exports.findByInvoiceId= (req, res) => {
+exports.findByInvoiceId = (req, res) => {
   const invId = req.params.invId;
 
   var condition = invId
@@ -92,38 +92,42 @@ exports.findAllActive = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving purchase."
-      });
-    });
-};
+      })
+    })
+}
 
 
 exports.findByDateRange = (req, res) => {
-    
+
   console.log(123);
   Purchase.aggregate([
-      { "$match": {
-          dateTime: {
-                  $gte: req.params.dateTimeBefore,
-                  $lt: req.params.dateTimeAfter
-          }
-      }},
-      { "$group": {
-          "_id": { "$dayOfYear": "$createdDate" },
-          "totalSales": { "$sum":"$qty" }
-      }}
+    {
+      "$match": {
+        dateTime: {
+          $gte: req.params.dateTimeBefore,
+          $lt: req.params.dateTimeAfter
+        }
+      }
+    },
+    {
+      "$group": {
+        "_id": { "$dayOfYear": "$createdDate" },
+        "totalSales": { "$sum": "$qty" }
+      }
+    }
   ],
   )
 
-  .catch((err) => console.log(err))
+    .catch((err) => console.log(err))
 
     .then(($qty) => {
-      res.send($qty);
+      res.send($qty)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving Invoice.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving Invoice."
+      })
+    })
+}
 
 

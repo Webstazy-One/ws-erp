@@ -5,8 +5,6 @@ const Item = db.item;
 
 exports.create = (req, res) => {
 
-    
-
   const promo = new Promo({
     desc: req.body.desc,
     type: req.body.type,
@@ -16,9 +14,8 @@ exports.create = (req, res) => {
     calc: req.body.calc,
     amount: req.body.amount,
     appliedto: req.body.appliedto,
-    _active: true,
-
-  });
+    _active: true
+  })
 
   promo
     .save(promo)
@@ -29,14 +26,14 @@ exports.create = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the promo."
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findAll = (req, res) => {
   Promo.find()
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
@@ -63,7 +60,7 @@ exports.findAllActive = (req, res) => {
 
 
 exports.findByBrandName = (req, res) => {
-  const appliedto= req.params.brandName;
+  const appliedto = req.params.brandName;
   console.log(req.query);
   var condition = appliedto
     ? {
@@ -71,8 +68,8 @@ exports.findByBrandName = (req, res) => {
     }
     : {};
 
-    Promo.find(condition)
-  .populate('item')
+  Promo.find(condition)
+    .populate('item')
     .then((data) => {
       res.send(data);
     })
@@ -102,7 +99,7 @@ exports.findOne = (req, res) => {
 
 
 exports.findByItemId = (req, res) => {
-  const appliedto= req.params.itemId;
+  const appliedto = req.params.itemId;
   console.log(req.query);
   var condition = appliedto
     ? {
@@ -110,8 +107,8 @@ exports.findByItemId = (req, res) => {
     }
     : {};
 
-    Promo.find(condition)
-  .populate('item')
+  Promo.find(condition)
+    .populate('item')
     .then((data) => {
       res.send(data);
     })
@@ -123,12 +120,12 @@ exports.findByItemId = (req, res) => {
 };
 
 exports.DeleteFromPromoId = (req, res) => {
-  const promoId= req.params.promoId;
- 
-  Promo.findOneAndUpdate({_id: promoId},{$set:{_active: false} })
-  .then(data => {
- 
-         if (!data) {
+  const promoId = req.params.promoId;
+
+  Promo.findOneAndUpdate({ _id: promoId }, { $set: { _active: false } })
+    .then(data => {
+
+      if (!data) {
         res.status(404).send({
           message: `Cannot delete promo with promoId=${promoId}. Maybe promo was not found!`,
         });
@@ -139,8 +136,8 @@ exports.DeleteFromPromoId = (req, res) => {
         message: "Error deleting promo with promoId =" + promoId,
       });
     });
- }
+}
 
 
- 
+
 

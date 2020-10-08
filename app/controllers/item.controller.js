@@ -125,16 +125,12 @@ exports.findOne = (req, res) => {
 
   let nDate = new Date().toISOString('en-US', {
     timeZone: 'Asia/Calcutta'
-  });
+  })
 
   Item.findById(req.params.id)
     .then(itemData => {
 
-
-
       console.log(itemData)
-
-
 
       Promo.find(
 
@@ -202,9 +198,9 @@ exports.findOne = (req, res) => {
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving item with id=" + req.params.id + " " + err });
-    });
-};
+        .send({ message: "Error retrieving item with id=" + req.params.id + " " + err })
+    })
+}
 
 exports.findAll = (req, res) => {
   Item.find()
@@ -215,9 +211,9 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving promo."
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findAllActive = (req, res) => {
   Item.find({ _active: true })

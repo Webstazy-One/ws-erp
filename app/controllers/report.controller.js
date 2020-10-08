@@ -5,6 +5,7 @@ const PurchaseController = require("./purchase.controller.js")
 const Purchase = db.purchase
 const Item = db.item
 const Promo = db.promo
+
 exports.salesByBranch = (req, res) => {
     branchSalesCount = {}
     branchSalesCount['COLM5'] = 0
@@ -29,6 +30,7 @@ exports.salesByBranch = (req, res) => {
             })
         })
 }
+
 exports.revenueByBranch = (req, res) => {
     branchRevenueCount = {}
     branchRevenueCount['COLM5'] = 0
@@ -107,6 +109,7 @@ exports.revenueByBranch = (req, res) => {
             })
         })
 }
+
 exports.profitByBranch = (req, res) => {
     branchProfitCount = {}
     branchProfitCount['COLM5'] = 0

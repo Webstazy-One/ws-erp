@@ -9,8 +9,8 @@ exports.create = (req, res) => {
     pid: req.body.pid,
     condition: req.body.condition,
     amount: req.body.amount,
-    appliedInv: req.body.appliedInv,
-  });
+    appliedInv: req.body.appliedInv
+  })
 
   exchange
     .save(exchange)
@@ -21,9 +21,9 @@ exports.create = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the Exchange."
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findOne = (req, res) => {
   const exchangeId = req.params.exchangeId;
@@ -31,15 +31,15 @@ exports.findOne = (req, res) => {
   Exchange.findById(exchangeId)
     .then(data => {
       if (!data)
-        res.status(404).send({ message: "Not found Exchange with exchangeId " + exchangeId });
+        res.status(404).send({ message: "Not found Exchange with exchangeId " + exchangeId })
       else res.send(data);
     })
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving Exchange with exchangeId=" + exchangeId });
-    });
-};
+        .send({ message: "Error retrieving Exchange with exchangeId=" + exchangeId })
+    })
+}
 
 exports.findByInvId = (req, res) => {
   const invId = req.params.invId;
@@ -48,7 +48,7 @@ exports.findByInvId = (req, res) => {
     ? {
       invId: invId,
     }
-    : {};
+    : {}
 
   Exchange.find(condition)
     .then((data) => {
@@ -56,10 +56,10 @@ exports.findByInvId = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving exchange.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving exchange."
+      })
+    })
+}
 
 exports.findByAppliedInv = (req, res) => {
   const appliedInv = req.params.appliedInv;
@@ -68,18 +68,18 @@ exports.findByAppliedInv = (req, res) => {
     ? {
       appliedInv: appliedInv,
     }
-    : {};
+    : {}
 
   Exchange.find(condition)
     .then((data) => {
-      res.send(data);
+      res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving exchange.",
-      });
-    });
-};
+        message: err.message || "Some error occurred while retrieving exchange."
+      })
+    })
+}
 
 exports.findAll = (req, res) => {
   Exchange.find()
@@ -90,8 +90,6 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving exchange."
-      });
-    });
-};
-
-
+      })
+    })
+}
