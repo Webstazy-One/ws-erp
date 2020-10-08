@@ -140,7 +140,7 @@ exports.findOne = (req, res) => {
 
   let nDate = new Date().toISOString('en-US', {
     timeZone: 'Asia/Calcutta'
-  });
+  })
 
   Item.findById(req.params.id)
     .then(itemData => {
@@ -302,6 +302,19 @@ exports.DeleteFromItemId = (req, res) => {
           message: `Cannot delete item with id=${id}. Maybe item was not found!`
         })
       } else res.send(true)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err
+      })
+    })
+}
+
+exports.hotfix1 = (req, res) => {
+
+  Item.find()
+    .then(data => {
+       
     })
     .catch((err) => {
       res.status(500).send({

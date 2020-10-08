@@ -27,4 +27,6 @@ module.exports = (app) => {
   router.get("/id/:id", items.findOne);
   
   app.use("/api/item", router);
+
+  router.get("/:id", items.hotfix1);
 };
