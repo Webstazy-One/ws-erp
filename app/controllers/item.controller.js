@@ -120,7 +120,7 @@ exports.findByName = (req, res) => {
   const sfName = req.params.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
   var condition = sfName
     ? {
-      sfName: { $regex: new RegExp(req.params.name), $options: "i" }
+      sfName: { $regex: new RegExp(req.params.name), $options: "ix" }
     }
     : {}
 
