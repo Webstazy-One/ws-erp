@@ -23,21 +23,23 @@ exports.create = (req, res) => {
         discPrice: purc.discPrice,
         dateTime: req.body.dateTime,
         _active: true,
-        brandName: purc.brandName
+        brandName: purc.brandName,
+        branchCode :  req.body.branchCode
       })
       
 
-
-      axios.post('http://localhost:8089/api/purchase/', purcData).catch(() => { });
+      axios.post(' http://localhost:8089/api/purchase/', purcData).catch(() => { });
+   //   axios.post(' http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData).catch(() => { });
       purch.push(purcData)
       const stockUpdate = {
         branchCode: req.body.branchCode,
         itemId: purc.itemId,
         qty: purc.qty
       }
-
+     
        
-    
+     // axios.put(' http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+
   axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
     })

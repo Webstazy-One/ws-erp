@@ -15,7 +15,8 @@ exports.create = (req, res) => {
    itemId: req.body.itemId,
    dateTime : req.body.dateTime,
    _active: true,
-   brandName: req.body.brandName
+   brandName: req.body.brandName,
+   branchCode :  req.body.branchCode
   });
 
   

@@ -9,7 +9,8 @@ module.exports = (mongoose) => {
     itemId: String,
     dateTime : Date,
     _active: Boolean,
-    brandName: String
+    brandName: String,
+    branchCode : String
 
   });
 
