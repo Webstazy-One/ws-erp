@@ -33,14 +33,15 @@ exports.create = (req, res) => {
 }
 
 exports.findByBranchCode = (req, res) => {
-  const branchCode = req.params.bc;
-  console.log(req.query);
+  const branchCode = req.params.bc
+  console.log(req.query)
   var condition = branchCode
     ? {
       branchCode: branchCode
     }
     : {};
   Stock.find(condition)
+  .populate('itemId')
     .then((data) => {
       res.send(data)
     })
