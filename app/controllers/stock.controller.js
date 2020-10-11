@@ -2,6 +2,7 @@ const { item, stock } = require("../models")
 const db = require("../models")
 const { findLast } = require("./invoice.controller")
 const Stock = db.stock
+const StockUpdate = db.stock_update
 const Item = db.item
 
 exports.create = (req, res) => {
@@ -41,7 +42,7 @@ exports.findByBranchCode = (req, res) => {
     }
     : {};
   Stock.find(condition)
-  .populate('itemId')
+    .populate('itemId')
     .then((data) => {
       res.send(data)
     })
@@ -124,8 +125,9 @@ exports.findOne = (req, res) => {
     })
 }
 
-
 exports.stockPlus = (req, res) => {
+
+  StockUpdate.save(JSON.stringify(req.params)).catch(() => { console.log('log error') })
 
   const branchCode = req.params.branchCode
   const itemId = req.params.itemId
@@ -144,7 +146,7 @@ exports.stockPlus = (req, res) => {
     })
 
   if (req.params.qty > 0) Item.updateOne({ itemId: itemId }, { $inc: { "historicalCount": req.params.qty } })
-  
+
   // exports.updateCurrentStock = (req, res) => {
   //   const branchCode = req.params.branchCode;
   //   const itemId = req.body.itemId;
@@ -289,7 +291,6 @@ exports.findBarcodeItem = (req, res) => {
       })
     })
 }
-
 
 exports.findLast = (req, res) => {
   Stock.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
