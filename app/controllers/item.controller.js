@@ -24,7 +24,7 @@ exports.create = (req, res) => {
 
   }
 
-  const sfName = req.body.name.replaceAll(' ', '').replaceAll('.', '').replaceAll('/', '').replaceAll('\\', '').replaceAll('-', '').replaceAll('=', '')
+  const sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
 
   const item = new Item({
     barcodePrefix: req.body.barcodePrefix,

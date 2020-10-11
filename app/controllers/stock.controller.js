@@ -127,7 +127,11 @@ exports.findOne = (req, res) => {
 
 exports.stockPlus = (req, res) => {
 
-  StockUpdate.save(JSON.stringify(req.params)).catch(() => { console.log('log error') })
+  const stUpdate = new StockUpdate({
+    data : JSON.stringify(req.params)
+  })
+
+  StockUpdate.save(stUpdate).catch(() => { console.log('log error') })
 
   const branchCode = req.params.branchCode
   const itemId = req.params.itemId
