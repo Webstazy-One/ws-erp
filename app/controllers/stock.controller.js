@@ -2,7 +2,7 @@ const { item, stock } = require("../models")
 const db = require("../models")
 const { findLast } = require("./invoice.controller")
 const Stock = db.stock
-const StockUpdate = db.stock_update
+const Uplog = db.uplog
 const Item = db.item
 
 exports.create = (req, res) => {
@@ -127,11 +127,11 @@ exports.findOne = (req, res) => {
 
 exports.stockPlus = (req, res) => {
 
-  const stUpdate = new StockUpdate({
+  const stUpdate = new Uplog({
     data : JSON.stringify(req.params)
   })
 
-  StockUpdate.save(stUpdate).catch(() => { console.log('log error') })
+  stUpdate.save(stUpdate).catch(() => { console.log('log error') })
 
   const branchCode = req.params.branchCode
   const itemId = req.params.itemId

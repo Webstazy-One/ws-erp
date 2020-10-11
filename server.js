@@ -33,11 +33,11 @@ function initial() {
         name: "user"
       }).save((err) => {
         if (err) {
-          console.log("error", err);
+          console.log("error", err)
         }
 
-        console.log("added 'user' to roles collection");
-      });
+        console.log("added 'user' to roles collection")
+      })
 
       new Role({
         name: "admin"
@@ -46,29 +46,20 @@ function initial() {
           console.log("error", err)
         }
 
-        console.log("added 'admin' to roles collection");
-      });
+        console.log("added 'admin' to roles collection")
+      })
 
 
       new Role({
         name: "override"
       }).save(err => {
         if (err) {
-          console.log("error", err);
-        }
-      
-        console.log("added 'override' to roles collection")
-      });
-      
-      new Role({
-        name: "overrideUser"
-      }).save(err => {
-        if (err) {
           console.log("error", err)
         }
       
-        console.log("added 'overrideUser' to roles collection")
+        console.log("added 'override' to roles collection")
       })
+    
     }
   })
 }
