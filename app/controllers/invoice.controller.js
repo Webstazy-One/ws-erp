@@ -7,6 +7,9 @@ const Customer = db.customer
 const Item = db.item
 const Purchase = db.purchase
 
+const dbLinks = require("../config/db.config.js")
+
+
 exports.create = (req, res) => {
   if (!req.body.invId) { res.status(400).send({ message: "Content can not be empty!" }); return }
 
@@ -28,8 +31,7 @@ exports.create = (req, res) => {
       })
       
 
-      axios.post(' http://localhost:8089/api/purchase/', purcData).catch(() => { });
-   //   axios.post(' http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData).catch(() => { });
+     axios.post(dbLinks.serverUrl + '/api/purchase/', purcData).catch(() => { })
       purch.push(purcData)
       const stockUpdate = {
         branchCode: req.body.branchCode,
@@ -38,9 +40,9 @@ exports.create = (req, res) => {
       }
      
        
-     // axios.put(' http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+      axios.put(dbLinks.serverUrl  +'/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
-  axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+ // axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
     })
   }
