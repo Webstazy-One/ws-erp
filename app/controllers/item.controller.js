@@ -24,7 +24,9 @@ exports.create = (req, res) => {
 
   }
 
-  const sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
+  // const sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
+  const sfNameLast = req.body.name.replace(/[^\w\s+]/gi, '');
+  const sfName = sfNameLast.replace(/\s/g, "");
 
   const item = new Item({
     barcodePrefix: req.body.barcodePrefix,
@@ -53,8 +55,8 @@ exports.create = (req, res) => {
           if (!data) {
             res.status(404).send({
               message: `Cannot update item with barcodePrefix . Maybe item was not found!`
-            })
-          } else res.send(data.id)
+            })} else res.send(data)
+          // } else res.send(data.id)
         })
         .catch((err) => {
           res.status(500).send({
@@ -324,5 +326,21 @@ exports.hotfix1 = (req, res) => {
     })
 }
 
+
+
+
+exports.findTopItems = (req, res) => {
+  Item.find().sort({price : -1})
+    .then(data => {
+      res.send(data)
+     
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving promo."
+      });
+    });
+};
 
 

@@ -2,10 +2,12 @@ const db = require("../models")
 const axios = require('axios')
 const ItemController = require("./item.controller.js")
 const PurchaseController = require("./purchase.controller.js")
+const { stock } = require("../models")
 const Purchase = db.purchase
 const Item = db.item
 const Promo = db.promo
 const Brand = db.brand
+const Stock = db.stock
 
 exports.salesByBranch = (req, res) => {
   branchSalesCount = {}
@@ -14,7 +16,7 @@ exports.salesByBranch = (req, res) => {
   branchSalesCount['BTTML'] = 0
   branchSalesCount['LIBPL'] = 0
   branchSalesCount['EXSHCOL'] = 0
-  
+
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
   })
@@ -38,7 +40,7 @@ exports.revenueByBranch = (req, res) => {
   branchRevenueCount['BTTML'] = 0
   branchRevenueCount['LIBPL'] = 0
   branchRevenueCount['EXSHCOL'] = 0
-  
+
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
   })
@@ -194,7 +196,7 @@ exports.profitByBranch = (req, res) => {
 exports.revenueByBrand = (req, res) => {
   brandRevenueCount = {}
 
-  
+
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
   })
@@ -246,14 +248,14 @@ exports.revenueByBrand = (req, res) => {
                 console.log("A revenue of " + itemData.actualPrice + "has happened in " + revenue.brandName)
                 brandRevenueCount[revenue.brandName] = brandRevenueCount[revenue.brandName] ? brandRevenueCount[revenue.brandName] + itemData.actualPrice : itemData.actualPrice
 
-              //  brandRevenueCount[revenue.brandName] += itemData.actualPrice
+                //  brandRevenueCount[revenue.brandName] += itemData.actualPrice
               });
               res.send(brandRevenueCount)
             }
             )
-             // res.send(itemData)
-              //    itemData.disValue = itemData.price * promoData[0].rate
-            
+          // res.send(itemData)
+          //    itemData.disValue = itemData.price * promoData[0].rate
+
         })
         .catch(err => {
           res
@@ -383,7 +385,7 @@ exports.salesByBrands = (req, res) => {
 }
 
 
-exports.getDetailsOfPurchasesByBranch =(req,res) =>{
+exports.getDetailsOfPurchasesByBranch = (req, res) => {
   Purchase.find({
     branchCode: req.params.branchCode,
     dateTime: {
@@ -404,7 +406,7 @@ exports.getDetailsOfPurchasesByBranch =(req,res) =>{
     })
 }
 
-exports.getDetailsOfPurchasesByBrandInBranch =(req,res) =>{
+exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
   Purchase.find({
     branchCode: req.params.branchCode,
     brandName: req.params.brandName,
@@ -429,11 +431,79 @@ exports.getDetailsOfPurchasesByBrandInBranch =(req,res) =>{
 
 //***********************************/
 
-exports.brandByBranch =(req,res)=>{
+exports.brandByBranchInStock = (req, res) => {
 
-  Stock.find
+  brandAllCount = {}
+
+  Stock.find({
+    branchCode: req.params.branchCode,
+  })
+    .then((StockData) => {
+
+
+      console.log(StockData[0].itemId)
+      Purchase.find({
+        "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+
+      })
+        .then((data) => {
+          data.forEach(sale => {
+            console.log("A sale of " + sale.qty + "has happened in " + sale.brandName)
+            brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
+          })
+          res.send(brandSalesCount)
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: err.message || "Some error with report"
+          })
+        })
+
+
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error with report"
+      })
+    })
+
 
 }
+
+//**********edite********
+
+exports.brandByBranch = (req, res) => {
+
+  findBrandwiseCount = () => {
+
+    return Stock.find({
+      branchCode: req.params.branchCode,
+    }).populate('itemId').then((stockData) => {
+      
+      brandwiseCount = []
+      
+      stockData.forEach(stockEntry => {
+
+     //   brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
+      
+        brandwiseCount[stockEntry.itemId.brandName] = brandwiseCount[stockEntry.itemId.brandName] ? brandwiseCount[stockEntry.itemId.brandName] + stockEntry.currentStock :  stockEntry.currentStock
+      })
+
+      
+
+      return brandwiseCount
+    })
+
+  }
+
+  findBrandwiseCount().then((data) => {
+    res.send(Object.assign({}, data))
+  }).catch((err) => {
+    console.log(err)
+  })
+
+}
+
 
 exports.salesByItems = (req, res) => {
   ItemSalesCount = {}
@@ -522,13 +592,13 @@ exports.salesByItems = (req, res) => {
               }
 
               ).finally(() => {
-                 res.send(itemData)
+                res.send(itemData)
 
               }).catch(() => { })
             // itemDetails.push(itemData)
 
             console.log(itemDetails)
-          
+
             return itemDetails = itemData
 
 
