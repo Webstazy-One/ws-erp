@@ -27,7 +27,7 @@ module.exports = app => {
     
     router.get("/details/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrandInBranch )
 
-
+    router.get("/sales/item/", report.salesByItems)
 
     // // router.get("/sales/branch/timerange", reports.findByDateRange)		
 

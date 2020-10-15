@@ -425,3 +425,135 @@ exports.getDetailsOfPurchasesByBrandInBranch =(req,res) =>{
       })
     })
 }
+
+
+//***********************************/
+
+exports.brandByBranch =(req,res)=>{
+
+  Stock.find
+
+}
+
+exports.salesByItems = (req, res) => {
+  ItemSalesCount = {}
+  ItemName = {}
+  itemDetails = []
+
+  Purchase.find({
+
+  }).sort({ 'qty': -1 }).limit(100)
+    .then((data) => {
+
+      data.forEach(sale => {
+
+        //console.log("A sale of " + sale.qty + "has happened in " + sale.itemId)
+        ItemSalesCount[sale.itemId] = ItemSalesCount[sale.itemId] ? ItemSalesCount[sale.itemId] + sale.qty : sale.qty
+
+
+
+        let nDate = new Date().toISOString('en-US', {
+          timeZone: 'Asia/Calcutta'
+        })
+
+        Item.findById(sale.itemId)
+          .then(itemData => {
+
+
+
+            console.log(sale.itemId)
+
+
+
+            Promo.find(
+
+
+              { appliedto: req.params.id, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
+
+
+            )
+              .then(promoData => {
+
+
+                if (!promoData[0] == null) {
+
+                  if (promoData[0].type == "ITEM") {
+
+                    if (promoData[0].calc == "PERCENTAGE") {
+                      console.log("ITEM Percentage")
+                      itemData.disValue = itemData.price * promoData[0].rate,
+                        itemData.actualPrice = itemData.price - itemData.disValue
+
+
+                    } else if (promoData[0].calc == "FLAT") {
+                      console.log("ITEM FLAT")
+
+                      itemData.disValue = promoData[0].rate,
+                        itemData.actualPrice = itemData.price - promoData[0].rate
+                    }
+
+
+                  } else if (promoData[0].type == "BRAND") {
+
+                    console.log("BRAND type")
+
+                    if (promoData[0].calc == "PERCENTAGE") {
+                      console.log("BRAND Percentage")
+                      itemData.disValue = itemData.price * promoData[0].rate,
+                        itemData.actualPrice = itemData.price - itemData.disValue
+
+
+                    } else if (promoData[0].calc == "FLAT") {
+                      console.log("BRAND FLAT")
+
+                      itemData.disValue = promoData[0].rate,
+                        itemData.actualPrice = itemData.price - promoData[0].rate
+                    }
+
+
+
+                  }
+                } else {
+                  itemData.disValue = 0
+                  itemData.actualPrice = itemData.price
+                }
+
+
+              }
+
+              ).finally(() => {
+                 res.send(itemData)
+
+              }).catch(() => { })
+            // itemDetails.push(itemData)
+
+            console.log(itemDetails)
+          
+            return itemDetails = itemData
+
+
+          })
+          .catch(err => {
+            res
+              .status(500)
+              .send({ message: "Error retrieving item " });
+          });
+
+
+
+
+
+
+      })
+      // res.send(itemDetails)
+
+      // console.log(ItemSalesCount)
+      // console.log(itemDetails)
+
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error with report"
+      })
+    })
+}

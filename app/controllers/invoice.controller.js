@@ -188,3 +188,46 @@ exports.DeleteFromInvoiceId = (req, res) => {
       })
     })
 }
+
+
+
+exports.DeleteFromInvoiceId = (req, res) => {
+  const invId = req.params.invId;
+  Invoice.findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
+        });
+       } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err
+      })
+    })
+    Purchase
+    .findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
+    .then(pData => {
+    
+      Stock.findOneAndUpdate({itemId : pData.itemId , branchCode:pData.branchCode}, {$inc:{ currentStock: pData.qty} })
+      .then
+      (data => {
+         if (!data) {
+            res.status(404).send({
+              message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
+            });
+          } else res.send(true);
+        }).catch(() => { })
+        
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
+        });
+       } else res.send(true);
+    }).catch(() => { })
+   
+
+    
+}

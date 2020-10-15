@@ -62,6 +62,18 @@ function initial() {
     
     }
   })
+
+  new Role({
+    name: "stock-keeper"
+  }).save(err => {
+    if (err) {
+      console.log("error", err)
+    }
+  
+    console.log("added 'stock-keeper' to roles collection")
+  })
+
+
 }
 
 require("./app/routes/item.routes")(app)

@@ -25,6 +25,6 @@ db.uplog = require("./uplog.model.js")(mongoose)
 db.user = require("./user.model")
 db.role = require("./role.model")
 
-db.ROLES = ["user", "admin"]
+db.ROLES = ["user", "admin","override","stock-keeper"];
 
 module.exports = db

@@ -19,6 +19,8 @@ module.exports = app => {
 
   router.get("/branchCode/:bc", stock.findByBranchCode)
 
+  router.put("/stocktransfer/:sentbranchCode/:receivedbranchCode/:itemId/:qty", stock.stockTransfer)
+
   //router.get("/itemId/:itemId", stock.findByItemId);
 
   app.use("/api/stock", router)

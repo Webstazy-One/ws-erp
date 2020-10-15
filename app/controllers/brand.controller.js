@@ -38,7 +38,7 @@ exports.findByBrandName = (req, res) => {
     }
     : {};
 
-  Brand.find(condition)
+  Brand.find(condition).sort({'brandName': 1})
     .then((data) => {
       res.send(data);
     })
@@ -51,7 +51,7 @@ exports.findByBrandName = (req, res) => {
 
 
 exports.findAll = (req, res) => {
-  Brand.find()
+  Brand.find().sort({'brandName': 1})
     .then(data => {
       res.send(data);
     })
@@ -64,7 +64,7 @@ exports.findAll = (req, res) => {
 };
 
 exports.findAllActive = (req, res) => {
-  Brand.find({ _active: true })
+  Brand.find({ _active: true }).sort({'brandName': 1})
     .then(data => {
       res.send(data);
     })
@@ -86,7 +86,7 @@ exports.findByName = (req, res) => {
     }
     : {};
 
-  Item.find(condition)
+  Item.find(condition).sort({'brandName': 1})
     .then((data) => {
       res.send(data);
     })
