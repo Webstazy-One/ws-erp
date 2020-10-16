@@ -23,12 +23,43 @@ exports.create = (req, res) => {
       }
       product = data.itemId
       console.log(product)
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the stock."
+      })
+    })
+}
+
+exports.findByBrandBranch = (req, res) => {
+  const branchCode = req.params.branch
+  const brand = req.params.brand
+  console.log(req.query)
+  var condition = branchCode
+    ? {
+      branchCode: branchCode
+    }
+    : {}
+  Stock.find(condition)
+    .populate('itemId')
+    .then((data) => {
+      console.log(data)
+
+      stockReport = []
+
+      data.forEach(stockEntry => {
+        if (!stockEntry.itemId || stockEntry.itemId === null) return
+        if (stockEntry.itemId.brandName == brand) {
+          stockReport[stockEntry.itemId.name] = stockEntry.currentStock
+        }
+      })
+      res.send(Object.assign({}, stockReport))
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items."
       })
     })
 }
@@ -40,7 +71,7 @@ exports.findByBranchCode = (req, res) => {
     ? {
       branchCode: branchCode
     }
-    : {};
+    : {}
   Stock.find(condition)
     .populate('itemId')
     .then((data) => {
@@ -49,7 +80,7 @@ exports.findByBranchCode = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving items.",
+        message: err.message || "Some error occurred while retrieving items."
       })
     })
 }
@@ -129,7 +160,7 @@ exports.findOne = (req, res) => {
 exports.stockPlus = (req, res) => {
 
   const stUpdate = new Uplog({
-    data : JSON.stringify(req.params)
+    data: JSON.stringify(req.params)
   })
 
   stUpdate.save(stUpdate).catch(() => { console.log('log error') })
@@ -229,12 +260,9 @@ exports.stockPlus = (req, res) => {
   //     });
 }
 
-
-
-
 exports.findBarcodeItem = (req, res) => {
-  const itemId = req.params.itemId;
-  const amount = req.params.amount;
+  const itemId = req.params.itemId
+  const amount = req.params.amount
   // let condition = itemId
   //   ? {
   //     itemId: itemId,
@@ -305,16 +333,16 @@ exports.findLast = (req, res) => {
 }
 
 
-exports.stockTransfer= (req, res) => {
+exports.stockTransfer = (req, res) => {
   const sentbranchCode = req.params.sentbranchCode
   const itemId = req.params.itemId
   const receivedbranchCode = req.params.receivedbranchCode
 
-  Stock.findOneAndUpdate({itemId : itemId ,branchCode:receivedbranchCode}, {$inc:{ currentStock: req.params.qty } })
-  .then
-  (data => {
+  Stock.findOneAndUpdate({ itemId: itemId, branchCode: receivedbranchCode }, { $inc: { currentStock: req.params.qty } })
+    .then
+    (data => {
 
-     if (!data) {
+      if (!data) {
         res.status(404).send({
           message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
         });
@@ -322,28 +350,24 @@ exports.stockTransfer= (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating Stock with branchCode" ,
-
-
+        message: "Error updating Stock with branchCode"
       })
     })
 
-    Stock.findOneAndUpdate({itemId : itemId ,branchCode:sentbranchCode}, {$inc:{ currentStock: req.params.qty *-1 } })
+  Stock.findOneAndUpdate({ itemId: itemId, branchCode: sentbranchCode }, { $inc: { currentStock: req.params.qty * -1 } })
     .then
     (data => {
-  
-       if (!data) {
-          res.status(404).send({
-            message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
-          });
-        } else res.send(true);
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: "Error updating Stock with branchCode" ,
-  
-  
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update Stock with branchCode. Maybe Stock was not found!`
         })
+      } else res.send(true)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating Stock with branchCode"
       })
+    })
 
 }

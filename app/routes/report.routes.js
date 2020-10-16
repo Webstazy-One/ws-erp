@@ -1,8 +1,7 @@
 const reports = require("../controllers/report.controller.js")
 
-
 module.exports = app => {
-    const report = require("../controllers/report.controller.js");
+    const report = require("../controllers/report.controller.js")
 
     var router = require("express").Router()
 
@@ -12,11 +11,9 @@ module.exports = app => {
 
     router.get("/profit/timerange/:startDate/:endDate", reports.profitByBranch)
 
-     router.get("/sales/brand/timerange/:startDate/:endDate", report.salesByBrands)
+    router.get("/sales/brand/timerange/:startDate/:endDate", report.salesByBrands)
 
-     
     router.get("/revenue/brand/timerange/:startDate/:endDate", reports.revenueByBrand)
-
 
     router.get("/details/timerange/:startDate/:endDate", report.getDetailsOfPurchases)
 
@@ -24,20 +21,16 @@ module.exports = app => {
 
     router.get("/details/branch/timerange/:branchCode/:startDate/:endDate", report.getDetailsOfPurchasesByBranch)
 
-    
-    router.get("/details/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrandInBranch )
+    router.get("/details/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrandInBranch)
 
     router.get("/sales/item/", report.salesByItems)
 
     router.get("/stock/branch/:branchCode/", report.brandByBranch)
-    
-    
-
 
     // // router.get("/sales/branch/timerange", reports.findByDateRange)		
 
     //  router.get("/sales", report.findByBranchCode)
     // router.get("/sales/brand/timerange/:startDate/:endDate", report.salesByBrand)
 
-    app.use('/api/report', router);
-};
+    app.use('/api/report', router)
+}

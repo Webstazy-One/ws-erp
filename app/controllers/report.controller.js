@@ -47,7 +47,7 @@ exports.revenueByBranch = (req, res) => {
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
         timeZone: 'Asia/Calcutta'
-      });
+      })
       Item.findById(data[0].itemId)
         .then(itemData => {
           console.log(data[0].itemId)
@@ -441,6 +441,7 @@ exports.brandByBranch = (req, res) => {
       brandwiseCount = []
       
       stockData.forEach(stockEntry => {
+        if(!stockEntry.itemId) return
 
      //   brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
       
@@ -564,13 +565,8 @@ exports.salesByItems = (req, res) => {
           .catch(err => {
             res
               .status(500)
-              .send({ message: "Error retrieving item " });
-          });
-
-
-
-
-
+              .send({ message: "Error retrieving item " })
+          })
 
       })
       // res.send(itemDetails)
