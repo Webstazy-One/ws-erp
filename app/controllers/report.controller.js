@@ -429,48 +429,6 @@ exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
 }
 
 
-//***********************************/
-
-exports.brandByBranchInStock = (req, res) => {
-
-  brandAllCount = {}
-
-  Stock.find({
-    branchCode: req.params.branchCode,
-  })
-    .then((StockData) => {
-
-
-      console.log(StockData[0].itemId)
-      Purchase.find({
-        "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
-
-      })
-        .then((data) => {
-          data.forEach(sale => {
-            console.log("A sale of " + sale.qty + "has happened in " + sale.brandName)
-            brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
-          })
-          res.send(brandSalesCount)
-        })
-        .catch((err) => {
-          res.status(500).send({
-            message: err.message || "Some error with report"
-          })
-        })
-
-
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error with report"
-      })
-    })
-
-
-}
-
-//**********edite********
 
 exports.brandByBranch = (req, res) => {
 
