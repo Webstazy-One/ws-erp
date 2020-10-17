@@ -82,6 +82,7 @@ exports.findBydateTime = (req, res) => {
   var condition = dateTime
     ? {
       dateTime: dateTime,
+      _active : true,
     }
     : {}
   Invoice.find(condition)
