@@ -6,6 +6,7 @@ const Invoice = db.invoice
 const Customer = db.customer
 const Item = db.item
 const Purchase = db.purchase
+const Stock =db.stock
 
 const dbLinks = require("../config/db.config.js")
 
@@ -96,10 +97,14 @@ exports.findBydateTime = (req, res) => {
     })
 };
 exports.findByDateRange = (req, res) => {
+
+  
   Invoice.find({
+    
     dateTime: {
       $gte: req.params.dateTimeBefore,
-      $lt: req.params.dateTimeAfter
+      $lt: req.params.dateTimeAfter,
+      
     }
   })
     .then((data) => {
@@ -187,22 +192,8 @@ exports.findLast = (req, res) => {
   })
 }
 
-exports.DeleteFromInvoiceId = (req, res) => {
-  const invId = req.params.invId;
-  Invoice.findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
-    .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
-        });
-      } else res.send(true);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err
-      })
-    })
-}
+
+
 
 
 
@@ -224,7 +215,7 @@ exports.DeleteFromInvoiceId = (req, res) => {
     Purchase
     .findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
     .then(pData => {
-    
+    console.log("stock")
       Stock.findOneAndUpdate({itemId : pData.itemId , branchCode:pData.branchCode}, {$inc:{ currentStock: pData.qty} })
       .then
       (data => {
@@ -232,7 +223,7 @@ exports.DeleteFromInvoiceId = (req, res) => {
             res.status(404).send({
               message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
             });
-          } else res.send(true);
+          } else res.send(pData);
         }).catch(() => { })
         
 

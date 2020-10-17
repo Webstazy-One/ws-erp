@@ -5,7 +5,7 @@ module.exports = (mongoose) => {
     custPhone: String,
     iid: String,
     description: String,
-    remark: [Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean],
+    remark: [Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean],
     deliveryDate: Date,
     cost: Number,
     payment: [String],
