@@ -166,6 +166,20 @@ exports.findAll = (req, res) => {
     })
 }
 
+
+exports.findAllActive = (req, res) => {
+  Invoice.find({ _active: true })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Invoice."
+      });
+    });
+};
+
 exports.findLast = (req, res) => {
   Invoice.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
     res.send(data.invId);
