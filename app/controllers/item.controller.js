@@ -55,8 +55,8 @@ exports.create = (req, res) => {
           if (!data) {
             res.status(404).send({
               message: `Cannot update item with barcodePrefix . Maybe item was not found!`
-            })} else res.send(data)
-          // } else res.send(data.id)
+            })
+           } else res.send(data.id)
         })
         .catch((err) => {
           res.status(500).send({
@@ -260,6 +260,23 @@ exports.update = (req, res) => {
 
   Item.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
+        const sfNameLast = data.name.replace(/[^\w\s+]/gi, '');
+   sfNamef = sfNameLast.replace(/\s/g, "");
+   Item.findOneAndUpdate({ _id: id }, { $set: { sfName: sfNamef } })
+   .then(data => {
+
+     if (!data) {
+       res.status(404).send({
+         message: `Cannot update item with sfName`,
+       });
+     } else res.send(true);
+   })
+   .catch((err) => {
+     res.status(500).send({
+       message: "Error updating item with sfNamef"
+     })
+   })
+
       if (!data) {
         res.status(404).send({
           message: `Cannot update Item with id=${id}. Maybe Item was not found!`
@@ -330,7 +347,7 @@ exports.hotfix1 = (req, res) => {
 
 
 exports.findTopItems = (req, res) => {
-  Item.find().sort({price : -1})
+  Item.find().sort({price : -1}).limit(100)
     .then(data => {
       res.send(data)
      
@@ -338,7 +355,7 @@ exports.findTopItems = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving promo."
+          err.message || "Some error occurred while retrieving Item."
       });
     });
 };
