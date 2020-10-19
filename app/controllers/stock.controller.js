@@ -371,3 +371,71 @@ exports.stockTransfer = (req, res) => {
     })
 
 }
+
+
+// exports.findByBrand = (req, res) => {
+
+//   const brand = req.params.brand
+ 
+//   Stock.find()
+//     .populate('itemId')
+//     .then((data) => {
+//       // console.log(data)
+
+//       stockReport = []
+
+//       data.forEach(stockEntry => {
+//         if (!stockEntry.itemId || stockEntry.itemId === null) return
+//         if (stockEntry.itemId.brandName == brand) {
+//           res.send(data)
+//         }
+//       })
+//      // res.send(Object.assign({}, stockReport))
+//     })
+//     .catch(() => {})
+// }
+
+// exports.findByBrand =(req,res) => {
+    
+//   const brandName = req.res.brandName
+
+// stock.find().populate('itemId')
+// .then((data => {
+// console.log(data[0].itemId)
+// data.forEach(stockEntry => {
+//           if (!stockEntry.itemId || stockEntry.itemId === null) return
+//           if (stockEntry.itemId.brandName == brandName) {
+//             res.send(data)
+//           }
+//         })
+
+
+//       }))
+
+// }
+
+exports.findByBrand = (req, res) => {
+  
+  const brand = req.params.brand
+ 
+  Stock.find()
+    .populate('itemId')
+    .then((data) => {
+
+      stockReport = []
+
+      data.forEach(stockEntry => {
+        if (!stockEntry.itemId || stockEntry.itemId === null) return
+        if (stockEntry.itemId.brandName == brand) {
+          // stockReport[stockEntry] = stockEntry
+stockReport.push(stockEntry)
+        }
+      })
+      res.send(stockReport)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}
