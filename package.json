@@ -18,7 +18,10 @@
     "mongoose": "^5.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.5"
   },
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": "14.7.0"
+  }
 }
