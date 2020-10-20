@@ -6,7 +6,7 @@ const Invoice = db.invoice
 const Customer = db.customer
 const Item = db.item
 const Purchase = db.purchase
-const Stock =db.stock
+const Stock = db.stock
 
 const dbLinks = require("../config/db.config.js")
 
@@ -28,22 +28,22 @@ exports.create = (req, res) => {
         dateTime: req.body.dateTime,
         _active: true,
         brandName: purc.brandName,
-        branchCode :  req.body.branchCode
+        branchCode: req.body.branchCode
       })
-      
 
-     axios.post(dbLinks.serverUrl + '/api/purchase/', purcData).catch(() => { })
+
+      axios.post(dbLinks.serverUrl + '/api/purchase/', purcData).catch(() => { })
       purch.push(purcData)
       const stockUpdate = {
         branchCode: req.body.branchCode,
         itemId: purc.itemId,
         qty: purc.qty
       }
-     
-       
-      axios.put(dbLinks.serverUrl  +'/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
- // axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+
+      axios.put(dbLinks.serverUrl + '/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+
+      // axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
     })
   }
@@ -83,7 +83,7 @@ exports.findBydateTime = (req, res) => {
   var condition = dateTime
     ? {
       dateTime: dateTime,
-      _active : true,
+      _active: true,
     }
     : {}
   Invoice.find(condition)
@@ -96,15 +96,16 @@ exports.findBydateTime = (req, res) => {
       })
     })
 };
-exports.findByDateRange = (req, res) => {
 
-  
+exports.findByDateRange = (req, res) => {
+  var dateTimeAfter = new Date(req.params.dateTimeAfter)
+  dateTimeAfter.setDate(dateTimeAfter.getDate() + 1)
+  console.log(dateTimeAfter)
   Invoice.find({
-    
     dateTime: {
       $gte: req.params.dateTimeBefore,
-      $lt: req.params.dateTimeAfter,
-      
+      $lt: dateTimeAfter,
+
     }
   })
     .then((data) => {
@@ -205,35 +206,35 @@ exports.DeleteFromInvoiceId = (req, res) => {
         res.status(404).send({
           message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
         });
-       } else res.send(true);
+      } else res.send(true);
     })
     .catch((err) => {
       res.status(500).send({
         message: err
       })
     })
-    Purchase
+  Purchase
     .findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
     .then(pData => {
-    console.log("stock")
-      Stock.findOneAndUpdate({itemId : pData.itemId , branchCode:pData.branchCode}, {$inc:{ currentStock: pData.qty} })
-      .then
-      (data => {
-         if (!data) {
+      console.log("stock")
+      Stock.findOneAndUpdate({ itemId: pData.itemId, branchCode: pData.branchCode }, { $inc: { currentStock: pData.qty } })
+        .then
+        (data => {
+          if (!data) {
             res.status(404).send({
               message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
             });
           } else res.send(pData);
         }).catch(() => { })
-        
+
 
       if (!data) {
         res.status(404).send({
           message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
         });
-       } else res.send(true);
+      } else res.send(true);
     }).catch(() => { })
-   
 
-    
+
+
 }
