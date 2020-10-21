@@ -5,6 +5,8 @@ module.exports = app => {
 
   router.post("/", purchase.create);
 
+  router.get("/all", purchase.findAll);
+
   router.get("/", purchase.findAllActive);
 
   router.get("/:purchaseId", purchase.findOne);

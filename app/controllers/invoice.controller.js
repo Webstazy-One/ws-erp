@@ -6,6 +6,10 @@ const Invoice = db.invoice
 const Customer = db.customer
 const Item = db.item
 const Purchase = db.purchase
+const Stock = db.stock
+
+const dbLinks = require("../config/db.config.js")
+
 
 exports.create = (req, res) => {
   if (!req.body.invId) { res.status(400).send({ message: "Content can not be empty!" }); return }
@@ -22,21 +26,24 @@ exports.create = (req, res) => {
         disc: purc.disc,
         discPrice: purc.discPrice,
         dateTime: req.body.dateTime,
-        _active: true
+        _active: true,
+        brandName: purc.brandName,
+        branchCode: req.body.branchCode
       })
-      // axios.post('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData)
-      axios.post('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/purchase/', purcData).catch(() => { });
+
+
+      axios.post(dbLinks.serverUrl + '/api/purchase/', purcData).catch(() => { })
       purch.push(purcData)
       const stockUpdate = {
         branchCode: req.body.branchCode,
         itemId: purc.itemId,
         qty: purc.qty
       }
-      // axios.put('http://wserp0-env.eba-mw8pswre.ap-southeast-1.elasticbeanstalk.com/api/stock/dec/', stockUpdate);
-      //   axios.put('http://localhost:8089/api/purchase/api/stock/dec/', stockUpdate).catch(() => {});;
-      console.log('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + purc.qty)
 
-      axios.put('http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+
+      axios.put(dbLinks.serverUrl + '/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+
+      // axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
 
     })
   }
@@ -76,6 +83,7 @@ exports.findBydateTime = (req, res) => {
   var condition = dateTime
     ? {
       dateTime: dateTime,
+      _active: true,
     }
     : {}
   Invoice.find(condition)
@@ -88,12 +96,18 @@ exports.findBydateTime = (req, res) => {
       })
     })
 };
+
 exports.findByDateRange = (req, res) => {
+  var dateTimeAfter = new Date(req.params.dateTimeAfter)
+  dateTimeAfter.setDate(dateTimeAfter.getDate() + 1)
+  console.log(dateTimeAfter)
   Invoice.find({
     dateTime: {
       $gte: req.params.dateTimeBefore,
-      $lt: req.params.dateTimeAfter
-    }
+      $lt: dateTimeAfter,
+
+    },
+    _active: true
   })
     .then((data) => {
       res.send(data);
@@ -115,7 +129,8 @@ exports.findByInvoiceId = (req, res) => {
   console.log(req.query)
   var condition = invId
     ? {
-      invId: invId
+      invId: invId,
+      _active: true
     }
     : {};
   Invoice.find(condition)
@@ -160,11 +175,30 @@ exports.findAll = (req, res) => {
     })
 }
 
+
+exports.findAllActive = (req, res) => {
+  Invoice.find({ _active: true })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Invoice."
+      });
+    });
+};
+
 exports.findLast = (req, res) => {
   Invoice.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
     res.send(data.invId)
   })
 }
+
+
+
+
+
 
 exports.DeleteFromInvoiceId = (req, res) => {
   const invId = req.params.invId;
@@ -181,4 +215,28 @@ exports.DeleteFromInvoiceId = (req, res) => {
         message: err
       })
     })
+  Purchase
+    .findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
+    .then(pData => {
+      console.log("stock")
+      Stock.findOneAndUpdate({ itemId: pData.itemId, branchCode: pData.branchCode }, { $inc: { currentStock: pData.qty } })
+        .then
+        (data => {
+          if (!data) {
+            res.status(404).send({
+              message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
+            });
+          } else res.send(pData);
+        }).catch(() => { })
+
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
+        });
+      } else res.send(true);
+    }).catch(() => { })
+
+
+
 }

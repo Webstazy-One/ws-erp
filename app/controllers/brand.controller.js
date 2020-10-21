@@ -12,8 +12,9 @@ exports.create = (req, res) => {
   const brands = new Brand({
 
     brandName: req.body.brandName.toUpperCase(),
-    _active: true
-  })
+    _active: true,
+    subCategory : req.body.subCategory 
+  });
 
 
   brands
@@ -35,10 +36,11 @@ exports.findByBrandName = (req, res) => {
   var condition = brandName
     ? {
       brandName: { $regex: new RegExp(req.params.brandName), $options: "i" },
+      _active : true
     }
     : {};
 
-  Brand.find(condition)
+  Brand.find(condition).sort({'brandName': 1})
     .then((data) => {
       res.send(data);
     })
@@ -51,7 +53,7 @@ exports.findByBrandName = (req, res) => {
 
 
 exports.findAll = (req, res) => {
-  Brand.find()
+  Brand.find().sort({'brandName': 1})
     .then(data => {
       res.send(data);
     })
@@ -64,7 +66,7 @@ exports.findAll = (req, res) => {
 }
 
 exports.findAllActive = (req, res) => {
-  Brand.find({ _active: true })
+  Brand.find({ _active: true }).sort({'brandName': 1})
     .then(data => {
       res.send(data)
     })
@@ -83,6 +85,7 @@ exports.findByName = (req, res) => {
   var condition = name
     ? {
       name: { $regex: new RegExp(req.params.name), $options: "i" },
+      _active : true
     }
     : {}
 
@@ -133,7 +136,55 @@ exports.DeleteFromBrandName = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
+<<<<<<< HEAD
         message: err
       })
     })
 }
+=======
+        message: err,
+      });
+    });
+}
+
+
+exports.findBySubcategory = (req, res) => {
+  Brand.find({
+    subCategory : req.params.subCategory,
+    _active: true
+      })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving subCategory.",
+      });
+    });
+};
+
+
+
+checkBrandExisted = (req, res, next) => {
+
+  Brand.findOne({
+    brandName: req.body.brandName.toUpperCase(),
+  }).exec((err, item) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (item) {
+      res.status(400).send({ message: "Duplicate Entry !. Brand already exists" });
+      return;
+    }
+
+
+    next();
+
+  });
+};
+
+
+>>>>>>> dev

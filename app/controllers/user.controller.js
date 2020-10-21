@@ -32,23 +32,35 @@ exports.overrideUserBoard = (req, res) => {
   res.status(200).send("Override User Content.");
 };
 
+
+
+
 exports.DeleteFromUser = (req, res) => {
   const username = req.params.username;
+  if (User.find({
+    username: "zeus"
+  })) {
+    res.status(500).send({
+      message: `Cannot Delete zeus as inactive.`,
+    }
+    )
+  } else {
 
-  User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
-    .then(data => {
+    User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
+      .then(data => {
 
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot change user as inactive=${username}.`,
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot change user as inactive=${username}.`,
+          });
+        } else res.send(true);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err,
         });
-      } else res.send(true);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err,
       });
-    });
+  }
 }
 
 exports.DeleteUser = (req, res) => {

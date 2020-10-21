@@ -11,7 +11,11 @@ module.exports = app => {
 
   router.delete("/:invId", invoice.DeleteFromInvoiceId);
 
-  router.get("/", invoice.findAll);
+  router.get("/all", invoice.findAll);
+
+
+  router.get("/", invoice.findAllActive);
+
 
   router.get("/dateRange/:dateTimeBefore/:dateTimeAfter", invoice.findByDateRange);
 
@@ -24,6 +28,6 @@ module.exports = app => {
   router.get("/customer/:ph", invoice.findByCustPhoneNo);
 
   router.get("/id/last", invoice.findLast);
-  
+
   app.use('/api/invoice', router);
 };

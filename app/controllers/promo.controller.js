@@ -4,7 +4,6 @@ const Promo = db.promo;
 const Item = db.item;
 
 exports.create = (req, res) => {
-
   const promo = new Promo({
     desc: req.body.desc,
     type: req.body.type,
@@ -39,9 +38,9 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving promo."
-      });
-    });
-};
+      })
+    })
+}
 
 
 

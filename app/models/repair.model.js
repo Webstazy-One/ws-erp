@@ -1,23 +1,25 @@
 module.exports = (mongoose) => {
   var schema = mongoose.Schema({
+    
 
     jobcardId: String,
-    custPhone: String,
+    custPhone: { type: mongoose.Schema.Types.Mixed, ref: 'customer'},
     iid: String,
     description: String,
-    remark: [Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean],
+    remark: [Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean],
     deliveryDate: Date,
     cost: Number,
     payment: [String],
     status: {
       type: String,
       enum: ["ACCEPTED",
-      "UNREPAIRABLE",
+      "STARTED",
+      "AWAITING",
       "COMPLETED",
-      "HANDED OVER",
-      "AWAIT",
-      "STARTED",],
-      default: "STARTED",
+      "CALL",
+      "HANDED_OVER",
+    ],
+      default: "ACCEPTED",
     
     },
     

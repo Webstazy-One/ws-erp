@@ -10,11 +10,11 @@ exports.create = (req, res) => {
       custPhone: req.body.custPhone,
       iid: req.body.iid,
       description: req.body.description,
-      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false],
+      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false, false],
       deliveryDate: req.body.deliveryDate,
       cost: req.body.cost,
       payment: req.body.payment,
-      status: req.body.status ? req.body.status : "STARTED"
+      status: req.body.status ? req.body.status : "ACCEPTED"
     })
 
 
@@ -31,17 +31,7 @@ exports.create = (req, res) => {
     })
 }
 
-exports.findawaitrepairs = (req, res) => {
-  Repair.find({ status: "completed" })
-    .then((data) => {
-      res.send(data)
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving repair."
-      })
-    })
-}
+
 
 exports.findAll = (req, res) => {
   Repair.find()
@@ -118,12 +108,13 @@ exports.updateRepairByJcId = (req, res) => {
     })
 }
 
+
+
 exports.findLast = (req, res) => {
   Repair.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
     res.send(data.jobcardId)
   })
 }
-
 
 exports.DeleteFromJobCardId = (req, res) => {
   const jobcardId = req.params.jobcardId
@@ -145,7 +136,7 @@ exports.DeleteFromJobCardId = (req, res) => {
 }
 
 exports.findAwaitRepairs = (req, res) => {
-  Repair.find({ status: "AWAIT" })
+  Repair.find({ status : req.params.status })
     .then((data) => {
       res.send(data);
     })
@@ -156,20 +147,3 @@ exports.findAwaitRepairs = (req, res) => {
     })
 }
 
-// exports.findAwaitRepairs = (req, res) => {
-//   var condition = AWAIT
-//     ? {
-//       status: AWAIT
-//     }
-//     : {};
-
-//     Repair.find(condition)
-//     .then((data) => {
-//       res.send(data);
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: err.message || "Some error occurred while retrieving items.",
-//       });
-//     });
-// };

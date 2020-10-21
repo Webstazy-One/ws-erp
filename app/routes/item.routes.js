@@ -4,7 +4,14 @@ module.exports = (app) => {
   
   var router = require("express").Router();
 
-  router.post("/", items.create);
+  router.post(
+    
+
+    "/",
+    [
+      checkItemnameBrandExisted
+    ],
+    items.create);
 
   router.delete("/:iid", items.DeleteFromItemId);
 
@@ -13,6 +20,8 @@ module.exports = (app) => {
   router.put("/:id/:price", items.updatePriceById);
   
   router.get("/", items.findAllActive);
+
+  router.get("/top", items.findTopItems);
 
   router.get("/all", items.findAll);
 
@@ -24,7 +33,11 @@ module.exports = (app) => {
 
   router.get("/:id", items.findOne);
 
-  router.get("/id/:id", items.findOne);
+
+  router.get("/cat/:subCategory", items.findBySubcategory)
+  
   
   app.use("/api/item", router);
+
+  router.get("/:id", items.hotfix1);
 };

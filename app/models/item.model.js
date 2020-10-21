@@ -3,6 +3,7 @@ module.exports = (mongoose) => {
 
     brandName: String,
     name: String,
+    sfName : String,
     barcodePrefix: String,
     desc: String,
     tag: [String],

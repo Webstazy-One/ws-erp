@@ -13,7 +13,7 @@ module.exports = app => {
 
     router.get("/:jobcardId", repairs.findByJobCardId);
 
-    router.get("/await", repairs.findawaitrepairs);
+    router.get("/status/:status", repairs.findAwaitRepairs);
 
     router.get("/", repairs.findAll);
 

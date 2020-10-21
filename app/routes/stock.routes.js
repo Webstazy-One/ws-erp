@@ -15,11 +15,19 @@ module.exports = app => {
 
   // router.get("/barcode/:itemId/:amount", stock.findBarcodeForItem)
 
-  router.get("/barcodetest/:itemId/:amount", stock.findBarcodeItem)
+  router.get("/barcode/:itemId/:amount", stock.findBarcodeItem)
 
   router.get("/branchCode/:bc", stock.findByBranchCode)
 
-  //router.get("/itemId/:itemId", stock.findByItemId);
+  router.get("/brand/:brand/", stock.findByBrand)
+
+
+
+  router.get("/brand/branch/:brand/:branch", stock.findByBrandBranch)
+
+  router.put("/stocktransfer/:sentbranchCode/:receivedbranchCode/:itemId/:qty", stock.stockTransfer)
+
+  router.get("/itemId/:itemId", stock.findByItemId);
 
   app.use("/api/stock", router)
 }

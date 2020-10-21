@@ -3,7 +3,11 @@ module.exports = (app) => {
 
   var router = require("express").Router()
 
-  router.post("/", brand.create)
+  router.post("/",
+  [
+    checkBrandExisted
+  ],
+  brand.create)
 
   router.delete("/:brandName", brand.DeleteFromBrandName)
 
@@ -16,6 +20,10 @@ module.exports = (app) => {
   router.get("/item/:name", brand.findByName);
 
   router.get("/:brandName", brand.findByBrandName)
+
+  router.get("/cat/:subCategory", brand.findBySubcategory)
+  
+ 
 
   app.use("/api/brand", router)
 }
