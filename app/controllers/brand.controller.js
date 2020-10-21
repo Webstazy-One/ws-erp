@@ -13,6 +13,7 @@ exports.create = (req, res) => {
 
     brandName: req.body.brandName.toUpperCase(),
     _active: true,
+    subCategory : req.body.subCategory 
   });
 
 
@@ -35,6 +36,7 @@ exports.findByBrandName = (req, res) => {
   var condition = brandName
     ? {
       brandName: { $regex: new RegExp(req.params.brandName), $options: "i" },
+      _active : true
     }
     : {};
 
@@ -83,10 +85,11 @@ exports.findByName = (req, res) => {
   var condition = name
     ? {
       name: { $regex: new RegExp(req.params.name), $options: "i" },
+      _active : true
     }
     : {};
 
-  Item.find(condition).sort({'brandName': 1})
+  Item.find(condition)
     .then((data) => {
       res.send(data);
     })
@@ -138,3 +141,44 @@ exports.DeleteFromBrandName = (req, res) => {
       });
     });
 }
+
+
+exports.findBySubcategory = (req, res) => {
+  Brand.find({
+    subCategory : req.params.subCategory,
+    _active: true
+      })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving subCategory.",
+      });
+    });
+};
+
+
+
+checkBrandExisted = (req, res, next) => {
+
+  Brand.findOne({
+    brandName: req.body.brandName.toUpperCase(),
+  }).exec((err, item) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (item) {
+      res.status(400).send({ message: "Duplicate Entry !. Brand already exists" });
+      return;
+    }
+
+
+    next();
+
+  });
+};
+
+

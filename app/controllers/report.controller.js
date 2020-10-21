@@ -17,8 +17,13 @@ exports.salesByBranch = (req, res) => {
   branchSalesCount['LIBPL'] = 0
   branchSalesCount['EXSHCOL'] = 0
 
+  let dateTimeAfterlt = req.params.dateTimeAfter
+
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate }
   })
     .then((data) => {
       data.forEach(sale => {
@@ -41,8 +46,13 @@ exports.revenueByBranch = (req, res) => {
   branchRevenueCount['LIBPL'] = 0
   branchRevenueCount['EXSHCOL'] = 0
 
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
+
+
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  }
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -119,8 +129,12 @@ exports.profitByBranch = (req, res) => {
   branchProfitCount['LIBPL'] = 0
   branchProfitCount['EXSHCOL'] = 0
 
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
+
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate }
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -196,9 +210,13 @@ exports.profitByBranch = (req, res) => {
 exports.revenueByBrand = (req, res) => {
   brandRevenueCount = {}
 
+  
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  }
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -319,10 +337,15 @@ exports.revenueByBrand = (req, res) => {
 
 exports.getDetailsOfPurchases = (req, res) => {
 
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
+
+
   Purchase.find({
     dateTime: {
       $gte: req.params.startDate,
-      $lt: req.params.endDate
+      $lt:endDate
     }
   })
     .then((data) => {
@@ -339,12 +362,15 @@ exports.getDetailsOfPurchases = (req, res) => {
 
 exports.getDetailsOfPurchasesByBrand = (req, res) => {
 
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
 
   Purchase.find({
     brandName: req.params.brandName,
     dateTime: {
       $gte: req.params.startDate,
-      $lt: req.params.endDate,
+      $lt: endDate,
     },
 
 
@@ -367,8 +393,12 @@ exports.getDetailsOfPurchasesByBrand = (req, res) => {
 exports.salesByBrands = (req, res) => {
   brandSalesCount = {}
 
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
+
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": new Date(req.params.endDate) }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  }
   })
     .then((data) => {
       data.forEach(sale => {
@@ -386,11 +416,16 @@ exports.salesByBrands = (req, res) => {
 
 
 exports.getDetailsOfPurchasesByBranch = (req, res) => {
+
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
+
   Purchase.find({
     branchCode: req.params.branchCode,
     dateTime: {
       $gte: req.params.startDate,
-      $lt: req.params.endDate,
+      $lt: endDate,
     },
 
 
@@ -407,12 +442,17 @@ exports.getDetailsOfPurchasesByBranch = (req, res) => {
 }
 
 exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
+
+  var endDate = new Date(req.params.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  console.log(endDate)
+
   Purchase.find({
     branchCode: req.params.branchCode,
     brandName: req.params.brandName,
     dateTime: {
       $gte: req.params.startDate,
-      $lt: req.params.endDate,
+      $lt: endDate,
     },
 
 

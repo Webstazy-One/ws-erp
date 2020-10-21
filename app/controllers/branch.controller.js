@@ -38,6 +38,7 @@ exports.findByBranchCode = (req, res) => {
   var condition = branchCode
     ? {
       branchCode: branchCode,
+      _active: true
     }
     : {};
 

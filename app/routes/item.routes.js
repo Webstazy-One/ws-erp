@@ -4,7 +4,14 @@ module.exports = (app) => {
   
   var router = require("express").Router();
 
-  router.post("/", items.create);
+  router.post(
+    
+
+    "/",
+    [
+      checkItemnameBrandExisted
+    ],
+    items.create);
 
   router.delete("/:iid", items.DeleteFromItemId);
 
@@ -26,7 +33,9 @@ module.exports = (app) => {
 
   router.get("/:id", items.findOne);
 
-  router.get("/id/:id", items.findOne);
+
+  router.get("/cat/:subCategory", items.findBySubcategory)
+  
   
   app.use("/api/item", router);
 

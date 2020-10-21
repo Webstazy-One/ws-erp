@@ -5,7 +5,7 @@ const Counter = db.counter
 const axios = require('axios')
 const { count } = require("../models/user.model")
 const { item } = require("../models")
-
+const Brand = db.brand
 
 exports.create = (req, res) => {
 
@@ -56,7 +56,7 @@ exports.create = (req, res) => {
             res.status(404).send({
               message: `Cannot update item with barcodePrefix . Maybe item was not found!`
             })
-           } else res.send(data.id)
+          } else res.send(data.id)
         })
         .catch((err) => {
           res.status(500).send({
@@ -71,9 +71,6 @@ exports.create = (req, res) => {
     })
   })
 
-
-
-
 }
 
 
@@ -81,8 +78,8 @@ exports.create = (req, res) => {
 exports.findByBrand = (req, res) => {
   var condition = req.params.br
     ? {
-      brandName:req.params.br,
-      _active : true
+      brandName: req.params.br,
+      _active: true
     }
     : {}
 
@@ -102,7 +99,8 @@ exports.findBybarcode = (req, res) => {
   console.log(req.query);
   var condition = barcodePrefix
     ? {
-      barcodePrefix: { $regex: new RegExp(req.params.bc), $options: "i" }
+      barcodePrefix: { $regex: new RegExp(req.params.bc), $options: "i" },
+      _active: true
     }
     : {}
 
@@ -119,12 +117,20 @@ exports.findBybarcode = (req, res) => {
 
 
 exports.findByName = (req, res) => {
-  const sfName = req.params.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
+  //const sfName = req.params.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
+
+  const sfNameLast = req.params.name.replace(/[^\w\s+]/gi, '')
+  const sfName = sfNameLast.replace(/\s/g, "")
+
+
   var condition = sfName
     ? {
-      sfName: { $regex: new RegExp(req.params.name), $options: "ix" }
+      //  sfName: req.params.name,
+      sfName: { $regex: new RegExp(sfName), $options: "ix" },
+      _active: true
     }
     : {}
+
 
   Item.find(condition)
     .then((data) => {
@@ -140,20 +146,13 @@ exports.findByName = (req, res) => {
 
 exports.findOne = (req, res) => {
 
-
   let nDate = new Date().toISOString('en-US', {
     timeZone: 'Asia/Calcutta'
   })
 
   Item.findById(req.params.id)
     .then(itemData => {
-
-
-
       console.log(itemData)
-
-
-
       Promo.find(
 
 
@@ -211,7 +210,14 @@ exports.findOne = (req, res) => {
         }
 
         ).finally(() => {
-          res.send(itemData)
+          if (itemData._active == true) {
+            res.send(itemData)
+          }
+         else{
+          res
+          .status(500)
+          .send({ message: "Not Found item with id=" + req.params.id + " "  });
+         }
 
           //    itemData.disValue = itemData.price * promoData[0].rate
         })
@@ -260,22 +266,22 @@ exports.update = (req, res) => {
 
   Item.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
-        const sfNameLast = data.name.replace(/[^\w\s+]/gi, '');
-   sfNamef = sfNameLast.replace(/\s/g, "");
-   Item.findOneAndUpdate({ _id: id }, { $set: { sfName: sfNamef } })
-   .then(data => {
+      const sfNameLast = data.name.replace(/[^\w\s+]/gi, '');
+      sfNamef = sfNameLast.replace(/\s/g, "");
+      Item.findOneAndUpdate({ _id: id }, { $set: { sfName: sfNamef } })
+        .then(data => {
 
-     if (!data) {
-       res.status(404).send({
-         message: `Cannot update item with sfName`,
-       });
-     } else res.send(true);
-   })
-   .catch((err) => {
-     res.status(500).send({
-       message: "Error updating item with sfNamef"
-     })
-   })
+          if (!data) {
+            res.status(404).send({
+              message: `Cannot update item with sfName`,
+            });
+          } else res.send(true);
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: "Error updating item with sfNamef"
+          })
+        })
 
       if (!data) {
         res.status(404).send({
@@ -334,7 +340,7 @@ exports.hotfix1 = (req, res) => {
 
   Item.find()
     .then(data => {
-       
+
     })
     .catch((err) => {
       res.status(500).send({
@@ -347,10 +353,10 @@ exports.hotfix1 = (req, res) => {
 
 
 exports.findTopItems = (req, res) => {
-  Item.find().sort({price : -1}).limit(100)
+  Item.find().sort({ price: -1 }).limit(100)
     .then(data => {
       res.send(data)
-     
+
     })
     .catch(err => {
       res.status(500).send({
@@ -360,4 +366,71 @@ exports.findTopItems = (req, res) => {
     });
 };
 
+
+
+exports.findBySubcategory = (req, res) => {
+  let itemDt = []
+ 
+  Brand.find({
+    subCategory: req.params.subCategory,
+    _active: true
+  })
+    .then((data) => {
+
+
+
+      data.forEach(itemEntry => {
+        if (!itemEntry.brandName || itemEntry.brandName === null) return
+        var condition = itemEntry.brandName
+          ? {
+            brandName: itemEntry.brandName,
+            _active: true
+          }
+          : {}
+
+        Item.find(condition)
+          .then((data) => {
+            if (!data[0] || data === null) return
+            itemDt = data
+
+            // return itemDt
+            console.log(data)
+            
+            res.send(data)
+          }).catch(() => { })
+          
+      
+      })
+
+
+    }) 
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving subCategory.",
+      });
+    });
+}
+
+
+checkItemnameBrandExisted = (req, res, next) => {
+
+  Item.findOne({
+    name: req.body.name,
+    brandName: req.body.brandName
+  }).exec((err, item) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (item) {
+      res.status(400).send({ message: "Duplicate Entry !. Item already exists" });
+      return;
+    }
+
+
+    next();
+
+  });
+};
 

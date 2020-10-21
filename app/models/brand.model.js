@@ -2,7 +2,19 @@ module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
         brandName: String,
-        _active: Boolean
+        _active: Boolean,
+
+        subCategory: {
+          type: String,
+          enum: ["WATCHES",
+          "WALLCLOCKS",
+          "BATTERIES_ACCESOORIES",
+          "DIGITAL",
+          "OTHER"
+        ],
+          default: "WATCHES",
+        
+        },
       },
      
     );

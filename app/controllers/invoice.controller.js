@@ -106,7 +106,8 @@ exports.findByDateRange = (req, res) => {
       $gte: req.params.dateTimeBefore,
       $lt: dateTimeAfter,
 
-    }
+    },
+    _active: true
   })
     .then((data) => {
       res.send(data);
@@ -128,7 +129,8 @@ exports.findByInvoiceId = (req, res) => {
   console.log(req.query)
   var condition = invId
     ? {
-      invId: invId
+      invId: invId,
+      _active: true
     }
     : {};
   Invoice.find(condition)

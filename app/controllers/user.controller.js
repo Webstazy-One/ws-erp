@@ -8,7 +8,7 @@ exports.allAccess = (req, res) => {
   var condition = username ? { username: { $regex: new RegExp(username), $options: "i" } } : {};
 
   User.find(condition)
-  .populate('roles')
+    .populate('roles')
     .then(data => {
       res.send(data);
     })
@@ -36,31 +36,44 @@ exports.overrideUserBoard = (req, res) => {
 
 
 exports.DeleteFromUser = (req, res) => {
-  const username= req.params.username;
- 
-  User.findOneAndUpdate({username: username},{$set:{_active: false} })
-  .then(data => {
- 
-         if (!data) {
-        res.status(404).send({
-          message: `Cannot change user as inactive=${username}.`,
-        });
-      } else res.send(true);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err,
-      });
-    });
- }
+  const username = req.params.username;
+  if (User.find({
+    username: "zeus"
+  })) {
+    res.status(500).send({
+      message: `Cannot Delete zeus as inactive.`,
+    }
+    )
+  } else {
 
- exports.DeleteUser = (req, res) => {
-  const username= req.params.username;
- 
-  User.findOneAndUpdate({username: username},{$set:{_active: false} })
-  .then(data => {
- 
-         if (!data) {
+    User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
+      .then(data => {
+
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot change user as inactive=${username}.`,
+          });
+        } else res.send(true);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err,
+        });
+      });
+  }
+
+
+
+
+}
+
+exports.DeleteUser = (req, res) => {
+  const username = req.params.username;
+
+  User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
+    .then(data => {
+
+      if (!data) {
         res.status(404).send({
           message: `Cannot inactive user=${username}.`,
         });
@@ -71,16 +84,16 @@ exports.DeleteFromUser = (req, res) => {
         message: "Error inactivating user =" + username,
       });
     });
- }
+}
 
- exports.updatePasswordByUserName = (req, res) => {
+exports.updatePasswordByUserName = (req, res) => {
   const username = req.params.username;
   const password = req.params.password;
 
-  User.findOneAndUpdate({username: username},{$set: {password:bcrypt.hashSync(password,8)}})
-  .then(data => {
+  User.findOneAndUpdate({ username: username }, { $set: { password: bcrypt.hashSync(password, 8) } })
+    .then(data => {
 
-     if (!data) {
+      if (!data) {
         res.status(404).send({
           message: `Cannot update password=${password}.`,
         });
