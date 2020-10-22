@@ -21,7 +21,8 @@ module.exports = (app) => {
   
   router.get("/", items.findAllActive);
 
-  router.get("/top", items.findTopItems);
+  router.get("/top/:skip", items.findTopItems);
+ 
 
   router.get("/all", items.findAll);
 

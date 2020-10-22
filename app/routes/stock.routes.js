@@ -21,7 +21,7 @@ module.exports = app => {
 
   router.get("/both/branch/brand/:branchCode/:brand", stock.findByBranChCodeAndBrand)
 
-
+  router.get("/brand/:brand", stock.findByBrand)
 
   router.get("/brand/branch/:brand/:branch", stock.findByBrandBranch)
 

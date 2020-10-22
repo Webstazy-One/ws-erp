@@ -353,8 +353,12 @@ exports.hotfix1 = (req, res) => {
 
 
 exports.findTopItems = (req, res) => {
-  Item.find().sort({ price: -1 }).limit(100)
+
+ const skip = parseInt(req.params.skip)
+console.log(skip)
+  Item.find({_active:true}).sort({ price: -1 }).skip(skip).limit(100)
     .then(data => {
+
       res.send(data)
 
     })

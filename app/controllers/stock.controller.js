@@ -440,3 +440,30 @@ stockReport.push(stockEntry)
       })
     })
 }
+
+exports.findByBrand = (req, res) => {
+  
+  const brand = req.params.brand
+ 
+  Stock.find()
+    .populate('itemId')
+    .then((data) => {
+      console.log(data)
+
+      stockReport = []
+
+      data.forEach(stockEntry => {
+        if (!stockEntry.itemId || stockEntry.itemId === null) return
+        if (stockEntry.itemId.brandName == brand) {
+          // stockReport[stockEntry] = stockEntry
+stockReport.push(stockEntry)
+        }
+      })
+      res.send(stockReport)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}
