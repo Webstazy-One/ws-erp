@@ -213,11 +213,11 @@ exports.findOne = (req, res) => {
           if (itemData._active == true) {
             res.send(itemData)
           }
-         else{
-          res
-          .status(500)
-          .send({ message: "Not Found item with id=" + req.params.id + " "  });
-         }
+          else {
+            res
+              .status(500)
+              .send({ message: "Not Found item with id=" + req.params.id + " " });
+          }
 
           //    itemData.disValue = itemData.price * promoData[0].rate
         })
@@ -354,18 +354,22 @@ exports.hotfix1 = (req, res) => {
 
 exports.findTopItems = (req, res) => {
 
- const skiplt = parseInt(req.params.skip)
- const skip = (skiplt - 1) * 100
-console.log(skip)
-  Item.find({_active:true}).sort({ price: -1 }).skip(skip).limit(100)
+  const skiplt = parseInt(req.params.skip)
+  const skip = (skiplt - 1) * 100
+  //console.log(skip)
+  Item.find({ _active: true }).sort({ price: -1 }).skip(skip).limit(100)
     .then(data => {
 
-      const initItems = {
-        items : data,
-        count : 100
-      }
+      Item.countDocuments({ _active: true }).exec().then(count => {
 
-      res.send(initItems)
+        const initItems = {
+          items: data,
+          count: count
+
+        }
+        res.send(initItems)
+      }
+      )
 
     })
     .catch(err => {
@@ -380,7 +384,7 @@ console.log(skip)
 
 exports.findBySubcategory = (req, res) => {
   let itemDt = []
- 
+
   Brand.find({
     subCategory: req.params.subCategory,
     _active: true
@@ -405,15 +409,15 @@ exports.findBySubcategory = (req, res) => {
 
             // return itemDt
             console.log(data)
-            
+
             res.send(data)
           }).catch(() => { })
-          
-      
+
+
       })
 
 
-    }) 
+    })
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving subCategory.",
