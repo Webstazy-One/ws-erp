@@ -360,7 +360,12 @@ console.log(skip)
   Item.find({_active:true}).sort({ price: -1 }).skip(skip).limit(100)
     .then(data => {
 
-      res.send(data)
+      const initItems = {
+        items : data,
+        count : 100
+      }
+
+      res.send(initItems)
 
     })
     .catch(err => {
