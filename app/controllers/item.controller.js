@@ -228,7 +228,7 @@ exports.findOne = (req, res) => {
         .status(500)
         .send({ message: "Error retrieving item with id=" + req.params.id + " " + err });
     });
-};
+}
 
 exports.findAll = (req, res) => {
   Item.find()
@@ -239,9 +239,9 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving promo."
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findAllActive = (req, res) => {
   Item.find({ _active: true })
@@ -354,7 +354,8 @@ exports.hotfix1 = (req, res) => {
 
 exports.findTopItems = (req, res) => {
 
- const skip = parseInt(req.params.skip)
+ const skiplt = parseInt(req.params.skip)
+ const skip = (skiplt - 1) * 100
 console.log(skip)
   Item.find({_active:true}).sort({ price: -1 }).skip(skip).limit(100)
     .then(data => {
