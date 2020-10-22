@@ -414,13 +414,14 @@ exports.stockTransfer = (req, res) => {
 
 // }
 
-exports.findByBrand = (req, res) => {
-  
+exports.findByBranChCodeAndBrand = (req, res) => {
+  const branchCode = req.params.branchCode
   const brand = req.params.brand
  
-  Stock.find()
+  Stock.find({branchCode :branchCode})
     .populate('itemId')
     .then((data) => {
+      console.log(data)
 
       stockReport = []
 
