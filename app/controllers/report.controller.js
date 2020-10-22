@@ -17,13 +17,14 @@ exports.salesByBranch = (req, res) => {
   branchSalesCount['LIBPL'] = 0
   branchSalesCount['EXSHCOL'] = 0
 
-  let dateTimeAfterlt = req.params.dateTimeAfter
+  
 
   var endDate = new Date(req.params.endDate)
   endDate.setDate(endDate.getDate() + 1)
   console.log(endDate)
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate },
+    _active : true
   })
     .then((data) => {
       data.forEach(sale => {
@@ -38,6 +39,8 @@ exports.salesByBranch = (req, res) => {
       })
     })
 }
+
+
 exports.revenueByBranch = (req, res) => {
   branchRevenueCount = {}
   branchRevenueCount['COLM5'] = 0
@@ -46,13 +49,14 @@ exports.revenueByBranch = (req, res) => {
   branchRevenueCount['LIBPL'] = 0
   branchRevenueCount['EXSHCOL'] = 0
 
-  var endDate = new Date(req.params.endDate)
-  endDate.setDate(endDate.getDate() + 1)
-  console.log(endDate)
+  var dateTimeAfter = new Date(req.params.dateTimeAfter)
+  dateTimeAfter.setDate(dateTimeAfter.getDate() + 1)
+  console.log(dateTimeAfter)
 
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  }
+    "dateTime": { "$gte": new Date(req.params.dateTimeBefore), "$lt": dateTimeAfter  },
+    _active : true
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -121,6 +125,12 @@ exports.revenueByBranch = (req, res) => {
       })
     })
 }
+
+
+
+
+
+
 exports.profitByBranch = (req, res) => {
   branchProfitCount = {}
   branchProfitCount['COLM5'] = 0
@@ -134,7 +144,9 @@ exports.profitByBranch = (req, res) => {
   console.log(endDate)
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate },
+    _active : true
+
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -216,7 +228,8 @@ exports.revenueByBrand = (req, res) => {
   console.log(endDate)
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  },
+    _active : true
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -346,7 +359,8 @@ exports.getDetailsOfPurchases = (req, res) => {
     dateTime: {
       $gte: req.params.startDate,
       $lt:endDate
-    }
+    },
+    _active : true
   })
     .then((data) => {
       res.send(data)
@@ -373,7 +387,7 @@ exports.getDetailsOfPurchasesByBrand = (req, res) => {
       $lt: endDate,
     },
 
-
+    _active : true
   })
     .then((data) => {
       res.send(data);
@@ -398,7 +412,8 @@ exports.salesByBrands = (req, res) => {
   console.log(endDate)
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  }
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  },
+    _active : true
   })
     .then((data) => {
       data.forEach(sale => {
@@ -428,7 +443,7 @@ exports.getDetailsOfPurchasesByBranch = (req, res) => {
       $lt: endDate,
     },
 
-
+    _active : true
   })
     .then((data) => {
       console.log(data)
@@ -454,7 +469,7 @@ exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
       $gte: req.params.startDate,
       $lt: endDate,
     },
-
+    _active : true
 
   })
     .then((data) => {
@@ -510,7 +525,7 @@ exports.salesByItems = (req, res) => {
   itemDetails = []
 
   Purchase.find({
-
+    _active : true
   }).sort({ 'qty': -1 }).limit(100)
     .then((data) => {
 
