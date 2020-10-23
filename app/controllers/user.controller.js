@@ -35,15 +35,12 @@ exports.overrideUserBoard = (req, res) => {
 
 
 
-exports.DeleteFromUser = (req, res) => {
+exports.DeleteUser = (req, res) => {
   const username = req.params.username;
-  if (User.find({
-    username: "zeus"
-  })) {
-    res.status(500).send({
-      message: `Cannot Delete zeus as inactive.`,
-    }
-    )
+  if (username === "zeus"){
+    res.status(404).send({
+      message: `Cannot Delete zeus.`,
+    });
   } else {
 
     User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
@@ -62,29 +59,8 @@ exports.DeleteFromUser = (req, res) => {
       });
   }
 
-
-
-
 }
 
-exports.DeleteUser = (req, res) => {
-  const username = req.params.username;
-
-  User.findOneAndUpdate({ username: username }, { $set: { _active: false } })
-    .then(data => {
-
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot inactive user=${username}.`,
-        });
-      } else res.send(true);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error inactivating user =" + username,
-      });
-    });
-}
 
 exports.updatePasswordByUserName = (req, res) => {
   const username = req.params.username;
@@ -109,6 +85,7 @@ exports.updatePasswordByUserName = (req, res) => {
 
 exports.findAllActive = (req, res) => {
   User.find({ _active: true })
+  .populate('roles')
     .then(data => {
       res.send(data);
     })

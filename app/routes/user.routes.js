@@ -11,7 +11,7 @@ module.exports = function (app) {
     next()
   })
 
-  router.delete("/:username", controller.DeleteFromUser)
+  router.delete("/:username", controller.DeleteUser)
 
   app.get("/api/user/", controller.allAccess)
 
@@ -21,7 +21,7 @@ module.exports = function (app) {
 
   router.put("/:username/:password", controller.updatePasswordByUserName)
 
-  router.delete("/:username", controller.DeleteUser)
+
 
   app.get(
     "/api/admin",
