@@ -51,7 +51,7 @@ exports.findByBrandBranch = (req, res) => {
 
       data.forEach(stockEntry => {
         if (!stockEntry.itemId || stockEntry.itemId === null) return
-        if (stockEntry.itemId.brandName == brand) {
+        if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
           stockReport[stockEntry.itemId.name] = stockEntry.currentStock
         }
       })
@@ -427,7 +427,7 @@ exports.findByBranChCodeAndBrand = (req, res) => {
 
       data.forEach(stockEntry => {
         if (!stockEntry.itemId || stockEntry.itemId === null) return
-        if (stockEntry.itemId.brandName == brand) {
+        if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
           // stockReport[stockEntry] = stockEntry
 stockReport.push(stockEntry)
         }
@@ -454,7 +454,7 @@ exports.findByBrand = (req, res) => {
 
       data.forEach(stockEntry => {
         if (!stockEntry.itemId || stockEntry.itemId === null) return
-        if (stockEntry.itemId.brandName == brand) {
+        if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
           // stockReport[stockEntry] = stockEntry
 stockReport.push(stockEntry)
         }
@@ -467,3 +467,5 @@ stockReport.push(stockEntry)
       })
     })
 }
+
+

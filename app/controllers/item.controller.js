@@ -6,6 +6,8 @@ const axios = require('axios')
 const { count } = require("../models/user.model")
 const { item } = require("../models")
 const Brand = db.brand
+const Stock = db.stock
+
 
 exports.create = (req, res) => {
 
@@ -238,7 +240,7 @@ exports.findAll = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving promo."
+          err.message || "Some error occurred while retrieving ITEM."
       })
     })
 }
@@ -318,14 +320,14 @@ exports.updatePriceById = (req, res) => {
 }
 
 exports.DeleteFromItemId = (req, res) => {
-  const id = req.params.iid
+  const Id = req.params.iid
 
-  Item.findByIdAndUpdate({ _id: id }, { $set: { _active: false } })
+  Item.findByIdAndUpdate({ _id: Id }, { $set: { _active: false } })
     .then(data => {
 
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete item with id=${_id}. Maybe item was not found!`
+          message: `Cannot delete item with id=. Maybe item was not found!`
         })
       } else res.send(true)
     })
@@ -334,6 +336,72 @@ exports.DeleteFromItemId = (req, res) => {
         message: err
       })
     })
+
+
+
+    Stock.findOneAndRemove({ itemId: Id,branchCode:"BTTML"
+  }, { $set: req.body })
+      .then(data => {
+  
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot delete stock BTTML.`
+          })
+        } 
+      })
+      
+      Stock.findOneAndRemove({ itemId: Id,branchCode:"COLM5"
+    }, { $set: req.body })
+        .then(data => {
+    
+          if (!data) {
+            res.status(404).send({
+              message: `Cannot delete stock COLM5.`
+            })
+          } 
+        })
+        
+    Stock.findOneAndRemove({ itemId: Id,branchCode:"OGFSL"
+  }, { $set: req.body })
+      .then(data => {
+  
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot delete stock OGFSL .`
+          })
+        }
+      })
+      
+    Stock.findOneAndRemove({ itemId: Id,branchCode:"LIBPL"
+  }, { $set: req.body })
+      .then(data => {
+  
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot delete stock LIBPL.`
+          })
+        } 
+      })
+      
+    Stock.findOneAndRemove({ itemId: Id,branchCode:"WAREH"
+  }, { $set: req.body })
+      .then(data => {
+  
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot delete stock WAREH.`
+          })
+        } else res.send(true)
+      })
+      
+  
+  
+      .catch(() => {
+        
+       
+      })
+
+
 }
 
 exports.hotfix1 = (req, res) => {
