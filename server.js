@@ -96,6 +96,7 @@ require("./app/routes/user.routes")(app)
 require("./app/routes/report.routes")(app)
 //require("./app/routes/log.routes")(app)
 //require("./app/routes/goodreceivednote.routes")(app)
+require("./app/routes/stockmappingservice.routes")(app)
 
 app.use(express.static('dist'))
 
@@ -107,7 +108,7 @@ app.get("/*", (req, res) => {
  res.sendFile(__dirname + '/dist/index.html')
 })
 
-const PORT = process.env.PORT || 8090;
+const PORT = process.env.PORT || 8089;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`)
 })
