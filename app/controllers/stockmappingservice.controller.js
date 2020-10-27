@@ -4,52 +4,69 @@ const Item = db.item
 const Stock = db.stock
 
 
-// exports.findMatchingInStock = (req, res) => {
-//   details ={}
-//   recyclestock = []
-//   Stock.find()
+exports.findMatchingInStock = (req, res) => {
+  details ={}
+  recyclestock = []
+  let dk
+  Stock.find()
 
-//     .then(stockData => {
-//      Item.find()
+    .then(stockData => {
+     Item.find()
 
-//      .then(itemData => {
+     .then(itemData => {
 
-//       itemDet = []
-//       stockDet = []
-//       console.log()
+      itemDet = []
+      stockDet = []
+      console.log()
 
-//       stockData.forEach(stockEntry => {
-//         if (
-//           stockEntry.itemId !== itemData._id
-//         ) {
-//           stockDet.push(stockEntry)
+      stockData.forEach(stockEntry => {
+        if (
+          stockEntry.itemId !== itemData._id
+        ) {
+          stockDet.push(stockEntry)
 
 // console.log(itemData[0].id)
-//         }else if(
-//           stockEntry.itemId == itemData._id
-//         ){
-//                   recyclestock.push(stockEntry)
+        }else if(
+          stockEntry.itemId == itemData._id
+        ){
+          recyclestock.push(stockEntry)
+          for (let index = 0; index < recyclestock.length; index++) {
+            
+            let dk = recyclestock[index]["_id"]
+            // console.log(dk)
+  
+   Stock.findByIdAndDelete(dk, function (err) {
+                if(err) console.log(err);
+                console.log("Successful deletion" + dk );
+              });
+           
+          }
+        
+        }
 
-//         }
+     
+
+details ={
+  hangingStock : recyclestock
+}
 
 
+// console.log(details)
 
-// details ={
-//   hangingStock : recyclestock
-// }
-//       })
-//       res.send(details)
-// //console.log(stockDet)
-//      })
 
-//     })
-//     .catch(err => {
-//       res.status(500).send({
-//         message:
-//           err.message || "Some error occurred while retrieving stock."
-//       })
-//     })
-// }
+      })
+      res.send(details)
+//console.log(stockDet)
+     })
+
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving stock."
+      })
+    })
+}
 
 exports.findMatchingInItem = (req, res) => {
 
@@ -137,7 +154,7 @@ exports.findMatchingInItem = (req, res) => {
       stockData.forEach(stockEntry => {
         if (item.find({ _id: stockEntry.itemId })
         ) {
-          console.log("There are no any hanging stocks")
+          console.log("There are no any hanging stocks2")
         } else {
           Stock.findOneAndRemove(stockEntry.itemId).then((data) => {
             res.send(true)
