@@ -1,5 +1,5 @@
 const db = require("../models");
-const { invoice } = require("../models");
+const { invoice } = require("../models")
 const Purchase = db.purchase;
 const Invoice = db.invoice;
 const axios = require('axios')
@@ -22,7 +22,7 @@ exports.create = (req, res) => {
 
   }
 
-  );
+  )
 
   purchase
     .save(purchase)
@@ -109,16 +109,16 @@ exports.create = (req, res) => {
       }
 
 
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while creating the Purchase."
-      });
-    });
+      })
+    })
 
-};
+}
 
 
 
@@ -144,6 +144,7 @@ exports.findByInvoiceId = (req, res) => {
   var condition = invId
     ? {
       invId: invId,
+      _active : true
     }
     : {};
 
@@ -180,9 +181,9 @@ exports.findAllActive = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving purchase."
-      });
-    });
-};
+      })
+    })
+}
 
 
 exports.findByDateRange = (req, res) => {
@@ -209,7 +210,7 @@ exports.findByDateRange = (req, res) => {
     .catch((err) => console.log(err))
 
     .then(($qty) => {
-      res.send($qty);
+      res.send($qty)
     })
     .catch((err) => {
       res.status(500).send({
