@@ -339,67 +339,72 @@ exports.DeleteFromItemId = (req, res) => {
 
 
 
-    Stock.findOneAndRemove({ itemId: Id,branchCode:"BTTML"
+  Stock.findOneAndRemove({
+    itemId: Id, branchCode: "BTTML"
   }, { $set: req.body })
-      .then(data => {
-  
-        if (!data) {
-          res.status(404).send({
-            message: `Cannot delete stock BTTML.`
-          })
-        } 
-      })
-      
-      Stock.findOneAndRemove({ itemId: Id,branchCode:"COLM5"
-    }, { $set: req.body })
-        .then(data => {
-    
-          if (!data) {
-            res.status(404).send({
-              message: `Cannot delete stock COLM5.`
-            })
-          } 
+    .then(data => {
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete stock BTTML.`
         })
-        
-    Stock.findOneAndRemove({ itemId: Id,branchCode:"OGFSL"
+      }
+    })
+
+  Stock.findOneAndRemove({
+    itemId: Id, branchCode: "COLM5"
   }, { $set: req.body })
-      .then(data => {
-  
-        if (!data) {
-          res.status(404).send({
-            message: `Cannot delete stock OGFSL .`
-          })
-        }
-      })
-      
-    Stock.findOneAndRemove({ itemId: Id,branchCode:"LIBPL"
+    .then(data => {
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete stock COLM5.`
+        })
+      }
+    })
+
+  Stock.findOneAndRemove({
+    itemId: Id, branchCode: "OGFSL"
   }, { $set: req.body })
-      .then(data => {
-  
-        if (!data) {
-          res.status(404).send({
-            message: `Cannot delete stock LIBPL.`
-          })
-        } 
-      })
-      
-    Stock.findOneAndRemove({ itemId: Id,branchCode:"WAREH"
+    .then(data => {
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete stock OGFSL .`
+        })
+      }
+    })
+
+  Stock.findOneAndRemove({
+    itemId: Id, branchCode: "LIBPL"
   }, { $set: req.body })
-      .then(data => {
-  
-        if (!data) {
-          res.status(404).send({
-            message: `Cannot delete stock WAREH.`
-          })
-        } else res.send(true)
-      })
-      
-  
-  
-      .catch(() => {
-        
-       
-      })
+    .then(data => {
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete stock LIBPL.`
+        })
+      }
+    })
+
+  Stock.findOneAndRemove({
+    itemId: Id, branchCode: "WAREH"
+  }, { $set: req.body })
+    .then(data => {
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete stock WAREH.`
+        })
+      } else res.send(true)
+    })
+
+
+
+    .catch(() => {
+
+
+    })
 
 
 }
@@ -511,8 +516,43 @@ checkItemnameBrandExisted = (req, res, next) => {
     }
 
 
-    next();
+    next()
 
-  });
-};
+  })
+}
 
+
+exports.findByBrandAndName = (req, res) => {
+
+  const brandName = req.params.bName
+  const sfNameLast = req.params.bName.replace(/[^\w\s+]/gi, '')
+  const sfName = sfNameLast.replace(/\s/g, "")
+
+  const sfbrandar = req.params.bName
+  sfbrand = sfbrandar.split(' ')
+
+  Item.find({
+    $or: [
+      { brandName: { $regex: new RegExp(brandName), $options: "i" } },
+      { sfName: { $regex: new RegExp(sfName), $options: "ix" } },
+
+      {
+        brandName: sfbrand[0],
+        sfName: { $regex: new RegExp(sfbrand[1]), $options: "ix" },
+      }
+
+    ],
+
+    _active: true
+  }
+  )
+    .then((data) => {
+      res.send(data)
+
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}

@@ -1,44 +1,44 @@
 module.exports = (app) => {
-  const items = require("../controllers/item.controller.js");
-  const db = require("../models");
-  
-  var router = require("express").Router();
+  const items = require("../controllers/item.controller.js")
+  // const db = require("../models")
+
+  var router = require("express").Router()
 
   router.post(
-    
+
 
     "/",
     [
       checkItemnameBrandExisted
     ],
-    items.create);
+    items.create)
 
-  router.delete("/:iid", items.DeleteFromItemId);
+  router.delete("/:iid", items.DeleteFromItemId)
 
-  router.put("/:id", items.update);
-  
-  router.put("/:id/:price", items.updatePriceById);
-  
-  router.get("/", items.findAllActive);
+  router.put("/:id", items.update)
 
-  router.get("/top/:skip", items.findTopItems);
- 
+  router.put("/:id/:price", items.updatePriceById)
 
-  router.get("/all", items.findAll);
+  router.get("/", items.findAllActive)
 
-  router.get("/brand/:br", items.findByBrand);
+  router.get("/top/:skip", items.findTopItems)
 
-  router.get("/barcode/:bc", items.findBybarcode);
+  router.get("/all", items.findAll)
 
-  router.get("/name/:name", items.findByName);
+  router.get("/brand/:br", items.findByBrand)
 
-  router.get("/:id", items.findOne);
+  router.get("/barcode/:bc", items.findBybarcode)
 
+  router.get("/name/:name", items.findByName)
+
+  router.get("/:id", items.findOne)
 
   router.get("/cat/:subCategory", items.findBySubcategory)
-  
-  
-  app.use("/api/item", router);
 
-  router.get("/:id", items.hotfix1);
+  router.get("/brand/bName/:bName", items.findByBrandAndName)
+
+  app.use("/api/item", router)
+
+
+  router.get("/:id", items.hotfix1)
 };
