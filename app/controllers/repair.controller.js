@@ -8,11 +8,13 @@ exports.create = (req, res) => {
     ({
       jobcardId: req.body.jobcardId,
       custPhone: req.body.custPhone,
+      custPhone2: req.body.custPhone2,
       iid: req.body.iid,
       description: req.body.description,
-      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false,false],
+      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false, false],
       deliveryDate: req.body.deliveryDate,
       cost: req.body.cost,
+      paymethod: req.body.paymethod,
       payment: req.body.payment,
       status: req.body.status ? req.body.status : "ACCEPTED"
     })
