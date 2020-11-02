@@ -6,33 +6,36 @@ const Item = db.item
 
 
 exports.create = (req, res) => {
-
   const goodreceivednote = new GRN({
-    itemid : req.body.itemid ,
+    itemId: req.body.itemId,
     branchCode: req.body.branchCode,
-    dateTime: req.body.dateTime,
-    qty : req.body.qty
-
+    qty: req.body.qty,
+    datetime: req.body.datetime
   })
+
+
   goodreceivednote
     .save(goodreceivednote)
     .then(data => {
       res.status(201).send(data)
+      console.log(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the GRN."
+          err.message || "Some error occurred while creating the Branch."
       })
     })
 
-    Stock.findOneAndUpdate({ itemId: req.body.itemid, branchCode: req.body.branchCode }, { $inc: { currentStock: req.body.qty} })
+
+
+    Stock.findOneAndUpdate({ itemId: req.body.itemId, branchCode: req.body.branchCode }, { $inc: { currentStock: req.body.qty} })
     .then
     (data => {
 
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
+          message: `Cannot update Stock with branchCode. Maybe Stock was not found!` +err,
         });
       } else {
         console.log("Stock updated suceesfully!")
@@ -78,7 +81,6 @@ exports.findAll = (req, res) => {
       })
   }
   
-
 
 
 
