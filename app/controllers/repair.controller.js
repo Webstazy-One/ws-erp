@@ -11,11 +11,11 @@ exports.create = (req, res) => {
       custPhone2: req.body.custPhone2,
       iid: req.body.iid,
       description: req.body.description,
-      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false, false],
+      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false,false],
       deliveryDate: req.body.deliveryDate,
       cost: req.body.cost,
-      paymethod: req.body.paymethod,
       payment: req.body.payment,
+      paymethod: req.body.paymethod,
       status: req.body.status ? req.body.status : "ACCEPTED"
     })
 
@@ -36,9 +36,25 @@ exports.create = (req, res) => {
 
 
 exports.findAll = (req, res) => {
+  let repar = {}
+  let repDet = []
   Repair.find()
     .then(data => {
-      res.send(data)
+      data.forEach(rep => {
+        repar = {
+          jobcardId: rep.jobcardId,
+          custPhone: rep.custPhone,
+          iid: rep.iid,
+          description: rep.description,
+          remark: rep.remark,
+          deliveryDate: rep.deliveryDate,
+          cost: rep.cost,
+          payment: rep.payment,
+          status: rep.status
+        }
+        repDet.push(repar)
+      })
+      res.send(repDet)
     })
     .catch(err => {
       res.status(500).send({
@@ -60,7 +76,18 @@ exports.findByJobCardId = (req, res) => {
 
   Repair.find(condition)
     .then((data) => {
-      res.send(data)
+      let rep = {
+        jobcardId: data[0].jobcardId,
+        custPhone: data[0].custPhone,
+        iid: data[0].iid,
+        description: data[0].description,
+        remark: data[0].remark,
+        deliveryDate: data[0].deliveryDate,
+        cost: data[0].cost,
+        payment: data[0].payment,
+        status: data[0].status
+      }
+      res.send(rep)
     })
     .catch((err) => {
       res.status(500).send({
@@ -70,6 +97,8 @@ exports.findByJobCardId = (req, res) => {
 }
 
 exports.findByCustNo = (req, res) => {
+  let repar = {}
+  let repDet = []
   const custPhone = req.params.custno
   console.log(req.query)
   var condition = custPhone
@@ -80,7 +109,21 @@ exports.findByCustNo = (req, res) => {
 
   Repair.find(condition)
     .then((data) => {
-      res.send(data);
+      data.forEach(rep => {
+        repar = {
+          jobcardId: rep.jobcardId,
+          custPhone: rep.custPhone,
+          iid: rep.iid,
+          description: rep.description,
+          remark: rep.remark,
+          deliveryDate: rep.deliveryDate,
+          cost: rep.cost,
+          payment: rep.payment,
+          status: rep.status
+        }
+        repDet.push(repar)
+      })
+      res.send(repDet)
     })
     .catch((err) => {
       res.status(500).send({
@@ -99,7 +142,7 @@ exports.updateRepairByJcId = (req, res) => {
         res.status(404).send({
           message: `Cannot update Repair with jobcardId=${jobcardId}. Maybe Repair was not found!`
         })
-      } else res.send(true);
+      } else res.send(true)
     })
     .catch((err) => {
       res.status(500).send({
@@ -109,6 +152,8 @@ exports.updateRepairByJcId = (req, res) => {
       })
     })
 }
+
+
 
 
 
@@ -138,9 +183,25 @@ exports.DeleteFromJobCardId = (req, res) => {
 }
 
 exports.findAwaitRepairs = (req, res) => {
+  let repar = {}
+  let repDet = []
   Repair.find({ status : req.params.status })
     .then((data) => {
-      res.send(data);
+      data.forEach(rep => {
+        repar = {
+          jobcardId: rep.jobcardId,
+          custPhone: rep.custPhone,
+          iid: rep.iid,
+          description: rep.description,
+          remark: rep.remark,
+          deliveryDate: rep.deliveryDate,
+          cost: rep.cost,
+          payment: rep.payment,
+          status: rep.status
+        }
+        repDet.push(repar)
+      })
+      res.send(repDet)
     })
     .catch((err) => {
       res.status(500).send({
