@@ -44,6 +44,8 @@ exports.findAll = (req, res) => {
         repar = {
           jobcardId: rep.jobcardId,
           custPhone: rep.custPhone,
+          custPhone2: rep.custPhone2,
+          paymethod:  rep.paymethod,
           iid: rep.iid,
           description: rep.description,
           remark: rep.remark,
@@ -79,6 +81,8 @@ exports.findByJobCardId = (req, res) => {
       let rep = {
         jobcardId: data[0].jobcardId,
         custPhone: data[0].custPhone,
+        custPhone2: data[0].custPhone2,
+        paymethod: data[0].paymethod,
         iid: data[0].iid,
         description: data[0].description,
         remark: data[0].remark,
@@ -113,6 +117,8 @@ exports.findByCustNo = (req, res) => {
         repar = {
           jobcardId: rep.jobcardId,
           custPhone: rep.custPhone,
+          custPhone2: rep.custPhone2,
+          paymethod:  rep.paymethod,
           iid: rep.iid,
           description: rep.description,
           remark: rep.remark,
@@ -191,6 +197,8 @@ exports.findAwaitRepairs = (req, res) => {
         repar = {
           jobcardId: rep.jobcardId,
           custPhone: rep.custPhone,
+          custPhone2: rep.custPhone2,
+          paymethod:  rep.paymethod,
           iid: rep.iid,
           description: rep.description,
           remark: rep.remark,
