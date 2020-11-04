@@ -15,10 +15,7 @@ exports.salesByBranch = (req, res) => {
   branchSalesCount['OGFSL'] = 0
   branchSalesCount['BTTML'] = 0
   branchSalesCount['LIBPL'] = 0
-  branchSalesCount['EXSHCOL'] = 0
-
-  
-
+ 
   var endDate = new Date(req.params.endDate)
   endDate.setDate(endDate.getDate() + 1)
   console.log(endDate)
@@ -47,8 +44,7 @@ exports.revenueByBranch = (req, res) => {
   branchRevenueCount['OGFSL'] = 0
   branchRevenueCount['BTTML'] = 0
   branchRevenueCount['LIBPL'] = 0
-  branchRevenueCount['EXSHCOL'] = 0
-
+ 
   var dateTimeAfter = new Date(req.params.dateTimeAfter)
   dateTimeAfter.setDate(dateTimeAfter.getDate() + 1)
   console.log(dateTimeAfter)
@@ -137,7 +133,6 @@ exports.profitByBranch = (req, res) => {
   branchProfitCount['OGFSL'] = 0
   branchProfitCount['BTTML'] = 0
   branchProfitCount['LIBPL'] = 0
-  branchProfitCount['EXSHCOL'] = 0
 
   var endDate = new Date(req.params.endDate)
   endDate.setDate(endDate.getDate() + 1)
@@ -353,7 +348,6 @@ exports.getDetailsOfPurchases = (req, res) => {
   var endDate = new Date(req.params.endDate)
   endDate.setDate(endDate.getDate() + 1)
   console.log(endDate)
-
 
   Purchase.find({
     dateTime: {

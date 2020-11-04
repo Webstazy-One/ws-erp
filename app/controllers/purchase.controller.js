@@ -1,7 +1,7 @@
-const db = require("../models");
+const db = require("../models")
 const { invoice } = require("../models")
-const Purchase = db.purchase;
-const Invoice = db.invoice;
+const Purchase = db.purchase
+const Invoice = db.invoice
 const axios = require('axios')
 
 const dbLinks = require("../config/db.config.js")
@@ -23,8 +23,7 @@ exports.create = (req, res) => {
   }
 
   )
-
-  purchase
+ purchase
     .save(purchase)
     .then(data => {
       if (req.body.branchCode == "OGFSL") {
@@ -104,11 +103,7 @@ exports.create = (req, res) => {
           })
 
         }
-
-
       }
-
-
       res.send(data)
     })
     .catch(err => {
@@ -120,62 +115,59 @@ exports.create = (req, res) => {
 
 }
 
-
-
 exports.findOne = (req, res) => {
-  const purchaseId = req.params.purchaseId;
+  const purchaseId = req.params.purchaseId
 
   Purchase.findById(purchaseId)
     .then(data => {
       if (!data)
-        res.status(404).send({ message: "Not found purchase with id " + purchaseId });
-      else res.send(data);
+        res.status(404).send({ message: "Not found purchase with id " + purchaseId })
+      else res.send(data)
     })
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving purchase with id=" + purchaseId });
-    });
-};
+        .send({ message: "Error retrieving purchase with id=" + purchaseId })
+    })
+}
 
 exports.findByInvoiceId = (req, res) => {
-  const invId = req.params.invId;
-
-  var condition = invId
+  const invId = req.params.invId
+var condition = invId
     ? {
       invId: invId,
       _active : true
     }
-    : {};
+    : {}
 
   Purchase.find(condition)
     .then((data) => {
-      res.send(data);
+      res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving purchase by invoce id.",
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findAll = (req, res) => {
   Purchase.find()
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving Purchase."
-      });
-    });
-};
+      })
+    })
+}
 
 exports.findAllActive = (req, res) => {
   Purchase.find({ _active: true })
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
@@ -188,13 +180,12 @@ exports.findAllActive = (req, res) => {
 
 exports.findByDateRange = (req, res) => {
 
-  console.log(123);
   Purchase.aggregate([
     {
       "$match": {
         dateTime: {
           $gte: req.params.dateTimeBefore,
-          $lt: req.params.dateTimeAfter 
+          $lt: req.params.dateTimeAfter
         }
       }
     },

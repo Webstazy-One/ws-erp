@@ -1,23 +1,36 @@
-const { user } = require("../models");
-const User = require("../models/user.model");
-const roles = require("../models/role.model");
-var bcrypt = require("bcryptjs");
+const { user } = require("../models")
+const User = require("../models/user.model")
+const roles = require("../models/role.model")
+var bcrypt = require("bcryptjs")
 
 exports.allAccess = (req, res) => {
-  const username = req.query.username;
-  var condition = username ? { username: { $regex: new RegExp(username), $options: "i" } } : {};
+  let userar = {}
+  let userDet = []
+  const username = req.query.username
+  var condition = username ? { username: { $regex: new RegExp(username), $options: "i" } } : {}
 
   User.find(condition)
     .populate('roles')
     .then(data => {
-      res.send(data);
+      data.forEach(user => {
+        userar = {
+          roles : user.roles[0].name,
+          username: user.username,
+          password: user.password,
+          name: user.name,
+          _active: user._active
+        }
+
+        userDet.push(userar)
+      })
+      res.send(userDet)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving stock."
-      });
-    });
+      })
+    })
 }
 
 exports.userBoard = (req, res) => {
@@ -84,15 +97,28 @@ exports.updatePasswordByUserName = (req, res) => {
 
 
 exports.findAllActive = (req, res) => {
+  let userar = {}
+  let userDet = []
   User.find({ _active: true })
   .populate('roles')
     .then(data => {
-      res.send(data);
+
+      data.forEach(user => {
+        userar = {
+          roles : user.roles[0].name,
+          username: user.username,
+          password: user.password,
+          name: user.name,
+          _active: user._active
+        }
+        userDet.push(userar)
+      })
+      res.send(userDet)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving user."
-      });
-    });
-};
+      })
+    })
+}
