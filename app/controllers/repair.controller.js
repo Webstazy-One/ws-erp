@@ -11,7 +11,7 @@ exports.create = (req, res) => {
       custPhone2: req.body.custPhone2,
       iid: req.body.iid,
       description: req.body.description,
-      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false,false],
+      remark: req.body.remark ? req.body.remark : [false, false, false, false, false, false, false, false, false],
       deliveryDate: req.body.deliveryDate,
       cost: req.body.cost,
       payment: req.body.payment,
@@ -44,8 +44,6 @@ exports.findAll = (req, res) => {
         repar = {
           jobcardId: rep.jobcardId,
           custPhone: rep.custPhone,
-          custPhone2: rep.custPhone2,
-          paymethod:  rep.paymethod,
           iid: rep.iid,
           description: rep.description,
           remark: rep.remark,
@@ -81,8 +79,6 @@ exports.findByJobCardId = (req, res) => {
       let rep = {
         jobcardId: data[0].jobcardId,
         custPhone: data[0].custPhone,
-        custPhone2: data[0].custPhone2,
-        paymethod: data[0].paymethod,
         iid: data[0].iid,
         description: data[0].description,
         remark: data[0].remark,
@@ -117,8 +113,6 @@ exports.findByCustNo = (req, res) => {
         repar = {
           jobcardId: rep.jobcardId,
           custPhone: rep.custPhone,
-          custPhone2: rep.custPhone2,
-          paymethod:  rep.paymethod,
           iid: rep.iid,
           description: rep.description,
           remark: rep.remark,
@@ -138,28 +132,78 @@ exports.findByCustNo = (req, res) => {
     })
 }
 
+
 exports.updateRepairByJcId = (req, res) => {
   const jobcardId = req.params.jobcardId
 
-  Repair.findOneAndUpdate({ jobcardId: jobcardId }, { $set: req.body })
+  Repair.findOneAndUpdate({ jobcardId: jobcardId }, {
+    $set:
+
+    {
+      jobcardId: req.body.jobcardId,
+      custPhone: req.body.custPhone ? req.body.custPhone : data[0].custPhone,
+      iid: req.body.iid ? req.body.iid : data[0].iid,
+      description: req.body.description ? req.body.description : data[0].description,
+      status: req.body.status ? req.body.status : data[0].status,
+      deliveryDate: req.body.deliveryDate ? req.body.deliveryDate : data[0].deliveryDate,
+      cost: req.body.cost ? req.body.cost : data[0].cost
+
+    }
+  }, { useFindAndModify: false })
     .then(data => {
 
       if (!data) {
         res.status(404).send({
           message: `Cannot update Repair with jobcardId=${jobcardId}. Maybe Repair was not found!`
         })
-      } else res.send(true)
+      } else {
+
+
+
+        Repair.find({ jobcardId: req.params.jobcardId })
+          .then((data) => {
+
+
+            if (req.body.payment != null) {
+              let paymentnew = []
+
+              let paymentold = req.body.payment
+              paymentold.toString()
+              paymentnew = data[0].payment
+
+
+              paymentnew.push(paymentold.toString())
+
+
+              Repair.findOneAndUpdate({ jobcardId: req.params.jobcardId }, { $set: { payment: paymentnew } }, { useFindAndModify: false })
+                .then(data => {
+
+                  if (!data) {
+                    res.status(404).send({
+                      message: `Cannot update Repair with jobcardId=${jobcardId}. Maybe Repair was not found!`
+                    })
+                  } else res.send(true);
+                })
+                .catch((err) => {
+                  res.status(500).send({
+                    message: "Error updating Repair with jobcardIdCode=" + jobcardId,
+                  })
+                })
+            }
+          })
+          .catch((err) => {
+            res.status(500).send({
+              message: err.message || "Some error occurred while searching repair with jobcardId."
+            })
+          })
+      }
     })
     .catch((err) => {
       res.status(500).send({
         message: "Error updating Repair with jobcardIdCode=" + jobcardId,
-
-
       })
     })
 }
-
-
 
 
 
@@ -191,14 +235,12 @@ exports.DeleteFromJobCardId = (req, res) => {
 exports.findAwaitRepairs = (req, res) => {
   let repar = {}
   let repDet = []
-  Repair.find({ status : req.params.status })
+  Repair.find({ status: req.params.status })
     .then((data) => {
       data.forEach(rep => {
         repar = {
           jobcardId: rep.jobcardId,
           custPhone: rep.custPhone,
-          custPhone2: rep.custPhone2,
-          paymethod:  rep.paymethod,
           iid: rep.iid,
           description: rep.description,
           remark: rep.remark,
@@ -217,4 +259,3 @@ exports.findAwaitRepairs = (req, res) => {
       })
     })
 }
-
