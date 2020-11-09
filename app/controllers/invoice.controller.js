@@ -283,7 +283,7 @@ exports.findAllActive = (req, res) => {
 }
 
 exports.findLast = (req, res) => {
-  Invoice.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
+  Invoice.findOne({branchCode : req.params.branchCode }).sort({ 'createdAt': -1 }).limit(1).then(data => {
     res.send(data.invId);
   })
 }

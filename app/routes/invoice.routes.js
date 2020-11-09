@@ -27,7 +27,7 @@ module.exports = app => {
 
   router.get("/customer/:ph", invoice.findByCustPhoneNo);
 
-  router.get("/id/last", invoice.findLast);
+  router.get("/id/last/:branchCode", invoice.findLast);
 
   app.use('/api/invoice', router);
 };
