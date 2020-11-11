@@ -270,7 +270,7 @@ exports.findBarcodeItem = (req, res) => {
   //   : {};
   Stock.findOne({ branchCode: 'WAREH', itemId: req.params.itemId })
     .then(data => {
-      if (data.currentStock >= amount) {
+      if (true) {
 
 
         // console.log(warehouseData.currentStock)
@@ -314,6 +314,8 @@ exports.findBarcodeItem = (req, res) => {
           }).finally(() => {
             res.send(bCodes)
           })
+      }else{
+        res.send("Invalid Operation. Barcode Limit exceeded!")
       }
 
     })
