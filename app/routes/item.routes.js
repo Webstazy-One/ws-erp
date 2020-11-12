@@ -15,7 +15,9 @@ module.exports = (app) => {
 
   router.delete("/:iid", items.DeleteFromItemId)
 
-  router.put("/:id", items.update)
+  router.put("/:id", [
+    checkItemnameBrandExisted
+  ], items.update)
 
   router.put("/:id/:price", items.updatePriceById)
 
