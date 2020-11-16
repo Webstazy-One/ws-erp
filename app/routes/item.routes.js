@@ -21,6 +21,8 @@ module.exports = (app) => {
 
   router.put("/:id/:price", items.updatePriceById)
 
+  router.put("/active/resolve/:id", items.UpdatedtoResolve)
+
   router.get("/", items.findAllActive)
 
   router.get("/top/:skip", items.findTopItems)
@@ -38,6 +40,9 @@ module.exports = (app) => {
   router.get("/cat/:subCategory", items.findBySubcategory)
 
   router.get("/brand/bName/:bName", items.findByBrandAndName)
+
+  router.get("/active/disputed", items.findItemDisputed)
+  
 
   app.use("/api/item", router)
 

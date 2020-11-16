@@ -41,6 +41,7 @@ exports.create = (req, res) => {
     price: req.body.price,
     cost: req.body.cost,
     historicalCount: 0,
+    disputed : req.body.disputed,
     _active: true
 
   })
@@ -553,6 +554,38 @@ exports.findByBrandAndName = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving items."
+      })
+    })
+}
+
+exports.findItemDisputed = (req, res) => {
+  Item.find({ _active: true ,disputed : true})
+    .then((data) => {
+      res.send(data)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Item.",
+      })
+    })
+}
+
+exports.UpdatedtoResolve = (req, res) => {
+  const id = req.params.id
+
+
+  Item.findOneAndUpdate({ _id: id }, { $set: { disputed : false } })
+    .then(data => {
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot resolve item . Maybe item was not found!`,
+        });
+      } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error resolving item "
       })
     })
 }
