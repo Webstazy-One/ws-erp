@@ -41,7 +41,7 @@ exports.create = (req, res) => {
     price: req.body.price,
     cost: req.body.cost,
     historicalCount: 0,
-    disputed : req.body.disputed,
+    disputed: req.body.disputed,
     _active: true
 
   })
@@ -559,7 +559,7 @@ exports.findByBrandAndName = (req, res) => {
 }
 
 exports.findItemDisputed = (req, res) => {
-  Item.find({ _active: true ,disputed : true})
+  Item.find({ _active: true, disputed: true })
     .then((data) => {
       res.send(data)
     })
@@ -574,7 +574,7 @@ exports.UpdatedtoResolve = (req, res) => {
   const id = req.params.id
 
 
-  Item.findOneAndUpdate({ _id: id }, { $set: { disputed : false } })
+  Item.findOneAndUpdate({ _id: id }, { $set: { disputed: false } })
     .then(data => {
 
       if (!data) {
@@ -588,4 +588,183 @@ exports.UpdatedtoResolve = (req, res) => {
         message: "Error resolving item "
       })
     })
+}
+
+
+exports.findDisputedAndRealItem = (req, res) => {
+
+
+
+  Item.find({
+    $or: [{ '_id': req.params.id1 },
+    { '_id': req.params.id2 }]
+  })
+    .then((data) => {
+      let brandNamear = []
+      let namear = []
+      let sfNamear = []
+      let descar = []
+      let pricear = []
+      let costar = []
+      let barcodePrefixar = []
+      let tagar = []
+
+      brandNamear.push(data[0].brandName, data[1].brandName)
+      namear.push(data[0].name, data[1].name)
+      sfNamear.push(data[0].sfName, data[1].sfName)
+      descar.push(data[0].desc, data[1].desc)
+      pricear.push(data[0].price, data[1].price)
+      costar.push(data[0].cost, data[1].cost)
+      barcodePrefixar.push(data[0].barcodePrefix, data[1].barcodePrefix)
+      tagar.push(data[0].tag, data[1].tag)
+
+
+      let item = {
+        brandName: brandNamear,
+        name: namear,
+        sfName: sfNamear,
+        desc: descar,
+        price: pricear,
+        cost: costar,
+        barcodePrefix: barcodePrefixar,
+        tag: tagar
+      }
+      res.send(item)
+      console.log(brandNamear[0])
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Item.",
+      })
+    })
+}
+
+
+
+exports.UpdateDisputedToRealItem = (req, res) => {
+  const id2 = req.params.id2
+  const id1 = req.params.id1
+  Item.find({
+    $or: [{ '_id': req.params.id1 },
+    { '_id': req.params.id2 }]
+  })
+    .then((data) => {
+      let brandNamear = []
+      let namear = []
+      let sfNamear = []
+      let descar = []
+      let pricear = []
+      let costar = []
+      let barcodePrefixar = []
+      let tagar = []
+
+      brandNamear.push(data[0].brandName, data[1].brandName)
+      namear.push(data[0].name, data[1].name)
+      sfNamear.push(data[0].sfName, data[1].sfName)
+      descar.push(data[0].desc, data[1].desc)
+      pricear.push(data[0].price, data[1].price)
+      costar.push(data[0].cost, data[1].cost)
+      barcodePrefixar.push(data[0].barcodePrefix, data[1].barcodePrefix)
+      tagar.push(data[0].tag, data[1].tag)
+
+
+      let item = {
+        brandName: brandNamear,
+        name: namear,
+        sfName: sfNamear,
+        desc: descar,
+        price: pricear,
+        cost: costar,
+        barcodePrefix: barcodePrefixar,
+        tag: tagar
+      }
+
+
+      if (brandNamear[0] == brandNamear[1]) {
+        brandNamefnl = brandNamear[1]
+      } else {
+        brandNamefnl = brandNamear[0]
+      }
+      if (namear[0] == namear[1]) {
+        namefnl = namear[1]
+      } else {
+        namefnl = namear[0]
+      }
+
+      if (sfNamear[0] == sfNamear[1]) {
+        sfNamefnl = sfNamear[1]
+      } else {
+        sfNamefnl = sfNamear[0]
+      }
+
+      if (descar[0] == descar[1]) {
+        descfnl = descar[1]
+      } else {
+        descfnl = descar[0]
+      }
+
+      if (pricear[0] == pricear[1]) {
+        pricefnl = pricear[1]
+      } else {
+        pricefnl = pricear[0]
+      }
+
+      if (costar[0] == costar[1]) {
+        costfnl = costar[1]
+      } else {
+        costfnl = costar[0]
+      }
+
+      if (barcodePrefixar[0] == barcodePrefixar[1]) {
+        barcodePrefixfnl = barcodePrefixar[1]
+      } else {
+        barcodePrefixfnl = barcodePrefixar[0]
+      }
+
+      if (tagar[0] == tagar[1]) {
+        tagfnl = tagar[1]
+      } else {
+        tagfnl = tagar[0]
+      }
+
+
+
+      Item.findOneAndUpdate({ _id: id2 }, {
+        $set:
+
+        {
+          brandName: brandNamefnl,
+          name: namefnl,
+          sfName: sfNamefnl,
+          desc: descfnl,
+          price: pricefnl,
+          cost: costfnl,
+          barcodePrefix: barcodePrefixfnl,
+          tag: tagfnl
+
+        },
+
+      })
+        .then(data => {
+
+          if (!data) {
+            res.status(404).send({
+              message: `Cannot merge items. Maybe items were not found!`,
+            });
+          } else res.send(true);
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: "Error merging item with "
+          })
+        })
+
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Item.",
+      })
+    })
+
+
 }

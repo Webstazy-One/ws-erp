@@ -1,12 +1,9 @@
 module.exports = (app) => {
   const items = require("../controllers/item.controller.js")
-  // const db = require("../models")
 
   var router = require("express").Router()
 
   router.post(
-
-
     "/",
     [
       checkItemnameBrandExisted
@@ -22,6 +19,8 @@ module.exports = (app) => {
   router.put("/:id/:price", items.updatePriceById)
 
   router.put("/active/resolve/:id", items.UpdatedtoResolve)
+
+  router.put("/merge/:id1/:id2", items.UpdateDisputedToRealItem)
 
   router.get("/", items.findAllActive)
 
@@ -42,10 +41,10 @@ module.exports = (app) => {
   router.get("/brand/bName/:bName", items.findByBrandAndName)
 
   router.get("/active/disputed", items.findItemDisputed)
-  
+
+  router.get("/merge/:id1/:id2", items.findDisputedAndRealItem)
 
   app.use("/api/item", router)
-
 
   router.get("/:id", items.hotfix1)
 };
