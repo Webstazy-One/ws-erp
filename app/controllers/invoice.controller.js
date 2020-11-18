@@ -19,7 +19,7 @@ exports.create = (req, res) => {
   if (req.body.purchases) {
     req.body.purchases.forEach(purc => {
       const purcData = new Purchase({
-        invId: req.body.invId,
+        invId: req.body.branchCode +"-"+ req.body.invId,
         itemId: purc.itemId,
         unitPrice: purc.unitPrice,
         qty: purc.qty,
@@ -49,7 +49,7 @@ exports.create = (req, res) => {
   }
 
   const invoice = new Invoice({
-    invId: req.body.invId,
+    invId:  req.body.branchCode +"-"+ req.body.invId,
     dateTime: req.body.dateTime,
     payMethod: req.body.payMethod,
     username: req.body.username,
