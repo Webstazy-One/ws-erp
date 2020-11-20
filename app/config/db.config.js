@@ -6,12 +6,12 @@ module.exports = {
 
   serverUrl :
   "http://ws-erp-dev.eba-jewjmtd3.ap-southeast-1.elasticbeanstalk.com",
-  //"http://localhost:8089",
+ // "http://localhost:8089",
   
 
   OGFSLRewardUrl :
   "https://dev.1galleface.com"
 
- // "https://dev.1galleface12.com"
+//"https://dev.1galleface12.com"
 
 }

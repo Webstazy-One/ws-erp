@@ -766,5 +766,21 @@ exports.UpdateDisputedToRealItem = (req, res) => {
       })
     })
 
+    Item.findByIdAndUpdate({ _id: id1 }, { $set: { _active: false } })
+    .then(data => {
+
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete item with id=. Maybe item was not found!`
+        })
+      } else res.send(true)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err
+      })
+    })
+
+
 
 }

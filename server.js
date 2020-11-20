@@ -1,8 +1,10 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
-
+const mongooseMorgan = require('mongoose-morgan')
+const db = require("./app/models")
 const app = express()
+
 
 app.use(cors())
 
@@ -10,7 +12,11 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const db = require("./app/models")
+app.use(mongooseMorgan({
+  connectionString: db.url
+}))
+
+
 const Role = db.role
 db.mongoose
   .connect(db.url, {
