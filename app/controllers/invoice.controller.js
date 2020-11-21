@@ -49,7 +49,7 @@ exports.create = (req, res) => {
   }
 
   const invoice = new Invoice({
-    invId:  req.body.branchCode +"-"+ req.body.invId,
+    invId:  req.body.invId,
     dateTime: req.body.dateTime,
     payMethod: req.body.payMethod,
     username: req.body.username,
