@@ -19,7 +19,7 @@ exports.create = (req, res) => {
   if (req.body.purchases) {
     req.body.purchases.forEach(purc => {
       const purcData = new Purchase({
-        invId: req.body.branchCode +"-"+ req.body.invId,
+        invId: req.body.invId,
         itemId: purc.itemId,
         unitPrice: purc.unitPrice,
         qty: purc.qty,
