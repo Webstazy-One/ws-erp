@@ -15,13 +15,13 @@ exports.salesByBranch = (req, res) => {
   branchSalesCount['OGFSL'] = 0
   branchSalesCount['BTTML'] = 0
   branchSalesCount['LIBPL'] = 0
- 
+
   var endDate = new Date(req.params.endDate)
   endDate.setDate(endDate.getDate() + 1)
   console.log(endDate)
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate },
-    _active : true
+    _active: true
   })
     .then((data) => {
       data.forEach(sale => {
@@ -44,15 +44,15 @@ exports.revenueByBranch = (req, res) => {
   branchRevenueCount['OGFSL'] = 0
   branchRevenueCount['BTTML'] = 0
   branchRevenueCount['LIBPL'] = 0
- 
+
   var dateTimeAfter = new Date(req.params.dateTimeAfter)
   dateTimeAfter.setDate(dateTimeAfter.getDate() + 1)
   console.log(dateTimeAfter)
 
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.dateTimeBefore), "$lt": dateTimeAfter  },
-    _active : true
+    "dateTime": { "$gte": new Date(req.params.dateTimeBefore), "$lt": dateTimeAfter },
+    _active: true
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -140,7 +140,7 @@ exports.profitByBranch = (req, res) => {
 
   Purchase.find({
     "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate },
-    _active : true
+    _active: true
 
   })
     .then((data) => {
@@ -217,14 +217,14 @@ exports.profitByBranch = (req, res) => {
 exports.revenueByBrand = (req, res) => {
   brandRevenueCount = {}
 
-  
+
   var endDate = new Date(req.params.endDate)
   endDate.setDate(endDate.getDate() + 1)
   console.log(endDate)
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  },
-    _active : true
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate },
+    _active: true
   })
     .then((data) => {
       let nDate = new Date().toISOString('en-US', {
@@ -352,9 +352,9 @@ exports.getDetailsOfPurchases = (req, res) => {
   Purchase.find({
     dateTime: {
       $gte: req.params.startDate,
-      $lt:endDate
+      $lt: endDate
     },
-    _active : true
+    _active: true
   })
     .then((data) => {
       res.send(data)
@@ -381,7 +381,7 @@ exports.getDetailsOfPurchasesByBrand = (req, res) => {
       $lt: endDate,
     },
 
-    _active : true
+    _active: true
   })
     .then((data) => {
       res.send(data);
@@ -406,8 +406,8 @@ exports.salesByBrands = (req, res) => {
   console.log(endDate)
 
   Purchase.find({
-    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate  },
-    _active : true
+    "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate },
+    _active: true
   })
     .then((data) => {
       data.forEach(sale => {
@@ -437,7 +437,7 @@ exports.getDetailsOfPurchasesByBranch = (req, res) => {
       $lt: endDate,
     },
 
-    _active : true
+    _active: true
   })
     .then((data) => {
       console.log(data)
@@ -463,7 +463,7 @@ exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
       $gte: req.params.startDate,
       $lt: endDate,
     },
-    _active : true
+    _active: true
 
   })
     .then((data) => {
@@ -486,18 +486,18 @@ exports.brandByBranch = (req, res) => {
     return Stock.find({
       branchCode: req.params.branchCode,
     }).populate('itemId').then((stockData) => {
-      
-      brandwiseCount = []
-      
-      stockData.forEach(stockEntry => {
-        if(!stockEntry.itemId) return
 
-     //   brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
-      
-        brandwiseCount[stockEntry.itemId.brandName] = brandwiseCount[stockEntry.itemId.brandName] ? brandwiseCount[stockEntry.itemId.brandName] + stockEntry.currentStock :  stockEntry.currentStock
+      brandwiseCount = []
+
+      stockData.forEach(stockEntry => {
+        if (!stockEntry.itemId) return
+
+        //   brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
+
+        brandwiseCount[stockEntry.itemId.brandName] = brandwiseCount[stockEntry.itemId.brandName] ? brandwiseCount[stockEntry.itemId.brandName] + stockEntry.currentStock : stockEntry.currentStock
       })
 
-      
+
 
       return brandwiseCount
     })
@@ -519,7 +519,7 @@ exports.salesByItems = (req, res) => {
   itemDetails = []
 
   Purchase.find({
-    _active : true
+    _active: true
   }).sort({ 'qty': -1 }).limit(100)
     .then((data) => {
 
@@ -618,10 +618,122 @@ exports.salesByItems = (req, res) => {
           })
 
       })
-      // res.send(itemDetails)
+       res.send(ItemSalesCount)
 
       // console.log(ItemSalesCount)
       // console.log(itemDetails)
+
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error with report"
+      })
+    })
+}
+
+exports.salesByOneItem = (req, res) => {
+  ItemSalesCount = {}
+  ItemName = {}
+  itemDetails = []
+
+  Purchase.find({
+    _active: true,
+    itemId: req.params.itemId
+  }).sort({ 'qty': -1 })
+    .then((data) => {
+
+      data.forEach(sale => {
+
+        console.log("A sale of " + sale.qty + "has happened in " + sale.itemId)
+        ItemSalesCount[sale.itemId] = ItemSalesCount[sale.itemId] ? ItemSalesCount[sale.itemId] + sale.qty : sale.qty
+
+
+
+        let nDate = new Date().toISOString('en-US', {
+          timeZone: 'Asia/Calcutta'
+        })
+
+        Item.findById(sale.itemId)
+          .then(itemData => {
+
+
+
+            Promo.find(
+
+
+              { appliedto: req.params.id, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
+
+
+            )
+              .then(promoData => {
+
+
+                if (!promoData[0] == null) {
+
+                  if (promoData[0].type == "ITEM") {
+
+                    if (promoData[0].calc == "PERCENTAGE") {
+                      console.log("ITEM Percentage")
+                      itemData.disValue = itemData.price * promoData[0].rate,
+                        itemData.actualPrice = itemData.price - itemData.disValue
+
+
+                    } else if (promoData[0].calc == "FLAT") {
+                      console.log("ITEM FLAT")
+
+                      itemData.disValue = promoData[0].rate,
+                        itemData.actualPrice = itemData.price - promoData[0].rate
+                    }
+
+
+                  } else if (promoData[0].type == "BRAND") {
+
+                    console.log("BRAND type")
+
+                    if (promoData[0].calc == "PERCENTAGE") {
+                      console.log("BRAND Percentage")
+                      itemData.disValue = itemData.price * promoData[0].rate,
+                        itemData.actualPrice = itemData.price - itemData.disValue
+
+
+                    } else if (promoData[0].calc == "FLAT") {
+                      console.log("BRAND FLAT")
+
+                      itemData.disValue = promoData[0].rate,
+                        itemData.actualPrice = itemData.price - promoData[0].rate
+                    }
+
+
+
+                  }
+                } else {
+                  itemData.disValue = 0
+                  itemData.actualPrice = itemData.price
+                }
+
+
+              }
+
+              ).finally(() => {
+
+
+              }).catch(() => { })
+           
+
+            console.log(itemDetails)
+
+            return itemDetails = itemData
+
+
+          })
+          .catch(err => {
+            res
+              .status(500)
+              .send({ message: "Error retrieving item " })
+          })
+        res.send(ItemSalesCount)
+      })
+
 
     })
     .catch((err) => {

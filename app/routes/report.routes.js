@@ -27,6 +27,8 @@ module.exports = app => {
 
     router.get("/sales/item/", report.salesByItems)
 
+    router.get("/salesCount/item/:itemId", report.salesByOneItem)
+
     router.get("/stock/branch/:branchCode/", report.brandByBranch)
 
     // // router.get("/sales/branch/timerange", reports.findByDateRange)		

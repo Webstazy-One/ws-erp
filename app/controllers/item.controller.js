@@ -773,7 +773,7 @@ exports.UpdateDisputedToRealItem = (req, res) => {
         res.status(404).send({
           message: `Cannot delete item with id=. Maybe item was not found!`
         })
-      } else res.send(true)
+      } 
     })
     .catch((err) => {
       res.status(500).send({
