@@ -512,7 +512,6 @@ exports.brandByBranch = (req, res) => {
 
 }
 
-
 exports.salesByItems = (req, res) => {
   ItemSalesCount = {}
   ItemName = {}
@@ -522,13 +521,8 @@ exports.salesByItems = (req, res) => {
     _active: true
   }).sort({ 'qty': -1 }).limit(100)
     .then((data) => {
-
       data.forEach(sale => {
-
-        //console.log("A sale of " + sale.qty + "has happened in " + sale.itemId)
         ItemSalesCount[sale.itemId] = ItemSalesCount[sale.itemId] ? ItemSalesCount[sale.itemId] + sale.qty : sale.qty
-
-
 
         let nDate = new Date().toISOString('en-US', {
           timeZone: 'Asia/Calcutta'
@@ -536,18 +530,8 @@ exports.salesByItems = (req, res) => {
 
         Item.findById(sale.itemId)
           .then(itemData => {
-
-
-
-            console.log(sale.itemId)
-
-
-
             Promo.find(
-
-
               { appliedto: req.params.id, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
-
 
             )
               .then(promoData => {
@@ -587,29 +571,20 @@ exports.salesByItems = (req, res) => {
                       itemData.disValue = promoData[0].rate,
                         itemData.actualPrice = itemData.price - promoData[0].rate
                     }
-
-
-
                   }
                 } else {
                   itemData.disValue = 0
                   itemData.actualPrice = itemData.price
                 }
-
-
               }
 
               ).finally(() => {
                 res.send(itemData)
 
               }).catch(() => { })
-            // itemDetails.push(itemData)
-
             console.log(itemDetails)
 
             return itemDetails = itemData
-
-
           })
           .catch(err => {
             res
@@ -618,11 +593,7 @@ exports.salesByItems = (req, res) => {
           })
 
       })
-       res.send(ItemSalesCount)
-
-      // console.log(ItemSalesCount)
-      // console.log(itemDetails)
-
+      res.send(ItemSalesCount)
     })
     .catch((err) => {
       res.status(500).send({
@@ -636,105 +607,92 @@ exports.salesByOneItem = (req, res) => {
   ItemName = {}
   itemDetails = []
 
+
   Purchase.find({
     _active: true,
     itemId: req.params.itemId
   }).sort({ 'qty': -1 })
     .then((data) => {
+      console.log(data)
+      if (!data[0]) {
 
-      data.forEach(sale => {
+        console.log("A sale of " + 0 + "has happened in " + req.params.itemId)
 
-        console.log("A sale of " + sale.qty + "has happened in " + sale.itemId)
-        ItemSalesCount[sale.itemId] = ItemSalesCount[sale.itemId] ? ItemSalesCount[sale.itemId] + sale.qty : sale.qty
+        ItemSalesCount[req.params.itemId] = 0
+        res.send(ItemSalesCount)
 
+      } else {
+        data.forEach(sale => {
+          let nDate = new Date().toISOString('en-US', {
+            timeZone: 'Asia/Calcutta'
+          })
 
-
-        let nDate = new Date().toISOString('en-US', {
-          timeZone: 'Asia/Calcutta'
-        })
-
-        Item.findById(sale.itemId)
-          .then(itemData => {
-
-
-
-            Promo.find(
-
-
-              { appliedto: req.params.id, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
-
-
-            )
-              .then(promoData => {
+          Item.findById(sale.itemId)
+            .then(itemData => {
+              Promo.find(
+                { appliedto: req.params.id, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
+              )
+                .then(promoData => {
 
 
-                if (!promoData[0] == null) {
+                  if (!promoData[0] == null) {
 
-                  if (promoData[0].type == "ITEM") {
+                    if (promoData[0].type == "ITEM") {
 
-                    if (promoData[0].calc == "PERCENTAGE") {
-                      console.log("ITEM Percentage")
-                      itemData.disValue = itemData.price * promoData[0].rate,
-                        itemData.actualPrice = itemData.price - itemData.disValue
+                      if (promoData[0].calc == "PERCENTAGE") {
+                        console.log("ITEM Percentage")
+                        itemData.disValue = itemData.price * promoData[0].rate,
+                          itemData.actualPrice = itemData.price - itemData.disValue
 
 
-                    } else if (promoData[0].calc == "FLAT") {
-                      console.log("ITEM FLAT")
+                      } else if (promoData[0].calc == "FLAT") {
+                        console.log("ITEM FLAT")
 
-                      itemData.disValue = promoData[0].rate,
-                        itemData.actualPrice = itemData.price - promoData[0].rate
+                        itemData.disValue = promoData[0].rate,
+                          itemData.actualPrice = itemData.price - promoData[0].rate
+                      }
+
+
+                    } else if (promoData[0].type == "BRAND") {
+
+                      console.log("BRAND type")
+
+                      if (promoData[0].calc == "PERCENTAGE") {
+                        console.log("BRAND Percentage")
+                        itemData.disValue = itemData.price * promoData[0].rate,
+                          itemData.actualPrice = itemData.price - itemData.disValue
+
+
+                      } else if (promoData[0].calc == "FLAT") {
+                        console.log("BRAND FLAT")
+
+                        itemData.disValue = promoData[0].rate,
+                          itemData.actualPrice = itemData.price - promoData[0].rate
+                      }
                     }
-
-
-                  } else if (promoData[0].type == "BRAND") {
-
-                    console.log("BRAND type")
-
-                    if (promoData[0].calc == "PERCENTAGE") {
-                      console.log("BRAND Percentage")
-                      itemData.disValue = itemData.price * promoData[0].rate,
-                        itemData.actualPrice = itemData.price - itemData.disValue
-
-
-                    } else if (promoData[0].calc == "FLAT") {
-                      console.log("BRAND FLAT")
-
-                      itemData.disValue = promoData[0].rate,
-                        itemData.actualPrice = itemData.price - promoData[0].rate
-                    }
-
-
-
+                  } else {
+                    itemData.disValue = 0
+                    itemData.actualPrice = itemData.price
                   }
-                } else {
-                  itemData.disValue = 0
-                  itemData.actualPrice = itemData.price
                 }
 
+                ).finally(() => {
+                }).catch(() => { })
+              console.log(itemDetails)
 
-              }
+              return itemDetails = itemData
+            })
 
-              ).finally(() => {
-
-
-              }).catch(() => { })
-           
-
-            console.log(itemDetails)
-
-            return itemDetails = itemData
-
-
-          })
-          .catch(err => {
-            res
-              .status(500)
-              .send({ message: "Error retrieving item " })
-          })
-        res.send(ItemSalesCount)
-      })
-
-
+            .catch(err => {
+              res
+                .status(500)
+                .send({ message: "Error retrieving item " })
+            })
+          console.log("A sale of " + sale.qty + "has happened in " + sale.itemId)
+          ItemSalesCount[sale.itemId] = ItemSalesCount[sale.itemId] ? ItemSalesCount[sale.itemId] + sale.qty : sale.qty
+        })
+      }
+      res.send(ItemSalesCount)
     })
     .catch((err) => {
       res.status(500).send({
