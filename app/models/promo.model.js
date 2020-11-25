@@ -19,7 +19,26 @@ module.exports = (mongoose) => {
     //   default: "ITEM",
     // },
     _active: Boolean,
-    appliedto: String,
+// appliedTo: { $in: [
+//   { type: mongoose.Schema.Types.ObjectId, ref: 'item' },
+//   { type: mongoose.Schema.Types.Mixed, ref: 'brand' },
+//   ]},
+
+  //   appliedto : { 
+  //     ITEM : 
+      
+  //         { type: mongoose.Schema.Types.ObjectId, ref: 'item' },
+          
+      
+  //         BRAND : 
+      
+  //         { type: mongoose.Schema.Types.Mixed, ref: 'brand' },
+               
+      
+  // },
+    
+   
+ appliedto: String,
   });
   schema.method("toJSON", function () {
     const { _id, ...object } = this.toObject();

@@ -132,7 +132,7 @@ exports.findByBrandName = (req, res) => {
 
 exports.findOne = (req, res) => {
   const promoId = req.params.promoId
-Promo.findById(promoId)
+  Promo.findById(promoId)
     .then(data => {
       let pro = {
         promoId: data[0].promoId,
@@ -216,4 +216,120 @@ exports.DeleteFromPromoId = (req, res) => {
 
 
 
+// exports.findByBrandNameOrItemId  = (req, res) => {
 
+//   Promo.find({
+//     $or: [{ 'timeType': req.params.appliedto },
+//     { 'locationName': req.query.locationName },
+//     { 'salaryMax': req.query.salaryMin },
+//     { 'salaryMin': req.query.salaryMin },
+//     { 'local': req.query.local },
+//     { 'duration': req.query.duration}]
+//   }
+//   ).then(data => {
+//     res.send(data)
+//   })
+// }
+
+// exports.findByBrandNameOrItemId = (req, res) => {
+//   let promoar = {}
+//   let promoDet = []
+//   const appliedto = req.params.appliedto
+//   var condition = appliedto
+//     ? {
+//       appliedto: appliedto,
+
+//     }
+//     : {}
+
+//   Promo.find(condition)
+//     .populate('item')
+//     .then((data) => {
+//   console.log(data[0].appliedto)
+//   Item.find({ 
+
+//     brandName : data[0].appliedto
+
+//     // $or: [{ brandName : data[0].appliedto},
+//     //      { _id: data[0].appliedto}
+//     //   ]
+
+
+//      })
+//   .then((itemData) => {
+
+//     // if (brandName=data[0].appliedto) {
+//     //   data.push(itemData)
+//     //   console.log(itemData) }
+
+//     // } else 
+//     //   if(brandName = data[0].appliedto){
+//     //   data.push(itemData)
+//     //   console.log("brandName")
+//     // }
+//     console.log(itemData)
+//     // data
+//   }) 
+//   .catch((err) => {
+//     res.status(500).send({
+//       message: err.message || "Some error occurred while retrieving Item.",
+//     });
+//   });
+//       res.send(data)
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message: err.message || "Some error occurred while retrieving items.",
+//       })
+//     })
+// }
+
+
+
+// exports.findByBrandNameOrItemId = (req, res) => {
+//   let promoar = {}
+//   let promoDet = []
+//   const appliedto = req.params.appliedto
+//   // var condition = appliedto
+//   //   ? {
+//   //     appliedto: { $regex: new RegExp(req.params.brandName), $options: "i" },
+//   //   }
+//   //   : {}
+
+
+//   Promo.find(
+// appliedto 
+//   )
+//     .populate('item')
+//     .then((data) => {
+
+//       res.send(data)
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message: err.message || "Some error occurred while retrieving Promo.",
+//       })
+//     })
+// }
+
+
+exports.findByBrandNameOrItemId = (req, res) => {
+  const appliedto = req.params.appliedto
+
+  Promo.find({
+    _active: true,
+    appliedto: appliedto
+  }
+  )
+    .then(data => {
+      console.log(data)
+
+      res.send(data)
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Promo."
+      })
+    })
+}
