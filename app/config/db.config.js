@@ -5,7 +5,7 @@ module.exports = {
 
 
   serverUrl :
-  "http://wimsons09-env.eba-imergxtj.ap-southeast-1.elasticbeanstalk.com",
+  "http://wimsons011.eba-yicete3g.ap-southeast-1.elasticbeanstalk.com/",
  // "http://localhost:8089",
   
 
