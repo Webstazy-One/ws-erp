@@ -36,7 +36,8 @@ module.exports = (mongoose) => {
         },
         technicianName: String,
         internalNotes: String,
-        branchCode: String
+        branchCode: String,
+        acceptedBranchCode: String
 
 
     }, { timestamps: true });

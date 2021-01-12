@@ -18,7 +18,8 @@ exports.create = (req, res) => {
         status: req.body.status ? req.body.status : "ACCEPTED",
         technicianName: req.body.technicianName,
         internalNotes: req.body.internalNotes,
-        branchCode: req.body.branchCode
+        branchCode: req.body.branchCode,
+        acceptedBranchCode: req.body.acceptedBranchCode
     })
 
 
@@ -54,7 +55,8 @@ exports.findAll = (req, res) => {
                     status: rep.status,
                     technicianName: rep.technicianName,
                     internalNotes: rep.internalNotes,
-                    branchCode: rep.branchCode
+                    branchCode: rep.branchCode,
+                    acceptedBranchCode: rep.acceptedBranchCode
                 }
                 repDet.push(repar)
             })
@@ -89,7 +91,8 @@ exports.findByJobCardId = (req, res) => {
                 status: data[0].status,
                 technicianName: data[0].technicianName,
                 internalNotes: data[0].internalNotes,
-                branchCode: data[0].branchCode
+                branchCode: data[0].branchCode,
+                acceptedBranchCode: data[0].acceptedBranchCode
             }
             res.send(rep)
         })
@@ -124,7 +127,9 @@ exports.findByCustNo = (req, res) => {
                     status: rep.status,
                     technicianName: rep.technicianName,
                     internalNotes: rep.internalNotes,
-                    branchCode: rep.branchCode
+                    branchCode: rep.branchCode,
+                    acceptedBranchCode: rep.acceptedBranchCode
+
                 }
                 repDet.push(repar)
             })
@@ -154,7 +159,8 @@ exports.updateRepairByJcId = (req, res) => {
                 cost: req.body.cost ? req.body.cost : data[0].cost,
                 technicianName: req.body.technicianName ? req.body.technicianName : data[0].technicianName,
                 internalNotes: req.body.internalNotes ? req.body.internalNotes : data[0].internalNotes,
-                branchCode: req.body.branchCode ? req.body.branchCode : data[0].branchCode
+                branchCode: req.body.branchCode ? req.body.branchCode : data[0].branchCode,
+                acceptedBranchCode: req.body.acceptedBranchCode ? req.body.acceptedBranchCode : data[0].acceptedBranchCode
 
             }
         }, { useFindAndModify: false })
@@ -258,7 +264,8 @@ exports.findAwaitRepairs = (req, res) => {
                     status: rep.status,
                     technicianName: rep.technicianName,
                     internalNotes: rep.internalNotes,
-                    branchCode: rep.branchCode
+                    branchCode: rep.branchCode,
+                    acceptedBranchCode: rep.acceptedBranchCode
                 }
                 repDet.push(repar)
             })
