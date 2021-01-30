@@ -33,41 +33,43 @@ exports.create = (req, res) => {
 }
 
 exports.findByBrandBranch = (req, res) => {
-    const branchCode = req.params.branch
-    const brand = req.params.brand
-    console.log(req.query)
-    var condition = branchCode ?
-        {
-            branchCode: branchCode
-        } :
-        {}
-    Stock.find(condition)
-        .populate('itemId')
-        .then((data) => {
-            console.log(data)
+  const branchCode = req.params.branch
+  const brand = req.params.brand
+  console.log(req.query)
+  var condition = branchCode
+    ? {
+      branchCode: branchCode
+    }
+    : {}
+  Stock.find(condition)
+    .populate('itemId')
+    .then((data) => {
+      console.log(data)
 
-            stockReport = []
-            stockReportAr = []
+      stockReport = []
+      stockReportAr = []
 
-            let stockRep = { product: '', currentStock: '', price: '' }
-            data.forEach(stockEntry => {
-                if (!stockEntry.itemId || stockEntry.itemId === null) return
-                if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
-                    stockReport[stockEntry.itemId.name] = stockEntry.currentStock
-                    stockRep["product"] = stockEntry.itemId.name
-                    stockRep["currentStock"] = stockEntry.currentStock
-                    stockRep["price"] = stockEntry.itemId.price
-                }
-            })
-            stockReportAr.push(stockRep)
-            res.send(stockReportAr)
-                // res.send(Object.assign({}, stockRep))
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving items."
-            })
-        })
+let stockRep ={product:'',currentStock:'',price:''}
+      data.forEach(stockEntry => {
+        if (!stockEntry.itemId || stockEntry.itemId === null) return
+        if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
+          stockReport[stockEntry.itemId.name] = stockEntry.currentStock
+          stockRep["product"]=stockEntry.itemId.name
+          stockRep["currentStock"]=stockEntry.currentStock
+          stockRep["price"]=stockEntry.itemId.price
+
+          stockReportAr.push(stockRep)
+        }
+      })
+     
+res.send(stockReportAr)
+      // res.send(Object.assign({}, stockRep))
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
 }
 
 exports.findByBranchCode = (req, res) => {
