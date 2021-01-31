@@ -11,7 +11,8 @@ module.exports = (mongoose) => {
     price: Number,
     _active: Boolean,
     disValue : Number,
-    actualPrice : Number
+    actualPrice : Number,
+    disputed : Boolean
   })
 
   schema.method("toJSON", function () {

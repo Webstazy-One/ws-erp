@@ -21,7 +21,7 @@ exports.create = (req, res) => {
   cust_merge
     .save(cust_merge)
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({

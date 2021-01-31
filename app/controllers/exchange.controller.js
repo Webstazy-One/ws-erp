@@ -1,5 +1,5 @@
-const db = require("../models");
-const Exchange = db.exchange;
+const db = require("../models")
+const Exchange = db.exchange
 
 exports.create = (req, res) => {
 
@@ -9,13 +9,13 @@ exports.create = (req, res) => {
     pid: req.body.pid,
     condition: req.body.condition,
     amount: req.body.amount,
-    appliedInv: req.body.appliedInv
+    appliedInv: req.body.appliedInv,
   })
 
   exchange
     .save(exchange)
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
@@ -26,13 +26,14 @@ exports.create = (req, res) => {
 }
 
 exports.findOne = (req, res) => {
-  const exchangeId = req.params.exchangeId;
+  const exchangeId = req.params.exchangeId
 
   Exchange.findById(exchangeId)
     .then(data => {
+
       if (!data)
         res.status(404).send({ message: "Not found Exchange with exchangeId " + exchangeId })
-      else res.send(data);
+      else res.send(data)
     })
     .catch(err => {
       res
@@ -42,8 +43,8 @@ exports.findOne = (req, res) => {
 }
 
 exports.findByInvId = (req, res) => {
-  const invId = req.params.invId;
-  console.log(req.query);
+  const invId = req.params.invId
+
   var condition = invId
     ? {
       invId: invId,
@@ -52,18 +53,17 @@ exports.findByInvId = (req, res) => {
 
   Exchange.find(condition)
     .then((data) => {
-      res.send(data);
+      res.send(data)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving exchange."
+        message: err.message || "Some error occurred while retrieving exchange.",
       })
     })
 }
 
 exports.findByAppliedInv = (req, res) => {
-  const appliedInv = req.params.appliedInv;
-  console.log(req.query);
+  const appliedInv = req.params.appliedInv
   var condition = appliedInv
     ? {
       appliedInv: appliedInv,
@@ -76,7 +76,7 @@ exports.findByAppliedInv = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving exchange."
+        message: err.message || "Some error occurred while retrieving exchange.",
       })
     })
 }
@@ -84,7 +84,7 @@ exports.findByAppliedInv = (req, res) => {
 exports.findAll = (req, res) => {
   Exchange.find()
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
@@ -93,3 +93,5 @@ exports.findAll = (req, res) => {
       })
     })
 }
+
+

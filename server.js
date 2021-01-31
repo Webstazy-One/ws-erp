@@ -1,8 +1,10 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
-
+const mongooseMorgan = require('mongoose-morgan')
+const db = require("./app/models")
 const app = express()
+
 
 app.use(cors())
 
@@ -10,7 +12,11 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const db = require("./app/models")
+app.use(mongooseMorgan({
+  connectionString: db.url
+}))
+
+
 const Role = db.role
 db.mongoose
   .connect(db.url, {
@@ -95,7 +101,8 @@ require("./app/routes/auth.routes")(app)
 require("./app/routes/user.routes")(app)
 require("./app/routes/report.routes")(app)
 //require("./app/routes/log.routes")(app)
-//require("./app/routes/goodreceivednote.routes")(app)
+require("./app/routes/goodreceivednote.routes")(app)
+require("./app/routes/stockmappingservice.routes")(app)
 
 app.use(express.static('dist'))
 
@@ -107,7 +114,7 @@ app.get("/*", (req, res) => {
  res.sendFile(__dirname + '/dist/index.html')
 })
 
-const PORT = process.env.PORT || 8090;
+const PORT = process.env.PORT || 8089
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`)
 })

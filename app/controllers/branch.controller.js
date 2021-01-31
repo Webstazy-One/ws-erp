@@ -5,7 +5,7 @@ const Branch = db.branch
 exports.create = (req, res) => {
 
   if (!req.body.branchCode) {
-    res.status(400).send({ message: "Content can not be empty!" })
+    res.status(400).send({ message: "branchCode can not be empty!" })
     return
   }
 
@@ -33,32 +33,52 @@ exports.create = (req, res) => {
 
 
 exports.findByBranchCode = (req, res) => {
-  const branchCode = req.params.bc;
-  console.log(req.query);
+  const branchCode = req.params.bc
   var condition = branchCode
     ? {
       branchCode: branchCode,
       _active: true
     }
-    : {};
+    : {}
 
   Branch.find(condition)
     .then((data) => {
-      res.send(data);
+      let branch = {
+        branchCode: data[0].branchCode,
+        branchName: data[0].branchName,
+        branchAddress: data[0].branchAddress,
+        branchPhone: data[0].branchPhone,
+        _active: data[0]._active
+      }
+
+      res.send(branch)
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving branch."
+        message: err.message || "Some error occurred while retrieving branch.",
       })
     })
 }
 
-
 exports.findAll = (req, res) => {
+  let branchar = {}
+  let branchDet = []
   Branch.find()
     .then(data => {
-      res.send(data)
+      data.forEach(branch => {
+        branchar = {
+          branchCode: branch.branchCode,
+          branchName: branch.branchName,
+          branchAddress: branch.branchAddress,
+          branchPhone: branch.branchPhone,
+          _active: branch._active
+        }
+
+        branchDet.push(branchar)
+      })
+      res.send(branchDet)
     })
+
     .catch(err => {
       res.status(500).send({
         message:
@@ -69,9 +89,22 @@ exports.findAll = (req, res) => {
 
 
 exports.findAllActive = (req, res) => {
+  let branchar = {}
+  let branchDet = []
   Branch.find({ _active: true })
     .then(data => {
-      res.send(data)
+      data.forEach(branch => {
+        branchar = {
+          branchCode: branch.branchCode,
+          branchName: branch.branchName,
+          branchAddress: branch.branchAddress,
+          branchPhone: branch.branchPhone,
+          _active: branch._active
+        }
+
+        branchDet.push(branchar)
+      })
+      res.send(branchDet)
     })
     .catch(err => {
       res.status(500).send({
@@ -83,20 +116,20 @@ exports.findAllActive = (req, res) => {
 
 
 exports.updateBranchbybranchCode = (req, res) => {
-  const branchCode = req.params.branchCode;
+  const branchCode = req.params.branchCode
 
   Branch.findOneAndUpdate({ branchCode: branchCode }, { $set: req.body })
     .then(data => {
 
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Branch with branchCode=${branchCode}. Maybe Branch was not found!`
+          message: `Cannot update Branch with branchCode=${branchCode}. Maybe Branch was not found!`,
         })
       } else res.send(true)
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating Branch with branchCode=" + branchCode
+        message: "Error updating Branch with branchCode=" + branchCode,
       })
     })
 }

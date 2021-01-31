@@ -6,8 +6,10 @@ module.exports = app => {
     var router = require("express").Router()
 
     router.get("/sales/branch/timerange/:startDate/:endDate", reports.salesByBranch)
+    
 
-    router.get("/revenue/branch/timerange/:startDate/:endDate", reports.revenueByBranch)
+    router.get("/revenue/branch/timerange/:dateTimeBefore/:dateTimeAfter", reports.revenueByBranch)
+    
 
     router.get("/profit/timerange/:startDate/:endDate", reports.profitByBranch)
 
@@ -24,6 +26,8 @@ module.exports = app => {
     router.get("/details/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrandInBranch)
 
     router.get("/sales/item/", report.salesByItems)
+
+    router.get("/salesCount/item/:itemId", report.salesByOneItem)
 
     router.get("/stock/branch/:branchCode/", report.brandByBranch)
 

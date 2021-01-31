@@ -18,5 +18,8 @@ module.exports = app => {
 
   router.get("/:promoId", promos.findOne);
   
+
+  
+  router.get("/itemOrBrand/:appliedto", promos.findByBrandNameOrItemId);
   app.use("/api/promo", router);
 };

@@ -20,7 +20,7 @@ db.customer = require("./customer.model.js")(mongoose)
 db.cust_merge = require("./cust_merge.model.js")(mongoose)
 db.brand = require("./brand.model.js")(mongoose)
 db.uplog = require("./uplog.model.js")(mongoose)
-
+db.goodreceivednote = require("./goodreceivednote.model")(mongoose)
 
 db.user = require("./user.model")
 db.role = require("./role.model")

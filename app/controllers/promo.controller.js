@@ -1,7 +1,8 @@
-const db = require("../models");
-const { promo } = require("../models");
-const Promo = db.promo;
-const Item = db.item;
+const db = require("../models")
+const { promo } = require("../models")
+const Promo = db.promo
+const Item = db.item
+const Brand = db.brand
 
 exports.create = (req, res) => {
   const promo = new Promo({
@@ -19,7 +20,7 @@ exports.create = (req, res) => {
   promo
     .save(promo)
     .then(data => {
-      res.send(data);
+      res.send(data)
     })
     .catch(err => {
       res.status(500).send({
@@ -30,9 +31,26 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
+  let promoar = {}
+  let promoDet = []
   Promo.find()
     .then(data => {
-      res.send(data)
+      data.forEach(pro => {
+        promoar = {
+          promoId: pro.promoId,
+          desc: pro.desc,
+          calc: pro.calc,
+          rate: pro.rate,
+          totDiscount: pro.totDiscount,
+          startDate: pro.startDate,
+          endDate: pro.endDate,
+          type: pro.type,
+          _active: pro._active,
+          appliedto: pro.appliedto
+        }
+        promoDet.push(promoar)
+      })
+      res.send(promoDet)
     })
     .catch(err => {
       res.status(500).send({
@@ -45,81 +63,141 @@ exports.findAll = (req, res) => {
 
 
 exports.findAllActive = (req, res) => {
+  let promoar = {}
+  let promoDet = []
   Promo.find({ _active: true })
     .then(data => {
-      res.send(data);
+      data.forEach(pro => {
+        promoar = {
+          promoId: pro.promoId,
+          desc: pro.desc,
+          calc: pro.calc,
+          rate: pro.rate,
+          totDiscount: pro.totDiscount,
+          startDate: pro.startDate,
+          endDate: pro.endDate,
+          type: pro.type,
+          _active: pro._active,
+          appliedto: pro.appliedto
+        }
+        promoDet.push(promoar)
+      })
+      res.send(promoDet)
     })
     .catch(err => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving Promo."
-      });
-    });
-};
+      })
+    })
+}
 
 
 exports.findByBrandName = (req, res) => {
-  const appliedto = req.params.brandName;
-  console.log(req.query);
+  let promoar = {}
+  let promoDet = []
+  const appliedto = req.params.brandName
   var condition = appliedto
     ? {
       appliedto: { $regex: new RegExp(req.params.brandName), $options: "i" },
     }
-    : {};
+    : {}
 
   Promo.find(condition)
     .populate('item')
     .then((data) => {
-      res.send(data);
+      data.forEach(pro => {
+        promoar = {
+          promoId: pro.promoId,
+          desc: pro.desc,
+          calc: pro.calc,
+          rate: pro.rate,
+          totDiscount: pro.totDiscount,
+          startDate: pro.startDate,
+          endDate: pro.endDate,
+          type: pro.type,
+          _active: pro._active,
+          appliedto: pro.appliedto
+        }
+        promoDet.push(promoar)
+      })
+      res.send(promoDet)
     })
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving Promo.",
-      });
-    });
-};
+      })
+    })
+}
 
 
 exports.findOne = (req, res) => {
-  const promoId = req.params.promoId;
-
+  const promoId = req.params.promoId
   Promo.findById(promoId)
     .then(data => {
+      let pro = {
+        promoId: data[0].promoId,
+        desc: data[0].desc,
+        calc: data[0].calc,
+        rate: data[0].rate,
+        totDiscount: data[0].totDiscount,
+        startDate: data[0].startDate,
+        endDate: data[0].endDate,
+        type: data[0].type,
+        _active: data[0]._active,
+        appliedto: data[0].appliedto
+      }
       if (!data)
-        res.status(404).send({ message: "Not found promo with promoId " + promoId });
-      else res.send(data);
+        res.status(404).send({ message: "Not found promo with promoId " + promoId })
+      else res.send(pro)
     })
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving promo with promoId=" + promoId });
-    });
-};
+        .send({ message: "Error retrieving promo with promoId=" + promoId })
+    })
+}
 
 
 exports.findByItemId = (req, res) => {
-  const appliedto = req.params.itemId;
-  console.log(req.query);
+  let promoar = {}
+  let promoDet = []
+  const appliedto = req.params.itemId
   var condition = appliedto
     ? {
       appliedto: { $regex: new RegExp(req.params.itemId), $options: "i" },
     }
-    : {};
+    : {}
 
   Promo.find(condition)
     .populate('item')
     .then((data) => {
-      res.send(data);
+      data.forEach(pro => {
+        promoar = {
+          promoId: pro.promoId,
+          desc: pro.desc,
+          calc: pro.calc,
+          rate: pro.rate,
+          totDiscount: pro.totDiscount,
+          startDate: pro.startDate,
+          endDate: pro.endDate,
+          type: pro.type,
+          _active: pro._active,
+          appliedto: pro.appliedto
+        }
+        promoDet.push(promoar)
+      })
+      res.send(promoDet)
     })
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving Promo.",
-      });
-    });
-};
+      })
+    })
+}
 
 exports.DeleteFromPromoId = (req, res) => {
-  const promoId = req.params.promoId;
+  const promoId = req.params.promoId
 
   Promo.findOneAndUpdate({ _id: promoId }, { $set: { _active: false } })
     .then(data => {
@@ -127,16 +205,36 @@ exports.DeleteFromPromoId = (req, res) => {
       if (!data) {
         res.status(404).send({
           message: `Cannot delete promo with promoId=${promoId}. Maybe promo was not found!`,
-        });
-      } else res.send(true);
+        })
+      } else res.send(true)
     })
     .catch((err) => {
       res.status(500).send({
         message: "Error deleting promo with promoId =" + promoId,
-      });
-    });
+      })
+    })
 }
 
 
+exports.findByBrandNameOrItemId = (req, res) => {
+  const appliedto = req.params.appliedto
 
+  Promo.find({
+    _active: true,
+    appliedto: appliedto
+  }
+  )
+  .populate('item')
+  .populate('brand')
+    .then(data => {
+      console.log(data)
 
+      res.send(data)
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Promo."
+      })
+    })
+}
