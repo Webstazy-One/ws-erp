@@ -123,11 +123,7 @@ exports.findByName = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-<<<<<<< HEAD
-        message: err.message || "Some error occurred while retrieving items."
-=======
         message: err.message || "Some error occurred while retrieving items.",
->>>>>>> dev
       })
     })
 }
@@ -162,24 +158,12 @@ exports.DeleteFromBrandName = (req, res) => {
 
       if (!data) {
         res.status(404).send({
-<<<<<<< HEAD
-          message: `Cannot delete brand with brandName=${brandName}. Maybe brand was not found!`
-        })
-      } else res.send(true);
-=======
           message: `Cannot delete brand with brandName=${brandName}. Maybe brand was not found!`,
         })
       } else res.send(true)
->>>>>>> dev
     })
     .catch((err) => {
       res.status(500).send({
-<<<<<<< HEAD
-        message: err
-      })
-    })
-}
-=======
         message: err,
       })
     })
@@ -236,4 +220,3 @@ checkBrandExisted = (req, res, next) => {
 }
 
 
->>>>>>> dev

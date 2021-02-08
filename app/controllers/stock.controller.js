@@ -33,6 +33,8 @@ exports.create = (req, res) => {
 }
 
 exports.findByBrandBranch = (req, res) => {
+
+    stockReportAr = []
   const branchCode = req.params.branch
   const brand = req.params.brand
   console.log(req.query)
@@ -47,23 +49,25 @@ exports.findByBrandBranch = (req, res) => {
       console.log(data)
 
       stockReport = []
-      stockReportAr = []
-
+  
+      stockReportArr=[]
 let stockRep ={product:'',currentStock:'',price:''}
       data.forEach(stockEntry => {
         if (!stockEntry.itemId || stockEntry.itemId === null) return
         if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
-          stockReport[stockEntry.itemId.name] = stockEntry.currentStock
-          stockRep["product"]=stockEntry.itemId.name
-          stockRep["currentStock"]=stockEntry.currentStock
-          stockRep["price"]=stockEntry.itemId.price
+          stockReport[stockEntry.itemId.name + stockEntry.itemId.price] = stockEntry.currentStock
+       
 
-          stockReportAr.push(stockRep)
+       stockReportArr = {product:stockEntry.itemId.name,price:stockEntry.itemId.price,currentStock:stockEntry.currentStock}
+        stockReportAr.push(stockReportArr)
+        console.log(stockReportAr)
         }
+
       })
+      res.send(stockReportAr)
+
      
-res.send(stockReportAr)
-      // res.send(Object.assign({}, stockRep))
+      // res.send(Object.assign({}, stockReport))
     })
     .catch((err) => {
       res.status(500).send({

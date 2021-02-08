@@ -29,14 +29,9 @@ exports.create = (req, res) => {
 
 
 exports.findByPhone = (req, res) => {
-<<<<<<< HEAD
-  const phone = req.params.ph
-  console.log(req.query)
-=======
   let custar = {}
   let custDet = []
   const phone = req.params.ph
->>>>>>> dev
   var condition = phone
     ? {
       phone: { $regex: new RegExp(req.params.ph), $options: "i" }
@@ -45,13 +40,6 @@ exports.findByPhone = (req, res) => {
 
   Customer.find(condition)
     .then((data) => {
-<<<<<<< HEAD
-      res.send(data)
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving customer."
-=======
       data.forEach(customer => {
         custar = {
           phone: customer.phone,
@@ -66,7 +54,6 @@ exports.findByPhone = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving customer.",
->>>>>>> dev
       })
     })
 }
@@ -76,9 +63,6 @@ exports.findAll = (req, res) => {
   let custDet = []
   Customer.find()
     .then(data => {
-<<<<<<< HEAD
-      res.send(data)
-=======
       data.forEach(customer => {
         custar = {
           phone: customer.phone,
@@ -88,7 +72,6 @@ exports.findAll = (req, res) => {
         custDet.push(custar)
       })
       res.send(custDet)
->>>>>>> dev
     })
     .catch(err => {
       res.status(500).send({
@@ -107,15 +90,6 @@ exports.updateByCustomerPhone = (req, res) => {
 
       if (!data) {
         res.status(404).send({
-<<<<<<< HEAD
-          message: `Cannot update customer with phone=${phone}.`
-        });
-      } else res.send(true);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error updating customer with phone=" + phone
-=======
           message: `Cannot update customer with phone=${phone}.`,
         })
       } else res.send(true)
@@ -123,7 +97,6 @@ exports.updateByCustomerPhone = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: "Error updating customer with phone=" + phone,
->>>>>>> dev
       })
     })
 }
