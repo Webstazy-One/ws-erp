@@ -17,7 +17,8 @@ module.exports = (mongoose) => {
             default: true,
 
         },
-        disputed: Boolean
+        disputed: Boolean,
+        booked: Number
     })
 
     schema.method("toJSON", function() {
