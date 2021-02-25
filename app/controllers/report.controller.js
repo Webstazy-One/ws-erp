@@ -10,6 +10,7 @@
  const Stock = db.stock
 
  exports.salesByBranch = (req, res) => {
+
      branchSalesCount = {}
      branchSalesCount['COLM5'] = 0
      branchSalesCount['OGFSL'] = 0

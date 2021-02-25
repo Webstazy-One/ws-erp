@@ -15,7 +15,7 @@ module.exports = mongoose => {
             enum: ["ADVANCE", "GIFT"],
 
         },
-        itemId: String,
+        itemId: { type: mongoose.Schema.Types.Mixed, ref: 'item' },
         active: Boolean
     })
 
@@ -26,7 +26,8 @@ module.exports = mongoose => {
         incrementBy: 1,
     });
     schema.method("toJSON", function() {
-        const { _id, ...object } = this.toObject();        object.id = _id;
+        const { _id, ...object } = this.toObject();
+        object.id = _id;
         return object;
     });
 

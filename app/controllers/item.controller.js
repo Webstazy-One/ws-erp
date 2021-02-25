@@ -43,7 +43,7 @@ exports.create = (req, res) => {
         historicalCount: 0,
         disputed: req.body.disputed,
         condition: req.body.condition,
-        booked: 0,
+        booked: req.body.booked,
         _active: true
 
     })
