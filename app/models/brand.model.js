@@ -15,6 +15,13 @@ module.exports = mongoose => {
           default: "WATCHES",
         
         },
+        
+        auditedDate: {
+          type: Date,
+          default: "2000-01-01"
+          
+        }
+
       },
      
     );
