@@ -1,3 +1,4 @@
+const { brand } = require("../models")
 const db = require("../models")
 const Brand = db.brand
 const Item = db.item
@@ -13,7 +14,8 @@ exports.create = (req, res) => {
 
     brandName: req.body.brandName.toUpperCase(),
     _active: true,
-    subCategory: req.body.subCategory
+    subCategory: req.body.subCategory,
+    auditedDate: req.body.auditedDate
   })
 
   brands
@@ -46,6 +48,7 @@ exports.findByBrandName = (req, res) => {
         brandar = {
           brandName: brand.brandName,
           subCategory: brand.subCategory,
+          auditedDate: brand.auditedDate,
           _active: brand._active
         }
 
@@ -69,6 +72,7 @@ exports.findAll = (req, res) => {
         brandar = {
           brandName: brand.brandName,
           subCategory: brand.subCategory,
+          auditedDate: brand.auditedDate,
           _active: brand._active
         }
         brandDet.push(brandar)
@@ -92,6 +96,7 @@ exports.findAllActive = (req, res) => {
         brandar = {
           brandName: brand.brandName,
           subCategory: brand.subCategory,
+          auditedDate: brand.auditedDate,
           _active: brand._active
         }
         brandDet.push(brandar)
@@ -183,6 +188,7 @@ exports.findBySubcategory = (req, res) => {
         subcatar = {
           brandName: brand.brandName,
           subCategory: brand.subCategory,
+          auditedDate: brand.auditedDate,
           _active: brand._active
         }
         subcatDet.push(subcatar)
