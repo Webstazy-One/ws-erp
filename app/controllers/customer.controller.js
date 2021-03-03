@@ -34,7 +34,7 @@ exports.findByPhone = (req, res) => {
   const phone = req.params.ph
   var condition = phone
     ? {
-      phone: { $regex: new RegExp(req.params.ph), $options: "i" },
+      phone: { $regex: new RegExp(req.params.ph), $options: "i" }
     }
     : {}
 
