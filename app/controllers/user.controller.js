@@ -71,7 +71,6 @@ exports.DeleteUser = (req, res) => {
         });
       });
   }
-
 }
 
 

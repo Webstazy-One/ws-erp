@@ -1,7 +1,6 @@
 const db = require("../models")
 const Tag = db.tag
 
-
 exports.create = (req, res) => {
 
   const tag = new Tag
