@@ -12,6 +12,7 @@ module.exports = (mongoose) => {
         _active: Boolean,
         disValue: Number,
         actualPrice: Number,
+        createdDate: Date,
         condition: {
             type: Boolean,
             default: true,
