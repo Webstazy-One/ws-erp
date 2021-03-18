@@ -19,6 +19,8 @@ module.exports = app => {
 
     router.get("/details/timerange/:startDate/:endDate", report.getDetailsOfPurchases)
 
+    router.get("/stockCreation/timerange/:startDate/:endDate", report.getDetailsOfProductCreation)
+
     router.get("/details/brand/timerange/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrand)
 
     router.get("/details/branch/timerange/:branchCode/:startDate/:endDate", report.getDetailsOfPurchasesByBranch)
