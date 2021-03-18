@@ -93,11 +93,11 @@ exports.signin = (req, res) => {
         })
       }
 
-      for (let i = 0; i < user.roles.length; i++) {
+      /* for (let i = 0; i < user.roles.length; i++) {
         if (user.roles[i].name == "override") {
           return res.status(404).send({ message: "Override users cannot access."});
         }
-      }
+      } */
 
       var token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400 // 24 hours
