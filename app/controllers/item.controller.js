@@ -29,6 +29,11 @@ exports.create = (req, res) => {
     // const sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
     const sfNameLast = req.body.name.replace(/[^\w\s+]/gi, '');
     const sfName = sfNameLast.replace(/\s/g, "");
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
 
     const item = new Item({
         barcodePrefix: req.body.barcodePrefix,
@@ -37,6 +42,7 @@ exports.create = (req, res) => {
         name: req.body.name,
         sfName: sfName,
         desc: req.body.desc,
+        createdDate: today,
         tag: req.body.tag,
         price: req.body.price,
         cost: req.body.cost,
@@ -177,58 +183,58 @@ exports.findOne = (req, res) => {
             Promo.find(
 
 
-                    { appliedto: req.params.id, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
+                { appliedto: req.params.id, startDate: { $lt: nDate }, endDate: { $gte: nDate } }
 
 
-                )
+            )
                 .then(promoData => {
 
 
-                        if (!promoData[0] == null) {
+                    if (!promoData[0] == null) {
 
-                            if (promoData[0].type == "ITEM") {
+                        if (promoData[0].type == "ITEM") {
 
-                                if (promoData[0].calc == "PERCENTAGE") {
-                                    console.log("ITEM Percentage")
-                                    itemData.disValue = itemData.price * promoData[0].rate,
-                                        itemData.actualPrice = itemData.price - itemData.disValue
-
-
-                                } else if (promoData[0].calc == "FLAT") {
-                                    console.log("ITEM FLAT")
-
-                                    itemData.disValue = promoData[0].rate,
-                                        itemData.actualPrice = itemData.price - promoData[0].rate
-                                }
+                            if (promoData[0].calc == "PERCENTAGE") {
+                                console.log("ITEM Percentage")
+                                itemData.disValue = itemData.price * promoData[0].rate,
+                                    itemData.actualPrice = itemData.price - itemData.disValue
 
 
-                            } else if (promoData[0].type == "BRAND") {
+                            } else if (promoData[0].calc == "FLAT") {
+                                console.log("ITEM FLAT")
 
-                                console.log("BRAND type")
-
-                                if (promoData[0].calc == "PERCENTAGE") {
-                                    console.log("BRAND Percentage")
-                                    itemData.disValue = itemData.price * promoData[0].rate,
-                                        itemData.actualPrice = itemData.price - itemData.disValue
-
-
-                                } else if (promoData[0].calc == "FLAT") {
-                                    console.log("BRAND FLAT")
-
-                                    itemData.disValue = promoData[0].rate,
-                                        itemData.actualPrice = itemData.price - promoData[0].rate
-                                }
-
-
-
+                                itemData.disValue = promoData[0].rate,
+                                    itemData.actualPrice = itemData.price - promoData[0].rate
                             }
-                        } else {
-                            itemData.disValue = 0
-                            itemData.actualPrice = itemData.price
+
+
+                        } else if (promoData[0].type == "BRAND") {
+
+                            console.log("BRAND type")
+
+                            if (promoData[0].calc == "PERCENTAGE") {
+                                console.log("BRAND Percentage")
+                                itemData.disValue = itemData.price * promoData[0].rate,
+                                    itemData.actualPrice = itemData.price - itemData.disValue
+
+
+                            } else if (promoData[0].calc == "FLAT") {
+                                console.log("BRAND FLAT")
+
+                                itemData.disValue = promoData[0].rate,
+                                    itemData.actualPrice = itemData.price - promoData[0].rate
+                            }
+
+
+
                         }
-
-
+                    } else {
+                        itemData.disValue = 0
+                        itemData.actualPrice = itemData.price
                     }
+
+
+                }
 
                 ).finally(() => {
                     if (itemData._active == true) {
@@ -357,9 +363,9 @@ exports.DeleteFromItemId = (req, res) => {
 
 
     Stock.findOneAndRemove({
-            itemId: Id,
-            branchCode: "BTTML"
-        }, { $set: req.body })
+        itemId: Id,
+        branchCode: "BTTML"
+    }, { $set: req.body })
         .then(data => {
 
             if (!data) {
@@ -370,9 +376,9 @@ exports.DeleteFromItemId = (req, res) => {
         })
 
     Stock.findOneAndRemove({
-            itemId: Id,
-            branchCode: "COLM5"
-        }, { $set: req.body })
+        itemId: Id,
+        branchCode: "COLM5"
+    }, { $set: req.body })
         .then(data => {
 
             if (!data) {
@@ -383,9 +389,9 @@ exports.DeleteFromItemId = (req, res) => {
         })
 
     Stock.findOneAndRemove({
-            itemId: Id,
-            branchCode: "OGFSL"
-        }, { $set: req.body })
+        itemId: Id,
+        branchCode: "OGFSL"
+    }, { $set: req.body })
         .then(data => {
 
             if (!data) {
@@ -396,9 +402,9 @@ exports.DeleteFromItemId = (req, res) => {
         })
 
     Stock.findOneAndRemove({
-            itemId: Id,
-            branchCode: "LIBPL"
-        }, { $set: req.body })
+        itemId: Id,
+        branchCode: "LIBPL"
+    }, { $set: req.body })
         .then(data => {
 
             if (!data) {
@@ -409,9 +415,9 @@ exports.DeleteFromItemId = (req, res) => {
         })
 
     Stock.findOneAndRemove({
-            itemId: Id,
-            branchCode: "WAREH"
-        }, { $set: req.body })
+        itemId: Id,
+        branchCode: "WAREH"
+    }, { $set: req.body })
         .then(data => {
 
             if (!data) {
@@ -423,10 +429,10 @@ exports.DeleteFromItemId = (req, res) => {
 
 
 
-    .catch(() => {
+        .catch(() => {
 
 
-    })
+        })
 
 
 }
@@ -451,7 +457,7 @@ exports.findTopItems = (req, res) => {
 
     const skiplt = parseInt(req.params.skip)
     const skip = (skiplt - 1) * 100
-        //console.log(skip)
+    //console.log(skip)
     Item.find({ _active: true }).sort({ price: -1 }).skip(skip).limit(100)
         .then(data => {
 
@@ -479,9 +485,9 @@ exports.findBySubcategory = (req, res) => {
     let itemDt = []
 
     Brand.find({
-            subCategory: req.params.subCategory,
-            _active: true
-        })
+        subCategory: req.params.subCategory,
+        _active: true
+    })
         .then((data) => {
 
 
@@ -502,7 +508,7 @@ exports.findBySubcategory = (req, res) => {
                         console.log(data)
 
                         res.send(data)
-                    }).catch(() => {})
+                    }).catch(() => { })
 
 
             })
@@ -550,19 +556,19 @@ exports.findByBrandAndName = (req, res) => {
     sfbrand = sfbrandar.split(' ')
 
     Item.find({
-            $or: [
-                { brandName: { $regex: new RegExp(brandName), $options: "i" } },
-                { sfName: { $regex: new RegExp(sfName), $options: "ix" } },
+        $or: [
+            { brandName: { $regex: new RegExp(brandName), $options: "i" } },
+            { sfName: { $regex: new RegExp(sfName), $options: "ix" } },
 
-                {
-                    brandName: sfbrand[0],
-                    sfName: { $regex: new RegExp(sfbrand[1]), $options: "ix" },
-                }
+            {
+                brandName: sfbrand[0],
+                sfName: { $regex: new RegExp(sfbrand[1]), $options: "ix" },
+            }
 
-            ],
+        ],
 
-            _active: true
-        })
+        _active: true
+    })
         .then((data) => {
             res.send(data)
 
@@ -612,10 +618,10 @@ exports.findDisputedAndRealItem = (req, res) => {
 
 
     Item.find({
-            $or: [{ '_id': req.params.id1 },
-                { '_id': req.params.id2 }
-            ]
-        })
+        $or: [{ '_id': req.params.id1 },
+        { '_id': req.params.id2 }
+        ]
+    })
         .then((data) => {
             let brandNamear = []
             let namear = []
@@ -662,10 +668,10 @@ exports.UpdateDisputedToRealItem = (req, res) => {
     const id2 = req.params.id2
     const id1 = req.params.id1
     Item.find({
-            $or: [{ '_id': req.params.id1 },
-                { '_id': req.params.id2 }
-            ]
-        })
+        $or: [{ '_id': req.params.id1 },
+        { '_id': req.params.id2 }
+        ]
+    })
         .then((data) => {
             let brandNamear = []
             let namear = []
@@ -748,21 +754,21 @@ exports.UpdateDisputedToRealItem = (req, res) => {
 
 
             Item.findOneAndUpdate({ _id: id2 }, {
-                    $set:
+                $set:
 
-                    {
-                        brandName: brandNamefnl,
-                        name: namefnl,
-                        sfName: sfNamefnl,
-                        desc: descfnl,
-                        price: pricefnl,
-                        cost: costfnl,
-                        barcodePrefix: barcodePrefixfnl,
-                        tag: tagfnl
+                {
+                    brandName: brandNamefnl,
+                    name: namefnl,
+                    sfName: sfNamefnl,
+                    desc: descfnl,
+                    price: pricefnl,
+                    cost: costfnl,
+                    barcodePrefix: barcodePrefixfnl,
+                    tag: tagfnl
 
-                    },
+                },
 
-                })
+            })
                 .then(data => {
 
                     if (!data) {
