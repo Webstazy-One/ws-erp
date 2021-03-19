@@ -23,9 +23,15 @@ module.exports = app => {
 
     router.get("/details/brand/timerange/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrand)
 
+     router.get("/stockCreation/brand/timerange/:brandName/:startDate/:endDate", report.getDetailsOfProductCreationByBrand)
+
     router.get("/details/branch/timerange/:branchCode/:startDate/:endDate", report.getDetailsOfPurchasesByBranch)
 
+     router.get("/stockCreation/branch/timerange/:branchCode/:startDate/:endDate", report.getDetailsOfProductCreationByBranch)
+
     router.get("/details/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrandInBranch)
+
+    router.get("/stockCreation/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfProductCreationByBrandInBranch)
 
     router.get("/sales/item/", report.salesByItems)
 
