@@ -227,7 +227,7 @@ exports.getDetailsOfProductCreation = (req, res) => {
         })
         .catch((err) => {
             res.status(500).send({
-                message: err.message || "Some error occurred while retrieving Product Creation data.",
+                message: err.message || "Some error occurred while retrieving Product creation data.",
             })
         })
 }
@@ -254,6 +254,30 @@ exports.getDetailsOfPurchasesByBrand = (req, res) => {
         .catch((err) => {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving Purchase.",
+            })
+        })
+}
+exports.getDetailsOfProductCreationByBrand = (req, res) => {
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Item.find({
+        brandName: req.params.brandName,
+        createdDate: {
+            $gte: req.params.startDate,
+            $lt: endDate,
+        },
+
+        _active: true
+    })
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving Product creation data by Brand.",
             })
         })
 
@@ -315,6 +339,32 @@ exports.getDetailsOfPurchasesByBranch = (req, res) => {
         })
 }
 
+exports.getDetailsOfProductCreationByBranch = (req, res) => {
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Item.find({
+        branchCode: req.params.branchCode,
+        createdDate: {
+            $gte: req.params.startDate,
+            $lt: endDate,
+        },
+
+        _active: true
+    })
+        .then((data) => {
+            console.log(data)
+            res.send(data)
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving Product creation data by Branch.",
+            })
+        })
+}
+
 exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
 
     var endDate = new Date(req.params.endDate)
@@ -338,6 +388,33 @@ exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
         .catch((err) => {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving Purchase.",
+            })
+        })
+}
+
+exports.getDetailsOfProductCreationByBrandInBranch = (req, res) => {
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Item.find({
+        branchCode: req.params.branchCode,
+        brandName: req.params.brandName,
+        createdDate: {
+            $gte: req.params.startDate,
+            $lt: endDate,
+        },
+        _active: true
+
+    })
+        .then((data) => {
+            console.log(data)
+            res.send(data)
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving Product creation data by Brand or Branch. ",
             })
         })
 }
