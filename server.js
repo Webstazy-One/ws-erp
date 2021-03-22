@@ -18,6 +18,7 @@ app.use(mongooseMorgan({
 
 
 const Role = db.role
+const Meta = db.meta
 db.mongoose
     .connect(db.url, {
         useNewUrlParser: true,
@@ -26,6 +27,7 @@ db.mongoose
     .then(() => {
         console.log("Connected to the database Sucessfully!")
         initial()
+        intialMeta()
     })
     .catch((err) => {
         console.log("Cannot connect to the database!", err)
@@ -78,11 +80,39 @@ function initial() {
 
         }
     })
-
-
-
-
 }
+
+
+function intialMeta() {
+    Meta.estimatedDocumentCount((err, count) => {
+        if (!err && count === 0) {
+            new Meta({
+                k: "SGDRate",
+                v: "0"
+            }).save((err) => {
+                if (err) {
+                    console.log("error", err)
+                }
+
+                console.log("added 'SGDRate' ")
+            })
+
+
+            new Meta({
+                k: "SGDInc",
+                v: "0"
+            }).save((err) => {
+                if (err) {
+                    console.log("error", err)
+                }
+
+                console.log("added 'SGDInc' ")
+            })
+
+        }
+    })
+}
+
 
 require("./app/routes/item.routes")(app)
 require("./app/routes/exchange.routes")(app)
@@ -104,6 +134,7 @@ require("./app/routes/report.routes")(app)
 require("./app/routes/goodreceivednote.routes")(app)
 require("./app/routes/stockmappingservice.routes")(app)
 require("./app/routes/voucher.routes")(app)
+require("./app/routes/meta.routes")(app)
 
 app.use(express.static('dist'))
 

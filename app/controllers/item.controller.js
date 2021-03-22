@@ -7,6 +7,7 @@ const { count } = require("../models/user.model")
 const { item } = require("../models")
 const Brand = db.brand
 const Stock = db.stock
+const Meta = db.meta
 
 
 exports.create = (req, res) => {
@@ -28,7 +29,8 @@ exports.create = (req, res) => {
 
     // const sfName = req.body.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '').replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
     const sfNameLast = req.body.name.replace(/[^\w\s+]/gi, '');
-    const sfName = sfNameLast.replace(/\s/g, "");
+    const sfNameS = sfNameLast.replace(/\s/g, "");
+    const sfName = sfNameS.replace(/O/gi, 0);
 
     const item = new Item({
         barcodePrefix: req.body.barcodePrefix,
@@ -38,7 +40,10 @@ exports.create = (req, res) => {
         sfName: sfName,
         desc: req.body.desc,
         tag: req.body.tag,
+        lkRate: req.body.lkRate,
+        _increment: req.body._increment,
         price: req.body.price,
+        SGDPrice: req.body.SGDPrice,
         cost: req.body.cost,
         historicalCount: 0,
         disputed: req.body.disputed,
@@ -100,23 +105,31 @@ exports.create = (req, res) => {
 
 }
 
-
-
 exports.findByBrand = (req, res) => {
     var condition = req.params.br ? {
         brandName: req.params.br,
         _active: true
     } : {}
 
+
     Item.find(condition)
         .then((data) => {
-            res.send(data);
+            if (data.brandName == "TISSOT") {
+                data.price = data.SGDPrice * 149 + 1002;
+            } else if (data.brandName == "RADO1") {
+                data.price = data.SGDPrice * 149 + 1002;
+            } else if (data.brandName == "LONGINES") {
+                data.price = data.SGDPrice * 149 + 1002;
+            }
+
+            res.send(data)
         })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving items."
-            })
+
+    .catch((err) => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving items."
         })
+    })
 }
 
 exports.findBybarcode = (req, res) => {
@@ -137,7 +150,6 @@ exports.findBybarcode = (req, res) => {
             })
         })
 }
-
 
 exports.findByName = (req, res) => {
     //const sfName = req.params.name.replace(' ', '').replace('.', '').replace('/', '').replace('\\', '').replace('-', '').replace('=', '')
@@ -170,6 +182,7 @@ exports.findOne = (req, res) => {
     let nDate = new Date().toISOString('en-US', {
         timeZone: 'Asia/Calcutta'
     })
+
 
     Item.findById(req.params.id)
         .then(itemData => {
@@ -231,13 +244,42 @@ exports.findOne = (req, res) => {
                     }
 
                 ).finally(() => {
+                    const k = req.params.k;
+                    const v = req.params.v;
+
                     if (itemData._active == true) {
+                        if (itemData.brandName == "TISSOT" || itemData.brandName == "RADO" || itemData.brandName == "LONGINES") {
+
+                            Meta.find({ k: "SGDRate" })
+                                .then((data) => {
+                                    var value = data.v; //This is not working
+                                    console.log(value)
+                                    const rateV = parseInt(value);
+                                    console.log(data)
+
+                                    itemData.price = itemData.price * rateV
+                                })
+
+                            Meta.find({ k: "SGDInc" })
+                                .then((data) => {
+                                    var value = data.v; //This is not working
+                                    console.log(value)
+                                    const incV = parseInt(value);
+                                    console.log(data)
+
+                                    itemData.price = itemData.price + incV
+                                })
+
+                        }
+
                         res.send(itemData)
                     } else {
                         res
                             .status(500)
                             .send({ message: "Not Found item with id=" + req.params.id + " " });
                     }
+
+
 
                     //    itemData.disValue = itemData.price * promoData[0].rate
                 })
@@ -270,9 +312,9 @@ exports.findAllActive = (req, res) => {
         .catch((err) => {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving Item.",
-            });
-        });
-};
+            })
+        })
+}
 
 exports.update = (req, res) => {
     if (!req.body) {

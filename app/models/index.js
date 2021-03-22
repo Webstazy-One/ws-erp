@@ -22,6 +22,7 @@ db.brand = require("./brand.model.js")(mongoose)
 db.uplog = require("./uplog.model.js")(mongoose)
 db.goodreceivednote = require("./goodreceivednote.model")(mongoose)
 db.voucher = require("./voucher.model")(mongoose)
+db.meta = require("./meta.model")(mongoose)
 
 db.user = require("./user.model")
 db.role = require("./role.model")

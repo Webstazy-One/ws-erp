@@ -9,15 +9,16 @@ module.exports = (mongoose) => {
         tag: [String],
         cost: Number,
         price: Number,
+        SGDPrice: Number,
         _active: Boolean,
         disValue: Number,
         actualPrice: Number,
         condition: {
             type: Boolean,
             default: true,
-
         },
         disputed: Boolean,
+
         booked: { type: Number, default: 0 }
     })
 
