@@ -232,6 +232,30 @@ exports.getDetailsOfProductCreation = (req, res) => {
         })
 }
 
+exports.getCurrentStock = (req, res) => {
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Stock.find({
+        updatedAt: {
+            $gte: req.params.startDate,
+            $lt: endDate
+        },
+        _active: true
+    })
+        .then((data) => {
+            res.send(data)
+            console.log(data)
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving current stock.",
+            })
+        })
+}
+
 
 exports.getDetailsOfPurchasesByBrand = (req, res) => {
 
@@ -257,6 +281,33 @@ exports.getDetailsOfPurchasesByBrand = (req, res) => {
             })
         })
 }
+
+
+exports.getCurrentStockByBrand = (req, res) => {
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Stock.find({
+        brandName: req.params.brandName,
+        updatedAt: {
+            $gte: req.params.startDate,
+            $lt: endDate,
+        },
+
+        _active: true
+    })
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving current stock by brand.",
+            })
+        })
+}
+
 exports.getDetailsOfProductCreationByBrand = (req, res) => {
 
     var endDate = new Date(req.params.endDate)
@@ -339,6 +390,33 @@ exports.getDetailsOfPurchasesByBranch = (req, res) => {
         })
 }
 
+exports.getCurrentStockByBranch = (req, res) => {
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Stock.find({
+        branchCode: req.params.branchCode,
+        brandName: req.params.brandName,
+        updatedAt: {
+            $gte: req.params.startDate,
+            $lt: endDate,
+        },
+        _active: true
+
+    })
+        .then((data) => {
+            console.log(data)
+            res.send(data)
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while current stock .",
+            })
+        })
+}
+
 exports.getDetailsOfProductCreationByBranch = (req, res) => {
 
     var endDate = new Date(req.params.endDate)
@@ -388,6 +466,33 @@ exports.getDetailsOfPurchasesByBrandInBranch = (req, res) => {
         .catch((err) => {
             res.status(500).send({
                 message: err.message || "Some error occurred while retrieving Purchase.",
+            })
+        })
+}
+
+exports.getCurrentStockByBrandInBranch = (req, res) => {
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Stock.find({
+        branchCode: req.params.branchCode,
+        brandName: req.params.brandName,
+        updatedAt: {
+            $gte: req.params.startDate,
+            $lt: endDate,
+        },
+        _active: true
+
+    })
+        .then((data) => {
+            console.log(data)
+            res.send(data)
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving current stock.",
             })
         })
 }
