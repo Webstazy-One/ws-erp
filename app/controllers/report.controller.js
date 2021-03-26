@@ -362,6 +362,31 @@ exports.salesByBrands = (req, res) => {
             })
         })
 }
+exports.getSalesBySelectedBrands = (req, res) => {
+    brandSalesCount = {}
+
+    var endDate = new Date(req.params.endDate)
+    endDate.setDate(endDate.getDate() + 1)
+    console.log(endDate)
+
+    Purchase.find({
+        brandName:req.params.brandName,
+        "dateTime": { "$gte": new Date(req.params.startDate), "$lt": endDate },
+        _active: true
+    })
+        .then((data) => {
+            data.forEach(sale => {
+                console.log("A sale of " + sale.qty + "has happened in " + sale.brandName)
+                brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
+            });
+            res.send(brandSalesCount)
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error with report"
+            })
+        })
+}
 
 
 exports.getDetailsOfPurchasesByBranch = (req, res) => {
@@ -526,7 +551,7 @@ exports.getDetailsOfProductCreationByBrandInBranch = (req, res) => {
 
 
 
-exports.brandByBranch = (req, res) => {
+exports.getAllBrandByBranch = (req, res) => {
 
     findBrandwiseCount = () => {
 
@@ -545,6 +570,38 @@ exports.brandByBranch = (req, res) => {
             })
 
 
+
+            return brandwiseCount
+        })
+
+    }
+
+    findBrandwiseCount().then((data) => {
+        res.send(Object.assign({}, data))
+    }).catch((err) => {
+        console.log(err)
+    })
+
+}
+
+exports.getBrandByBranch = (req, res) => {
+
+    findBrandwiseCount = () => {
+
+        return Stock.find({
+            branchCode: req.params.branchCode,
+            brand: req.params.brand,
+        }).populate('itemId').then((stockData) => {
+
+            brandwiseCount = []
+
+            stockData.forEach(stockEntry => {
+                if (!stockEntry.itemId) return
+
+                //   brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
+
+                brandwiseCount[stockEntry.itemId.brandName] = brandwiseCount[stockEntry.itemId.brandName] ? brandwiseCount[stockEntry.itemId.brandName] + stockEntry.currentStock : stockEntry.currentStock
+            })
 
             return brandwiseCount
         })
