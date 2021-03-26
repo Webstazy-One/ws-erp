@@ -15,6 +15,8 @@ module.exports = app => {
 
     router.get("/sales/brand/timerange/:startDate/:endDate", report.salesByBrands)
 
+    router.get("/sales/brand/timerange/:brandName/:startDate/:endDate", report.getSalesBySelectedBrands)
+
     router.get("/revenue/brand/timerange/:startDate/:endDate", reports.revenueByBrand)
 
     router.get("/details/timerange/:startDate/:endDate", report.getDetailsOfPurchases)
@@ -29,13 +31,13 @@ module.exports = app => {
 
      router.get("/stockes/brand/timerange/:brandName/:startDate/:endDate", report.getCurrentStockByBrand)
 
-    router.get("/details/branch/timerange/:branchCode/:startDate/:endDate", report.getDetailsOfPurchasesByBranch)
+  router.get("/details/branch/timerange/:branchCode/:startDate/:endDate", report.getDetailsOfPurchasesByBranch)
 
      router.get("/stockCreation/branch/timerange/:branchCode/:startDate/:endDate", report.getDetailsOfProductCreationByBranch)
 
      router.get("/stockes/branch/timerange/:branchCode/:startDate/:endDate", report.getCurrentStockByBranch)
 
-    router.get("/details/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrandInBranch)
+router.get("/details/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfPurchasesByBrandInBranch)
 
     router.get("/stockCreation/branch/brand/timerange/:branchCode/:brandName/:startDate/:endDate", report.getDetailsOfProductCreationByBrandInBranch)
 
@@ -45,7 +47,9 @@ module.exports = app => {
 
     router.get("/salesCount/item/:itemId", report.salesByOneItem)
 
-    router.get("/stock/branch/:branchCode/", report.brandByBranch)
+    router.get("/stock/branch/:branchCode/", report.getAllBrandByBranch)
+
+    router.get("/stock/branch/brand/:branchCode/:brand", report.getBrandByBranch)
 
     // // router.get("/sales/branch/timerange", reports.findByDateRange)		
 
