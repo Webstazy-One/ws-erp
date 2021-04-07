@@ -330,15 +330,16 @@
 
              brandwiseCount = []
 
+                count = 0
+
              stockData.forEach(stockEntry => {
                  if (!stockEntry.itemId) return
 
                  //   brandSalesCount[sale.brandName] = brandSalesCount[sale.brandName] ? brandSalesCount[sale.brandName] + sale.qty : sale.qty
-
-                 brandwiseCount[stockEntry.itemId.brandName] = brandwiseCount[stockEntry.itemId.brandName] ? brandwiseCount[stockEntry.itemId.brandName] + stockEntry.currentStock : stockEntry.currentStock
+                if(stockEntry.itemId._active) brandwiseCount[stockEntry.itemId.brandName] = brandwiseCount[stockEntry.itemId.brandName] ? brandwiseCount[stockEntry.itemId.brandName] + stockEntry.currentStock : stockEntry.currentStock
              })
 
-
+             console.log(count)
 
              return brandwiseCount
          })
