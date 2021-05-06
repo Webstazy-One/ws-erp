@@ -35,6 +35,7 @@ exports.create = (req, res) => {
 
 
             axios.post(dbLinks.serverUrl + '/api/purchase/', purcData).then(data => {
+                    //axios.post('http://localhost:8089/api/purchase/', purcData).then(data => {
                     console.log("data")
                 })
                 .catch(() => {})
@@ -48,7 +49,7 @@ exports.create = (req, res) => {
 
             axios.put(dbLinks.serverUrl + '/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => {})
 
-            // axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => { })
+            //axios.put('http://localhost:8089/api/stock/update/' + req.body.branchCode + '/' + purc.itemId + '/' + (0 - purc.qty)).catch(() => {})
 
         })
     }
@@ -300,11 +301,12 @@ exports.DeleteFromInvoiceId = (req, res) => {
     const invId = req.params.invId;
     Invoice.findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
         .then(data => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
-                })
-            } else res.send(true);
+            if (data) {
+
+                res.send(true)
+            } else res.status(404).send({
+                message: `Cannot delete Invoice with invId=${invId}. Maybe Invoice was not found!`,
+            });
         })
         .catch((err) => {
             res.status(500).send({
@@ -315,7 +317,9 @@ exports.DeleteFromInvoiceId = (req, res) => {
         .findOneAndUpdate({ invId: invId }, { $set: { _active: false } })
         .then(pData => {
             console.log("stock")
-            Stock.findOneAndUpdate({ itemId: pData.itemId, branchCode: pData.branchCode }, { $inc: { currentStock: pData.qty } })
+            console.log(pData)
+            axios.put('http://localhost:8089/api/stock/update/' + pData.branchCode + '/' + pData.itemId + '/' + (0 + pData.qty)).catch(() => {})
+            console.log(pData.qty)
                 .then(data => {
                     if (!data) {
                         res.status(404).send({
