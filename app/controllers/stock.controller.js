@@ -6,67 +6,87 @@ const Uplog = db.uplog
 const Item = db.item
 
 exports.create = (req, res) => {
-    if (!req.body.branchCode) {
-        res.status(400).send({ message: "Content can not be empty!" })
-        return
-    }
-    const stock = new Stock({
-        branchCode: req.body.branchCode,
-        itemId: req.body.itemId,
-        currentStock: req.body.currentStock
+  if (!req.body.branchCode) {
+    res.status(400).send({ message: "Content can not be empty!" })
+    return
+  }
+  const stock = new Stock({
+    branchCode: req.body.branchCode,
+    itemId: req.body.itemId,
+    currentStock: req.body.currentStock,
+  });
+  stock
+    .save(stock)
+    .then((data) => {
+      if (req.body.branchCode == "WAREH") {
+        data.lastBarcode = 0
+      }
+      product = data.itemId
+      console.log(product)
+      res.send(data)
     })
-    stock
-        .save(stock)
-        .then(data => {
-            if (req.body.branchCode == "WAREH") {
-                data.lastBarcode = 0
-            }
-            product = data.itemId
-            console.log(product)
-            res.send(data)
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while creating the stock."
-            })
-        })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the stock."
+      })
+    })
 }
 
 exports.findByBrandBranch = (req, res) => {
-
-    stockReportAr = []
-  const branchCode = req.params.branch
-  const brand = req.params.brand
-  console.log(req.query)
+  stockReportAr = [];
+  const branchCode = req.params.branch;
+  const brand = req.params.brand;
+  console.log(req.query);
   var condition = branchCode
     ? {
-      branchCode: branchCode
-    }
+        branchCode: branchCode
+      }
     : {}
   Stock.find(condition)
-    .populate('itemId')
+    .populate("itemId")
     .then((data) => {
-      console.log(data)
+      console.log(data);
 
-      stockReport = []
-  
-      stockReportArr=[]
-let stockRep ={product:'',currentStock:'',price:''}
-      data.forEach(stockEntry => {
-        if (!stockEntry.itemId || stockEntry.itemId === null) return
-        if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
-          stockReport[stockEntry.itemId.name + stockEntry.itemId.price] = stockEntry.currentStock
-       
+      stockReport = [];
 
-       stockReportArr = {product:stockEntry.itemId.name,price:stockEntry.itemId.price,currentStock:stockEntry.currentStock}
-        stockReportAr.push(stockReportArr)
-        console.log(stockReportAr)
+      stockReportArr = [];
+      let stockRep = { product: "", currentStock: "", price: "", barcode : "", barcodeEnc : "" };
+      data.forEach((stockEntry) => {
+        if (!stockEntry.itemId || stockEntry.itemId === null) return;
+        if (
+          stockEntry.itemId.brandName == brand &&
+          stockEntry.itemId._active == true
+        ) {
+          stockReport[stockEntry.itemId.name + stockEntry.itemId.price] =
+            stockEntry.currentStock
+
+            let barcodeEnc = stockEntry.itemId.barcodePrefix
+            barcodeEnc0 = barcodeEnc.replace(/0/g, 'z')
+            barcodeEnc1 = barcodeEnc0.replace(/1/g, 'y')
+            barcodeEnc2 = barcodeEnc1.replace(/2/g, 'x')
+            barcodeEnc3 = barcodeEnc2.replace(/3/g, 'w')
+            barcodeEnc4 = barcodeEnc3.replace(/4/g, 'v')
+            barcodeEnc5 = barcodeEnc4.replace(/5/g, 'u')
+            barcodeEnc6 = barcodeEnc5.replace(/6/g, 't')
+            barcodeEnc7 = barcodeEnc6.replace(/7/g, 's')
+            barcodeEnc8 = barcodeEnc7.replace(/8/g, 'r')
+            barcodeEnc9 = barcodeEnc8.replace(/9/g, 'q')
+
+          stockReportArr = {
+            barcode : stockEntry.itemId.barcodePrefix,
+            barcodeEnc : barcodeEnc9,
+            product: stockEntry.itemId.name,
+            price: stockEntry.itemId.price,
+            currentStock: stockEntry.currentStock
+          }
+
+          stockReportAr.push(stockReportArr)
+          console.log(stockReportAr)
         }
-
       })
+
       res.send(stockReportAr)
 
-     
       // res.send(Object.assign({}, stockReport))
     })
     .catch((err) => {
@@ -77,305 +97,315 @@ let stockRep ={product:'',currentStock:'',price:''}
 }
 
 exports.findByBranchCode = (req, res) => {
-    const branchCode = req.params.bc
-    console.log(req.query)
-    var condition = branchCode ? {
+  const branchCode = req.params.bc
+  console.log(req.query)
+  var condition = branchCode
+    ? {
         branchCode: branchCode
-    } : {}
-    Stock.find(condition)
-        .populate('itemId')
-        .then((data) => {
-            console.log(data)
-            res.send(data)
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving items."
-            })
-        })
+      }
+    : {}
+  Stock.find(condition)
+    .populate("itemId")
+    .then((data) => {
+      console.log(data)
+      res.send(data)
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items."
+      })
+    })
 }
 
 exports.findByItemId = (req, res) => {
-    products = []
-    const itemId = req.params.itemId
-    console.log(req.query)
-    let condition = itemId ? {
-        itemId: itemId
-    } : {}
-    Stock.find(condition)
-        .then((data) => {
-            const id = req.params.itemId
-            console.log(data)
-            let stockDetails = {
-                branchCode: data[0].branchCode,
-                itemId: data[0].itemId,
-                currentStock: data[0].currentStock
-            }
-            Item.findById(id)
-                .then(itemData => {
-                    stockDetails.brandName = itemData.brandName
-                    stockDetails.itemName = itemData.name
-                    console.log(products)
-                    if (!itemData) res.status(404).send({ message: "Not found stock with id " + id })
-                })
-                .catch(err => {
-                    res
-                        .status(500)
-                        .send({ message: err })
-                }).finally(() => {
-                    res.send(stockDetails)
-                })
+  products = [];
+  const itemId = req.params.itemId;
+  console.log(req.query);
+  let condition = itemId
+    ? {
+        itemId: itemId,
+      }
+    : {};
+  Stock.find(condition)
+    .then((data) => {
+      const id = req.params.itemId;
+      console.log(data);
+      let stockDetails = {
+        branchCode: data[0].branchCode,
+        itemId: data[0].itemId,
+        currentStock: data[0].currentStock,
+      };
+      Item.findById(id)
+        .then((itemData) => {
+          stockDetails.brandName = itemData.brandName;
+          stockDetails.itemName = itemData.name;
+          console.log(products);
+          if (!itemData)
+            res.status(404).send({ message: "Not found stock with id " + id });
         })
         .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while creating the stock."
-            })
+          res.status(500).send({ message: err });
         })
-}
+        .finally(() => {
+          res.send(stockDetails);
+        });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the stock.",
+      });
+    });
+};
 
 exports.findAll = (req, res) => {
-    Stock.find()
-        .populate('itemId')
-        .then(data => {
-            res.send(data)
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving stock."
-            })
-        })
-}
+  Stock.find()
+    .populate("itemId")
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving stock.",
+      });
+    });
+};
 
 exports.findOne = (req, res) => {
+  const branchCode = req.params.branchCode;
+  const itemId = req.params.itemId;
 
-    const branchCode = req.params.branchCode
-    const itemId = req.params.itemId
-
-    Stock.find({ branchCode: branchCode, itemId: itemId })
-        .populate('itemId')
-        .then(data => {
-            res.send(data)
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving stock."
-            })
-        })
-}
+  Stock.find({ branchCode: branchCode, itemId: itemId })
+    .populate("itemId")
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving stock.",
+      });
+    });
+};
 
 exports.stockPlus = (req, res) => {
+  const stUpdate = new Uplog({
+    data: JSON.stringify(req.params),
+  });
 
-    const stUpdate = new Uplog({
-        data: JSON.stringify(req.params)
+  stUpdate.save(stUpdate).catch(() => {
+    console.log("log error");
+  });
+
+  const branchCode = req.params.branchCode;
+  const itemId = req.params.itemId;
+  Stock.updateOne(
+    { branchCode: branchCode, itemId: itemId },
+    { $inc: { currentStock: req.params.qty } }
+  )
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update currentStock=${currentStock}`,
+        });
+      } else res.send("K");
     })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating currentStock=" + currentStock,
+      });
+    });
 
-    stUpdate.save(stUpdate).catch(() => { console.log('log error') })
+  if (req.params.qty > 0)
+    Item.updateOne(
+      { itemId: itemId },
+      { $inc: { historicalCount: req.params.qty } }
+    );
 
-    const branchCode = req.params.branchCode
-    const itemId = req.params.itemId
-    Stock.updateOne({ branchCode: branchCode, itemId: itemId }, { $inc: { "currentStock": req.params.qty } })
-        .then(data => {
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot update currentStock=${currentStock}`
-                })
-            } else res.send('K')
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: "Error updating currentStock=" + currentStock
-            })
-        })
-
-    if (req.params.qty > 0) Item.updateOne({ itemId: itemId }, { $inc: { "historicalCount": req.params.qty } })
-
-    // exports.updateCurrentStock = (req, res) => {
-    //   const branchCode = req.params.branchCode;
-    //   const itemId = req.body.itemId;
-    //   const currentStock = req.params.currentStock;
-    //   Stock.updateOne({itemId:itemId },{$set: {currentStock:currentStock}})
-    //   .then(data => {
-    //         if (!data) {
-    //         res.status(404).send({
-    //           message: `Cannot update stock with current stock =${currentStock}`,
-    //         });
-    //       } else res.send(true);
-    //     })
-    //     .catch((err) => {
-    //       res.status(500).send({
-    //         message: "Error updating stock with current stock =" + currentStock,
-    //       });
-    //     });
-    // }
-    // exports.stockUpdate = (req, res) => {
-    //   const branchCode = req.params.branchCode;
-    //   const itemId = req.params.itemId;
-    //   const currentStock = req.params.currentStock;
-    //   Stock.findOneAndUpdate({branchCode: branchCode,itemId:itemId},{$inc: {currentStock:req.params.qty }})
-    //   .then(data => {
-    //          if (!data) {
-    //         res.status(404).send({
-    //           message: `Cannot update currentStock=${currentStock}`,
-    //         });
-    //       } else res.send(true);
-    //     })
-    //     .catch((err) => {
-    //       res.status(500).send({
-    //         message: "Error updating currentStock=" + currentStock,
-    //       });
-    //     });
-    // // }
-    // exports.findBarcodesForItemList = (req, res) => {
-    //   barcodeList = []
-    //   const branchCode = req.params.branchCode;
-    //   console.log(req.query);
-    //   let condition = branchCode
-    //     ? {
-    //       branchCode: branchCode,
-    //     }
-    //     : {};
-    //   Stock.find(condition)
-    //     .then((data) => {
-    //       const branchCode = req.params.branchCode
-    //       console.log(data)
-    //       let stockDetails = {
-    //         branchCode: data[0].branchCode,
-    //         itemId: data[0].itemId,
-    //         currentStock: data[0].currentStock
-    //       }
-    //       Item.findById(id)
-    //         .then(itemData => {
-    //           stockDetails.brandName = itemData.brandName,
-    //           stockDetails.itemName = itemData.name
-    //           stockDetails.barcode = itemData.barcode
-    //           console.log(products)
-    //           if (!itemData) res.status(404).send({ message: "Not found stock with id "  })
-    //         })
-    //         .catch(err => {
-    //           res
-    //             .status(500)
-    //             .send({ message: err });
-    //         }).finally(() => {
-    //           res.send(stockDetails)
-    //         })
-    //     })
-    //     .catch((err) => {
-    //       res.status(500).send({
-    //         message: err.message || "Some error occurred while creating the stock.",
-    //       });
-    //     });
-}
+  // exports.updateCurrentStock = (req, res) => {
+  //   const branchCode = req.params.branchCode;
+  //   const itemId = req.body.itemId;
+  //   const currentStock = req.params.currentStock;
+  //   Stock.updateOne({itemId:itemId },{$set: {currentStock:currentStock}})
+  //   .then(data => {
+  //         if (!data) {
+  //         res.status(404).send({
+  //           message: `Cannot update stock with current stock =${currentStock}`,
+  //         });
+  //       } else res.send(true);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send({
+  //         message: "Error updating stock with current stock =" + currentStock,
+  //       });
+  //     });
+  // }
+  // exports.stockUpdate = (req, res) => {
+  //   const branchCode = req.params.branchCode;
+  //   const itemId = req.params.itemId;
+  //   const currentStock = req.params.currentStock;
+  //   Stock.findOneAndUpdate({branchCode: branchCode,itemId:itemId},{$inc: {currentStock:req.params.qty }})
+  //   .then(data => {
+  //          if (!data) {
+  //         res.status(404).send({
+  //           message: `Cannot update currentStock=${currentStock}`,
+  //         });
+  //       } else res.send(true);
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send({
+  //         message: "Error updating currentStock=" + currentStock,
+  //       });
+  //     });
+  // // }
+  // exports.findBarcodesForItemList = (req, res) => {
+  //   barcodeList = []
+  //   const branchCode = req.params.branchCode;
+  //   console.log(req.query);
+  //   let condition = branchCode
+  //     ? {
+  //       branchCode: branchCode,
+  //     }
+  //     : {};
+  //   Stock.find(condition)
+  //     .then((data) => {
+  //       const branchCode = req.params.branchCode
+  //       console.log(data)
+  //       let stockDetails = {
+  //         branchCode: data[0].branchCode,
+  //         itemId: data[0].itemId,
+  //         currentStock: data[0].currentStock
+  //       }
+  //       Item.findById(id)
+  //         .then(itemData => {
+  //           stockDetails.brandName = itemData.brandName,
+  //           stockDetails.itemName = itemData.name
+  //           stockDetails.barcode = itemData.barcode
+  //           console.log(products)
+  //           if (!itemData) res.status(404).send({ message: "Not found stock with id "  })
+  //         })
+  //         .catch(err => {
+  //           res
+  //             .status(500)
+  //             .send({ message: err });
+  //         }).finally(() => {
+  //           res.send(stockDetails)
+  //         })
+  //     })
+  //     .catch((err) => {
+  //       res.status(500).send({
+  //         message: err.message || "Some error occurred while creating the stock.",
+  //       });
+  //     });
+};
 
 exports.findBarcodeItem = (req, res) => {
-    const itemId = req.params.itemId
-    const amount = req.params.amount
-        // let condition = itemId
-        //   ? {
-        //     itemId: itemId,
-        //   }
-        //   : {};
-    Stock.findOne({ branchCode: 'WAREH', itemId: req.params.itemId })
-        .then(data => {
-            if (true) {
+  const itemId = req.params.itemId;
+  const amount = req.params.amount;
+  // let condition = itemId
+  //   ? {
+  //     itemId: itemId,
+  //   }
+  //   : {};
+  Stock.findOne({ branchCode: "WAREH", itemId: req.params.itemId })
+    .then((data) => {
+      if (true) {
+        // console.log(warehouseData.currentStock)
+        const id = req.params.itemId;
+        let bCodes = [];
+        Item.findById(id)
+          .then((itemData) => {
+            //   if (amount < (itemData.historicalCount - findLast)) {
 
+            let barcode = 0;
+            let amount = req.params.amount;
 
-                // console.log(warehouseData.currentStock)
-                const id = req.params.itemId
-                let bCodes = []
-                Item.findById(id)
-                    .then(itemData => {
+            for (let i = 0; i < amount; i++) {
+              function padLeadingZeros(i, size) {
+                let barcode = i + "";
+                while (barcode.length < size) barcode = "0" + barcode;
+                return barcode;
+              }
+              barcode = barcode + 1;
+              hexString = barcode.toString(16);
+              barcodehex = parseInt(hexString, 16);
+              bCode = itemData.barcodePrefix + padLeadingZeros(hexString, 5);
 
-                        //   if (amount < (itemData.historicalCount - findLast)) {
-
-                        let barcode = 0
-                        let amount = req.params.amount;
-
-                        for (let i = 0; i < amount; i++) {
-                            function padLeadingZeros(i, size) {
-                                let barcode = i + "";
-                                while (barcode.length < size) barcode = "0" + barcode
-                                return barcode
-                            }
-                            barcode = barcode + 1;
-                            hexString = barcode.toString(16)
-                            barcodehex = parseInt(hexString, 16)
-                            bCode = itemData.barcodePrefix + padLeadingZeros(hexString, 5)
-
-                            let bcPrint = {
-                                itemName: itemData.name,
-                                price: itemData.price,
-                                barcodeStr: bCode
-                            }
-                            bCodes.push(bcPrint)
-
-                        }
-                        // barcodeDetails.barcodelast = 
-                        if (!itemData) res.status(404).send({ message: "Not found stock with id " })
-                    })
-                    .catch(err => {
-                        res
-                            .status(500)
-                            .send({ message: err });
-                    }).finally(() => {
-                        res.send(bCodes)
-                    })
-            } else {
-                res.send("Invalid Operation. Barcode Limit exceeded!")
+              let bcPrint = {
+                itemName: itemData.name,
+                price: itemData.price,
+                barcodeStr: bCode,
+              };
+              bCodes.push(bcPrint);
             }
-
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving stock."
-            })
-        })
-}
+            // barcodeDetails.barcodelast =
+            if (!itemData)
+              res.status(404).send({ message: "Not found stock with id " });
+          })
+          .catch((err) => {
+            res.status(500).send({ message: err });
+          })
+          .finally(() => {
+            res.send(bCodes);
+          });
+      } else {
+        res.send("Invalid Operation. Barcode Limit exceeded!");
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving stock.",
+      });
+    });
+};
 
 exports.findLast = (req, res) => {
-    Stock.findOne().sort({ 'createdAt': -1 }).limit(1).then(data => {
-        res.send(data.currentStock);
-        console.log(data.currentStock)
-    })
-}
-
+  Stock.findOne()
+    .sort({ createdAt: -1 })
+    .limit(1)
+    .then((data) => {
+      res.send(data.currentStock);
+      console.log(data.currentStock);
+    });
+};
 
 exports.stockTransfer = (req, res) => {
-    const sentbranchCode = req.params.sentbranchCode
-    const itemId = req.params.itemId
-    const receivedbranchCode = req.params.receivedbranchCode
+  const sentbranchCode = req.params.sentbranchCode;
+  const itemId = req.params.itemId;
+  const receivedbranchCode = req.params.receivedbranchCode;
 
-    Stock.findOneAndUpdate({ itemId: itemId, branchCode: receivedbranchCode }, { $inc: { currentStock: req.params.qty } })
-        .then(data => {
+  Stock.findOneAndUpdate(
+    { itemId: itemId, branchCode: receivedbranchCode },
+    { $inc: { currentStock: req.params.qty } }
+  )
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
+        });
+      } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating Stock with branchCode",
+      });
+    });
 
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
-                });
-            } else res.send(true);
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: "Error updating Stock with branchCode"
-            })
-        })
-
-    Stock.findOneAndUpdate({ itemId: itemId, branchCode: sentbranchCode }, { $inc: { currentStock: req.params.qty * -1 } })
-        .then(data => {
-
-            if (!data) {
-                res.status(404).send({
-                    message: `Cannot update Stock with branchCode. Maybe Stock was not found!`
-                })
-            } else res.send(true)
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: "Error updating Stock with branchCode"
-            })
-        })
-
-}
-
+  Stock.findOneAndUpdate(
+    { itemId: itemId, branchCode: sentbranchCode },
+    { $inc: { currentStock: req.params.qty * -1 } }
+  )
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update Stock with branchCode. Maybe Stock was not found!`,
+        });
+      } else res.send(true);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating Stock with branchCode",
+      });
+    });
+};
 
 // exports.findByBrand = (req, res) => {
 
@@ -413,61 +443,65 @@ exports.stockTransfer = (req, res) => {
 //           }
 //         })
 
-
 //       }))
 
 // }
 
 exports.findByBranChCodeAndBrand = (req, res) => {
-    const branchCode = req.params.branchCode
-    const brand = req.params.brand
+  const branchCode = req.params.branchCode;
+  const brand = req.params.brand;
 
-    Stock.find({ branchCode: branchCode })
-        .populate('itemId')
-        .then((data) => {
-            console.log(data)
+  Stock.find({ branchCode: branchCode })
+    .populate("itemId")
+    .then((data) => {
+      console.log(data);
 
-            stockReport = []
+      stockReport = [];
 
-            data.forEach(stockEntry => {
-                if (!stockEntry.itemId || stockEntry.itemId === null) return
-                if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
-                    // stockReport[stockEntry] = stockEntry
-                    stockReport.push(stockEntry)
-                }
-            })
-            res.send(stockReport)
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving items."
-            })
-        })
-}
+      data.forEach((stockEntry) => {
+        if (!stockEntry.itemId || stockEntry.itemId === null) return;
+        if (
+          stockEntry.itemId.brandName == brand &&
+          stockEntry.itemId._active == true
+        ) {
+          // stockReport[stockEntry] = stockEntry
+          stockReport.push(stockEntry);
+        }
+      });
+      res.send(stockReport);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items.",
+      });
+    });
+};
 
 exports.findByBrand = (req, res) => {
+  const brand = req.params.brand;
 
-    const brand = req.params.brand
+  Stock.find()
+    .populate("itemId")
+    .then((data) => {
+      console.log(data);
 
-    Stock.find()
-        .populate('itemId')
-        .then((data) => {
-            console.log(data)
+      stockReport = [];
 
-            stockReport = []
-
-            data.forEach(stockEntry => {
-                if (!stockEntry.itemId || stockEntry.itemId === null) return
-                if (stockEntry.itemId.brandName == brand && stockEntry.itemId._active == true) {
-                    // stockReport[stockEntry] = stockEntry
-                    stockReport.push(stockEntry)
-                }
-            })
-            res.send(stockReport)
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving items."
-            })
-        })
-}
+      data.forEach((stockEntry) => {
+        if (!stockEntry.itemId || stockEntry.itemId === null) return;
+        if (
+          stockEntry.itemId.brandName == brand &&
+          stockEntry.itemId._active == true
+        ) {
+          // stockReport[stockEntry] = stockEntry
+          stockReport.push(stockEntry);
+        }
+      });
+      res.send(stockReport);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving items.",
+      });
+    });
+};
