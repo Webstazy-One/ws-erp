@@ -37,4 +37,4 @@ module.exports = (mongoose) => {
   });
   const Promo = mongoose.model("promo", schema);
   return Promo;
-};
+}

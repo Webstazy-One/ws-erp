@@ -5,14 +5,14 @@ module.exports = (mongoose) => {
     qty: Number,
     datetime: Date,
 
-  });
+  })
 
   schema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
     object.GRNId = _id;
     return object;
-  });
+  })
 
   const GRN = mongoose.model("goodreceivednote", schema,);
   return GRN;
-};
+}

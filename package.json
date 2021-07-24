@@ -1,6 +1,6 @@
 {
-  "name": "ws-erp-cloud",
-  "version": "0.12.0",
+  "name": "ws-erp-app",
+  "version": "0.21.0",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
