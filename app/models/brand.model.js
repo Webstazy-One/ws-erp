@@ -15,6 +15,11 @@ module.exports = mongoose => {
           default: "WATCHES",
         
         },
+        macCountry: String,
+        asCountry: String,
+        brandCountry: String,
+        warranty: Number,
+        international: Boolean, //false: seller
 
         auditedDate: {
           type: Date,
