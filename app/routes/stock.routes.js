@@ -29,7 +29,5 @@ module.exports = app => {
 
   router.get("/itemId/:itemId", stock.findByItemId);
 
-
-
   app.use("/api/stock", router)
 }

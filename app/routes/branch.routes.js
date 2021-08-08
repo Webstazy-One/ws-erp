@@ -13,5 +13,5 @@ module.exports = app => {
 
   router.get("/branchCode/:bc", branch.findByBranchCode);
  
-  app.use('/api/branch', router);
-};
+  app.use('/api/branch', router)
+}

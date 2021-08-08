@@ -104,6 +104,7 @@ require("./app/routes/report.routes")(app)
 require("./app/routes/goodreceivednote.routes")(app)
 require("./app/routes/stockmappingservice.routes")(app)
 require("./app/routes/voucher.routes")(app)
+require("./app/routes/stock-transfer-note.routes")(app)
 
 app.use(express.static('dist'))
 

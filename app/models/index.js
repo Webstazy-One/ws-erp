@@ -20,8 +20,12 @@ db.customer = require("./customer.model.js")(mongoose)
 db.cust_merge = require("./cust_merge.model.js")(mongoose)
 db.brand = require("./brand.model.js")(mongoose)
 db.uplog = require("./uplog.model.js")(mongoose)
-db.goodreceivednote = require("./grn.model")(mongoose)
+db.grn = require("./grn.model")(mongoose)
 db.voucher = require("./voucher.model")(mongoose)
+
+db.stn = require("./stock-transfer-note.model")(mongoose)
+db.price_change = require("./price-change-note.model")(mongoose)
+db.img_change = require("./image-change-log.model")(mongoose)
 
 db.user = require("./user.model")
 db.role = require("./role.model")

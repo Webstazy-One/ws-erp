@@ -1,5 +1,6 @@
 module.exports = app => {
   const promos = require("../controllers/promo.controller.js");
+  
   const db = require("../models");
   
   var router = require("express").Router();
